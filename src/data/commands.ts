@@ -1,5 +1,6 @@
-import { Category } from '../types';
-import { CATEGORIES, CategoryInfo } from '../types';
+import type { Category } from '../types';
+import type { CategoryInfo } from '../types';
+import { CATEGORIES } from '../types';
 
 export const COMMANDS: Record<Category, string[]> = {
   Romantic: [

@@ -1,4 +1,4 @@
-import { Category } from '../types';
+import type { Category } from '../types';
 
 export interface Achievement {
   id: string;

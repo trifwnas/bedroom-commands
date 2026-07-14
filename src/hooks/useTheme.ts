@@ -1,67 +1,19 @@
-import { useColorScheme } from 'react-native';
-import { useAppStore } from '../store/useAppStore';
-import { ThemeMode } from '../types';
+import { useEffect, useState } from 'react';
+import { useStore } from '../store/useStore';
 
-export interface ThemeColors {
-  background: string;
-  surface: string;
-  card: string;
-  primary: string;
-  secondary: string;
-  text: string;
-  textSecondary: string;
-  border: string;
-  success: string;
-  warning: string;
-  error: string;
-}
+export function useDarkMode() {
+  const themeMode = useStore(s => s.themeMode);
+  const [systemDark, setSystemDark] = useState(() =>
+    typeof window !== 'undefined' ? window.matchMedia('(prefers-color-scheme: dark)').matches : false
+  );
 
-export const LightTheme: ThemeColors = {
-  background: '#f5f5f5',
-  surface: '#ffffff',
-  card: '#ffffff',
-  primary: '#ff595e',
-  secondary: '#ff595e',
-  text: '#1a1a1a',
-  textSecondary: '#666666',
-  border: '#e0e0e0',
-  success: '#6bcb77',
-  warning: '#ffd93d',
-  error: '#ff595e',
-};
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const handler = (e: MediaQueryListEvent) => setSystemDark(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
 
-export const DarkTheme: ThemeColors = {
-  background: '#1a1a1a',
-  surface: '#2d2d2d',
-  card: '#3d3d3d',
-  primary: '#ff595e',
-  secondary: '#ff6f73',
-  text: '#ffffff',
-  textSecondary: '#a0a0a0',
-  border: '#404040',
-  success: '#6bcb77',
-  warning: '#ffd93d',
-  error: '#ff595e',
-};
-
-export const useTheme = (): ThemeColors => {
-  const systemColorScheme = useColorScheme();
-  const themeMode = useAppStore((state) => state.themeMode);
-
-  if (themeMode === 'system') {
-    return systemColorScheme === 'dark' ? DarkTheme : LightTheme;
-  }
-
-  return themeMode === 'dark' ? DarkTheme : LightTheme;
-};
-
-export const useIsDarkMode = (): boolean => {
-  const systemColorScheme = useColorScheme();
-  const themeMode = useAppStore((state) => state.themeMode);
-
-  if (themeMode === 'system') {
-    return systemColorScheme === 'dark';
-  }
-
+  if (themeMode === 'system') return systemDark;
   return themeMode === 'dark';
-};
+}

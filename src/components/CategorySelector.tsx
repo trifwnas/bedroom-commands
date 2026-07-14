@@ -1,95 +1,42 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
-import { Category, CATEGORIES } from '../types';
-import { useTheme } from '../hooks/useTheme';
+import type { Category } from '../types';
+import { CATEGORIES } from '../types';
+import { useStore } from '../store/useStore';
 
-interface CategorySelectorProps {
-  selectedCategory: Category;
-  onSelectCategory: (category: Category) => void;
-  enabledCategories: Category[];
+interface Props {
+  selected: Category | 'Random';
+  onSelect: (cat: Category | 'Random') => void;
 }
 
-export const CategorySelector: React.FC<CategorySelectorProps> = ({
-  selectedCategory,
-  onSelectCategory,
-  enabledCategories,
-}) => {
-  const theme = useTheme();
-
-  const getFilteredCategories = (): typeof CATEGORIES => {
-    if (enabledCategories.length === 0) return CATEGORIES;
-    return CATEGORIES.filter(cat => enabledCategories.includes(cat.id));
-  };
-
-  const categories = getFilteredCategories();
+export function CategorySelector({ selected, onSelect }: Props) {
+  const disabledCategories = useStore(s => s.disabledCategories);
 
   return (
-    <ScrollView 
-      horizontal 
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.container}
-    >
-      <Pressable
-        onPress={() => onSelectCategory('Random' as Category)}
-        style={[
-          styles.chip,
-          {
-            backgroundColor: selectedCategory === 'Random' ? theme.primary : theme.surface,
-            borderColor: theme.primary,
-          },
-          selectedCategory !== 'Random' && { borderWidth: 2 },
-        ]}
+    <div className="flex gap-2 overflow-x-auto px-5 py-2 scrollbar-none">
+      <button
+        onClick={() => onSelect('Random')}
+        className={`shrink-0 px-4 py-2 rounded-full text-sm font-semibold transition-all active:scale-95 ${
+          selected === 'Random'
+            ? 'bg-[var(--primary)] text-white shadow-lg shadow-[var(--primary)]/30'
+            : 'bg-[var(--surface)] text-[var(--text)] border border-[var(--border)]'
+        }`}
       >
-        <Text style={[
-          styles.chipText,
-          { color: selectedCategory === 'Random' ? '#fff' : theme.text },
-        ]}>
-          🎲 Random
-        </Text>
-      </Pressable>
-
-      {categories.map((cat) => {
-        const isSelected = selectedCategory === cat.id;
-        return (
-          <Pressable
-            key={cat.id}
-            onPress={() => onSelectCategory(cat.id)}
-            style={[
-              styles.chip,
-              {
-                backgroundColor: isSelected ? cat.color : theme.surface,
-                borderColor: cat.color,
-              },
-              !isSelected && { borderWidth: 2 },
-            ]}
-          >
-            <Text style={[
-              styles.chipText,
-              { color: isSelected ? '#fff' : theme.text },
-            ]}>
-              {cat.emoji} {cat.name}
-            </Text>
-          </Pressable>
-        );
-      })}
-    </ScrollView>
+        🎲 Random
+      </button>
+      {CATEGORIES.map(cat => (
+        <button
+          key={cat.id}
+          onClick={() => onSelect(cat.id)}
+          disabled={disabledCategories.includes(cat.id)}
+          className={`shrink-0 px-4 py-2 rounded-full text-sm font-semibold transition-all active:scale-95 disabled:opacity-30 ${
+            selected === cat.id
+              ? 'text-white shadow-lg'
+              : 'bg-[var(--surface)] text-[var(--text)] border border-[var(--border)]'
+          }`}
+          style={selected === cat.id ? { background: cat.color, boxShadow: `0 4px 14px ${cat.color}40` } : {}}
+        >
+          {cat.emoji} {cat.name}
+        </button>
+      ))}
+    </div>
   );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    gap: 8,
-  },
-  chip: {
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 20,
-    marginRight: 8,
-  },
-  chipText: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-});
+}

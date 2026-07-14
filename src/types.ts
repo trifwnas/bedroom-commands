@@ -1,10 +1,5 @@
 export type Category = 'Romantic' | 'Playful' | 'Spicy' | 'Adventure' | 'Relaxing';
-
-export interface Command {
-  id: string;
-  text: string;
-  category: Category;
-}
+export type ThemeMode = 'system' | 'light' | 'dark';
 
 export interface CategoryInfo {
   id: Category;
@@ -22,4 +17,4 @@ export const CATEGORIES: CategoryInfo[] = [
   { id: 'Relaxing', name: 'Relaxing', emoji: '🌙', color: '#4d96ff', gradient: ['#4d96ff', '#3d86ef'] },
 ];
 
-export type ThemeMode = 'system' | 'light' | 'dark';
+export const CATEGORY_MAP = Object.fromEntries(CATEGORIES.map(c => [c.id, c])) as Record<Category, CategoryInfo>;

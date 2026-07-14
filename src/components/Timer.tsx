@@ -1,412 +1,158 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { View, Text, StyleSheet, Pressable, Modal, TextInput, Alert } from 'react-native';
-import { Feather } from '@expo/vector-icons';
-import Animated, { useSharedValue, useAnimatedStyle, withRepeat, withTiming, withSequence } from 'react-native-reanimated';
-import { useTheme } from '../hooks/useTheme';
-import { triggerHaptic } from '../utils/helpers';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, Play, Pause, Square, RotateCcw } from 'lucide-react';
+import { triggerHaptic } from '../utils';
 
-interface TimerProps {
-  visible: boolean;
+interface Props {
+  open: boolean;
   onClose: () => void;
   initialMinutes?: number;
 }
 
-const PRESET_TIMES = [
-  { label: '1 min', value: 1 },
-  { label: '3 min', value: 3 },
-  { label: '5 min', value: 5 },
-  { label: '10 min', value: 10 },
-  { label: '15 min', value: 15 },
-  { label: '30 min', value: 30 },
-];
+const PRESETS = [1, 3, 5, 10, 15, 30];
 
-export const Timer: React.FC<TimerProps> = ({ visible, onClose, initialMinutes = 5 }) => {
-  const theme = useTheme();
+export function Timer({ open, onClose, initialMinutes = 5 }: Props) {
   const [minutes, setMinutes] = useState(initialMinutes);
   const [seconds, setSeconds] = useState(0);
-  const [isRunning, setIsRunning] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
+  const [running, setRunning] = useState(false);
+  const [paused, setPaused] = useState(false);
   const [customTime, setCustomTime] = useState('');
-  
-  const pulseAnim = useSharedValue(1);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const totalSecondsRef = useRef(0);
+  const intervalRef = useRef<number | null>(null);
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
 
   useEffect(() => {
-    if (visible) {
+    if (open) {
       setMinutes(initialMinutes);
       setSeconds(0);
-      setIsRunning(false);
-      setIsPaused(false);
+      setRunning(false);
+      setPaused(false);
     }
-  }, [visible, initialMinutes]);
+  }, [open, initialMinutes]);
 
   useEffect(() => {
-    if (isRunning && !isPaused) {
-      pulseAnim.value = withRepeat(
-        withSequence(
-          withTiming(1.1, { duration: 500 }),
-          withTiming(1, { duration: 500 })
-        ),
-        -1,
-        false
-      );
-
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      
-      intervalRef.current = setInterval(() => {
-        setSeconds(prevSec => {
-          if (prevSec === 0) {
-            setMinutes(prevMin => {
-              if (prevMin === 0) {
-                setIsRunning(false);
-                setIsPaused(false);
-                setTimeout(() => {
-                  Alert.alert('Time\'s Up!', 'Your activity time is complete!', [{ text: 'OK', style: 'default' }]);
-                }, 0);
+    if (running && !paused) {
+      intervalRef.current = window.setInterval(() => {
+        setSeconds(prev => {
+          if (prev === 0) {
+            setMinutes(m => {
+              if (m === 0) {
+                setRunning(false);
+                setPaused(false);
+                setTimeout(() => alert('Time\'s Up!'), 0);
                 return 0;
               }
-              return prevMin - 1;
+              return m - 1;
             });
             return 59;
           }
-          return prevSec - 1;
+          return prev - 1;
         });
       }, 1000);
-    } else {
-      pulseAnim.value = 1;
     }
-
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
+      if (intervalRef.current) { clearInterval(intervalRef.current); intervalRef.current = null; }
     };
-  }, [isRunning, isPaused]);
+  }, [running, paused]);
 
-  const handleStart = useCallback(() => {
-    setIsRunning(true);
-    setIsPaused(false);
-    triggerHaptic('light');
-  }, []);
-
-  const handlePause = useCallback(() => {
-    setIsPaused(true);
-    triggerHaptic('light');
-  }, []);
-
-  const handleResume = useCallback(() => {
-    setIsPaused(false);
-    triggerHaptic('light');
-  }, []);
-
-  const handleStop = useCallback(() => {
-    setIsRunning(false);
-    setIsPaused(false);
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-    Alert.alert('Time\'s Up!', 'Your activity time is complete!', [{ text: 'OK', style: 'default' }]);
-  }, []);
-
-  const handleReset = useCallback(() => {
-    setIsRunning(false);
-    setIsPaused(false);
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-    setMinutes(initialMinutes);
-    setSeconds(0);
-    triggerHaptic('light');
-  }, [initialMinutes]);
-
-  const handlePresetSelect = useCallback((value: number) => {
-    setMinutes(value);
-    setSeconds(0);
-    triggerHaptic('light');
-  }, []);
-
-  const handleCustomTime = useCallback(() => {
-    const val = parseInt(customTime);
-    if (val > 0 && val <= 180) {
-      setMinutes(val);
-      setSeconds(0);
-      setCustomTime('');
-      triggerHaptic('light');
-    }
-  }, [customTime]);
-
-  const pulseStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: pulseAnim.value }],
-  }));
-
-  const formatTime = (mins: number, secs: number) => {
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
+  const start = () => { setRunning(true); setPaused(false); triggerHaptic('light'); };
+  const pause = () => { setPaused(true); triggerHaptic('light'); };
+  const resume = () => { setPaused(false); triggerHaptic('light'); };
+  const stop = () => { setRunning(false); setPaused(false); if (intervalRef.current) clearInterval(intervalRef.current); };
+  const reset = () => { stop(); setMinutes(initialMinutes); setSeconds(0); triggerHaptic('light'); };
 
   const progress = ((initialMinutes * 60 - (minutes * 60 + seconds)) / (initialMinutes * 60)) * 100;
+  const timeStr = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 
   return (
-    <Modal visible={visible} animationType="slide" transparent>
-      <View style={styles.overlay}>
-        <View style={[styles.container, { backgroundColor: theme.surface }]}>
-          <View style={styles.header}>
-            <Text style={[styles.title, { color: theme.text }]}>Timer</Text>
-            <Pressable onPress={onClose} hitSlop={8}>
-              <Feather name="x" size={24} color={theme.text} />
-            </Pressable>
-          </View>
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center"
+          onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+        >
+          <motion.div
+            initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            className="w-full max-w-md bg-[var(--surface)] rounded-t-3xl p-6 pb-10"
+          >
+            <div className="flex justify-between items-center mb-5">
+              <h2 className="text-2xl font-bold text-[var(--text)]">Timer</h2>
+              <button onClick={onClose} className="p-2 rounded-full hover:bg-[var(--border)]">
+                <X size={24} className="text-[var(--text)]" />
+              </button>
+            </div>
 
-          {!isRunning ? (
-            <View style={styles.setupContainer}>
-              <Text style={[styles.subtitle, { color: theme.textSecondary }]}>
-                Select duration for your activity
-              </Text>
-              
-              <View style={styles.presetGrid}>
-                {PRESET_TIMES.map((preset) => (
-                  <Pressable
-                    key={preset.value}
-                    onPress={() => handlePresetSelect(preset.value)}
-                    style={[
-                      styles.presetButton,
-                      { 
-                        backgroundColor: minutes === preset.value ? theme.primary : theme.background,
-                        borderColor: theme.border,
-                      }
-                    ]}
-                  >
-                    <Text style={[
-                      styles.presetText,
-                      { color: minutes === preset.value ? '#fff' : theme.text }
-                    ]}>
-                      {preset.label}
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
+            {!running ? (
+              <div>
+                <p className="text-sm text-[var(--text-sec)] text-center mb-4">Select duration</p>
+                <div className="flex flex-wrap justify-center gap-2.5 mb-5">
+                  {PRESETS.map(v => (
+                    <button key={v} onClick={() => { setMinutes(v); setSeconds(0); triggerHaptic('light'); }}
+                      className={`px-5 py-3 rounded-full text-sm font-semibold border transition-all active:scale-95 ${
+                        minutes === v
+                          ? 'bg-[var(--primary)] text-white border-[var(--primary)]'
+                          : 'bg-[var(--bg)] text-[var(--text)] border-[var(--border)]'
+                      }`}>
+                      {v} min
+                    </button>
+                  ))}
+                </div>
+                <div className="flex gap-2.5 justify-center">
+                  <input type="number" min={1} max={180} placeholder="Custom (min)"
+                    value={customTime} onChange={e => setCustomTime(e.target.value)}
+                    className="w-32 px-4 py-3 rounded-xl bg-[var(--bg)] text-[var(--text)] border border-[var(--border)] text-center text-base" />
+                  <button onClick={() => {
+                    const v = parseInt(customTime);
+                    if (v > 0 && v <= 180) { setMinutes(v); setSeconds(0); setCustomTime(''); triggerHaptic('light'); }
+                  }} className="px-5 py-3 rounded-xl bg-[var(--primary)] text-white font-semibold">
+                    Set
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center py-5">
+                <div className="relative w-48 h-48 mb-8">
+                  <svg className="w-full h-full -rotate-90" viewBox="0 0 120 120">
+                    <circle cx="60" cy="60" r="54" fill="none" stroke="var(--border)" strokeWidth="6" />
+                    <circle cx="60" cy="60" r="54" fill="none" stroke="var(--primary)" strokeWidth="6"
+                      strokeDasharray={`${progress * 3.39} 339`} strokeLinecap="round" />
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="text-4xl font-bold text-[var(--text)]">{timeStr}</span>
+                    <span className="text-sm text-[var(--text-sec)] mt-1">{paused ? 'PAUSED' : 'REMAINING'}</span>
+                  </div>
+                </div>
+                <div className="flex gap-5">
+                  {paused ? (
+                    <button onClick={resume} className="w-16 h-16 rounded-full bg-[var(--primary)] flex items-center justify-center text-white">
+                      <Play size={28} fill="currentColor" />
+                    </button>
+                  ) : (
+                    <button onClick={pause} className="w-16 h-16 rounded-full bg-[var(--warning)] flex items-center justify-center text-white">
+                      <Pause size={28} fill="currentColor" />
+                    </button>
+                  )}
+                  <button onClick={stop} className="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center text-white">
+                    <Square size={28} fill="currentColor" />
+                  </button>
+                </div>
+              </div>
+            )}
 
-              <View style={styles.customInput}>
-                <TextInput
-                  style={[
-                    styles.input,
-                    { 
-                      backgroundColor: theme.background,
-                      color: theme.text,
-                      borderColor: theme.border,
-                    }
-                  ]}
-                  placeholder="Custom (min)"
-                  placeholderTextColor={theme.textSecondary}
-                  value={customTime}
-                  onChangeText={setCustomTime}
-                  keyboardType="number-pad"
-                  maxLength={3}
-                />
-                <Pressable 
-                  onPress={handleCustomTime}
-                  style={[styles.setButton, { backgroundColor: theme.primary }]}
-                >
-                  <Text style={styles.setButtonText}>Set</Text>
-                </Pressable>
-              </View>
-            </View>
-          ) : (
-            <View style={styles.timerContainer}>
-              <Animated.View style={[styles.timerCircle, pulseStyle]}>
-                <Text style={[styles.timerText, { color: theme.text }]}>
-                  {formatTime(minutes, seconds)}
-                </Text>
-                <Text style={[styles.timerLabel, { color: theme.textSecondary }]}>
-                  {isPaused ? 'PAUSED' : 'REMAINING'}
-                </Text>
-              </Animated.View>
-
-              <View style={styles.controls}>
-                {isPaused ? (
-                  <Pressable 
-                    onPress={handleResume}
-                    style={[styles.controlButton, { backgroundColor: theme.primary }]}
-                  >
-                    <Feather name="play" size={32} color="#fff" />
-                  </Pressable>
-                ) : (
-                  <Pressable 
-                    onPress={handlePause}
-                    style={[styles.controlButton, { backgroundColor: theme.warning }]}
-                  >
-                    <Feather name="pause" size={32} color="#fff" />
-                  </Pressable>
-                )}
-                
-                <Pressable 
-                  onPress={handleStop}
-                  style={[styles.controlButton, { backgroundColor: theme.error }]}
-                >
-                  <Feather name="square" size={32} color="#fff" />
-                </Pressable>
-              </View>
-            </View>
-          )}
-
-          {!isRunning && (
-            <Pressable 
-              onPress={handleStart}
-              style={[styles.startButton, { backgroundColor: theme.primary }]}
-            >
-              <Feather name="play" size={24} color="#fff" />
-              <Text style={styles.startText}>Start Timer</Text>
-            </Pressable>
-          )}
-
-          {isRunning && (
-            <Pressable 
-              onPress={handleReset}
-              style={[styles.resetButton, { borderColor: theme.border }]}
-            >
-              <Feather name="rotate-ccw" size={20} color={theme.text} />
-              <Text style={[styles.resetText, { color: theme.text }]}>Reset</Text>
-            </Pressable>
-          )}
-        </View>
-      </View>
-    </Modal>
+            {!running ? (
+              <button onClick={start} className="w-full mt-5 py-4 rounded-2xl bg-[var(--primary)] text-white text-lg font-bold flex items-center justify-center gap-2.5">
+                <Play size={20} fill="currentColor" /> Start Timer
+              </button>
+            ) : (
+              <button onClick={reset} className="w-full mt-4 py-3.5 rounded-xl border border-[var(--border)] text-[var(--text)] font-semibold flex items-center justify-center gap-2">
+                <RotateCcw size={18} /> Reset
+              </button>
+            )}
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
-};
-
-const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
-  },
-  container: {
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    padding: 24,
-    paddingBottom: 40,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
-  },
-  subtitle: {
-    fontSize: 14,
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  setupContainer: {
-    marginBottom: 20,
-  },
-  presetGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    gap: 10,
-    marginBottom: 20,
-  },
-  presetButton: {
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 20,
-    borderWidth: 1,
-  },
-  presetText: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  customInput: {
-    flexDirection: 'row',
-    gap: 10,
-    justifyContent: 'center',
-  },
-  input: {
-    flex: 1,
-    maxWidth: 150,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 12,
-    borderWidth: 1,
-    fontSize: 16,
-  },
-  setButton: {
-    paddingHorizontal: 20,
-    borderRadius: 12,
-    justifyContent: 'center',
-  },
-  setButtonText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 16,
-  },
-  timerContainer: {
-    alignItems: 'center',
-    paddingVertical: 20,
-  },
-  timerCircle: {
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    backgroundColor: 'rgba(255, 89, 94, 0.1)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 30,
-  },
-  timerText: {
-    fontSize: 48,
-    fontWeight: '700',
-  },
-  timerLabel: {
-    fontSize: 14,
-    marginTop: 4,
-  },
-  controls: {
-    flexDirection: 'row',
-    gap: 20,
-  },
-  controlButton: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  startButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 16,
-    borderRadius: 16,
-    gap: 10,
-  },
-  startText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '700',
-  },
-  resetButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 14,
-    borderRadius: 12,
-    borderWidth: 1,
-    marginTop: 16,
-    gap: 8,
-  },
-  resetText: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-});
+}

@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+:root {
+  --primary: #ff595e;
+  --bg: #f5f5f5;
+  --surface: #ffffff;
+  --card: #ffffff;
+  --text: #1a1a1a;
+  --text-sec: #666666;
+  --border: #e0e0e0;
+  --success: #6bcb77;
+  --warning: #ffd93d;
+  --error: #ff595e;
+}
+
+.dark {
+  --bg: #1a1a1a;
+  --surface: #2d2d2d;
+  --card: #3d3d3d;
+  --text: #ffffff;
+  --text-sec: #a0a0a0;
+  --border: #404040;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100dvh;
+}
+
+#root { min-height: 100dvh; display: flex; flex-direction: column; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(100%); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+.animate-fadeIn { animation: fadeIn 0.3s ease-out; }
+.animate-slideUp { animation: slideUp 0.3s ease-out; }
+.animate-pulse { animation: pulse 2s infinite; }
