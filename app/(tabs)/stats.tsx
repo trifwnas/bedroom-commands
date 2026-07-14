@@ -8,7 +8,9 @@ import { CATEGORIES } from '../../src/types';
 
 export default function StatsScreen() {
   const theme = useTheme();
-  const { statistics, favorites, history } = useAppStore();
+  const statistics = useAppStore(state => state.statistics);
+  const favorites = useAppStore(state => state.favorites);
+  const history = useAppStore(state => state.history);
 
   const totalCommands = Object.values(statistics.categoryDraws).reduce((a, b) => a + b, 0);
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View, Text, StyleSheet, Pressable, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Feather } from '@expo/vector-icons';
@@ -24,7 +24,7 @@ interface CommandCardProps {
   isDrawing?: boolean;
 }
 
-export const CommandCard: React.FC<CommandCardProps> = ({
+export const CommandCard: React.FC<CommandCardProps> = React.memo(({
   command,
   category,
   isFavorite,
@@ -37,13 +37,13 @@ export const CommandCard: React.FC<CommandCardProps> = ({
   const rotation = useSharedValue(0);
   const scale = useSharedValue(1);
 
-  const handlePress = () => {
+  const handlePress = useCallback(() => {
     if (isDrawing) return;
     scale.value = withSpring(0.95, {}, () => {
       scale.value = withSpring(1);
     });
     rotation.value = withSpring(rotation.value + 360, { damping: 15 });
-  };
+  }, [isDrawing, scale, rotation]);
 
   const frontAnimatedStyle = useAnimatedStyle(() => ({
     transform: [
@@ -107,9 +107,9 @@ export const CommandCard: React.FC<CommandCardProps> = ({
           <View style={styles.cardActions}>
             <Pressable onPress={onFavoriteToggle} style={styles.actionButton}>
               <Feather 
-                name={isFavorite ? 'heart' : 'heart'} 
+                name="heart" 
                 size={24} 
-                color={isFavorite ? '#fff' : '#fff'} 
+                color="#fff" 
                 style={isFavorite ? styles.heartFilled : undefined}
               />
             </Pressable>
@@ -121,7 +121,9 @@ export const CommandCard: React.FC<CommandCardProps> = ({
       </Animated.View>
     </Pressable>
   );
-};
+});
+
+CommandCard.displayName = 'CommandCard';
 
 const styles = StyleSheet.create({
   cardContainer: {

@@ -21,20 +21,18 @@ import { triggerHaptic } from '../../src/utils/helpers';
 
 export default function SettingsScreen() {
   const theme = useTheme();
-  const {
-    customCommands,
-    addCustomCommand,
-    removeCustomCommand,
-    disabledCategories,
-    toggleCategory,
-    themeMode,
-    setThemeMode,
-    soundEnabled,
-    setSoundEnabled,
-    exportData,
-    importData,
-    clearAllData,
-  } = useAppStore();
+  const customCommands = useAppStore(state => state.customCommands);
+  const addCustomCommand = useAppStore(state => state.addCustomCommand);
+  const removeCustomCommand = useAppStore(state => state.removeCustomCommand);
+  const disabledCategories = useAppStore(state => state.disabledCategories);
+  const toggleCategory = useAppStore(state => state.toggleCategory);
+  const themeMode = useAppStore(state => state.themeMode);
+  const setThemeMode = useAppStore(state => state.setThemeMode);
+  const soundEnabled = useAppStore(state => state.soundEnabled);
+  const setSoundEnabled = useAppStore(state => state.setSoundEnabled);
+  const exportData = useAppStore(state => state.exportData);
+  const importData = useAppStore(state => state.importData);
+  const clearAllData = useAppStore(state => state.clearAllData);
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Category>('Romantic');

@@ -30,6 +30,9 @@ export const Timer: React.FC<TimerProps> = ({ visible, onClose, initialMinutes =
   
   const pulseAnim = useSharedValue(1);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const totalSecondsRef = useRef(0);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
 
   useEffect(() => {
     if (visible) {
@@ -51,34 +54,38 @@ export const Timer: React.FC<TimerProps> = ({ visible, onClose, initialMinutes =
         false
       );
 
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      
       intervalRef.current = setInterval(() => {
-        setSeconds(s => {
-          if (s === 0) {
-            setMinutes(m => {
-              if (m === 0) {
-                setTimeout(() => handleStop(), 0);
+        setSeconds(prevSec => {
+          if (prevSec === 0) {
+            setMinutes(prevMin => {
+              if (prevMin === 0) {
+                setIsRunning(false);
+                setIsPaused(false);
+                setTimeout(() => {
+                  Alert.alert('Time\'s Up!', 'Your activity time is complete!', [{ text: 'OK', style: 'default' }]);
+                }, 0);
                 return 0;
               }
-              return m - 1;
+              return prevMin - 1;
             });
             return 59;
           }
-          return s - 1;
+          return prevSec - 1;
         });
       }, 1000);
     } else {
       pulseAnim.value = 1;
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
     }
 
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
+        intervalRef.current = null;
       }
     };
-  }, [isRunning, isPaused, handleStop]);
+  }, [isRunning, isPaused]);
 
   const handleStart = useCallback(() => {
     setIsRunning(true);
@@ -101,22 +108,22 @@ export const Timer: React.FC<TimerProps> = ({ visible, onClose, initialMinutes =
     setIsPaused(false);
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
+      intervalRef.current = null;
     }
-    
-    // Show completion alert
-    Alert.alert(
-      '⏱️ Time\'s Up!',
-      'Your activity time is complete!',
-      [{ text: 'OK', style: 'default' }]
-    );
+    Alert.alert('Time\'s Up!', 'Your activity time is complete!', [{ text: 'OK', style: 'default' }]);
   }, []);
 
   const handleReset = useCallback(() => {
-    handleStop();
+    setIsRunning(false);
+    setIsPaused(false);
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
     setMinutes(initialMinutes);
     setSeconds(0);
     triggerHaptic('light');
-  }, [initialMinutes, handleStop]);
+  }, [initialMinutes]);
 
   const handlePresetSelect = useCallback((value: number) => {
     setMinutes(value);

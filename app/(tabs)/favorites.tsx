@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, FlatList, Pressable, Alert } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
@@ -65,7 +65,7 @@ export default function FavoritesScreen() {
     <FavoriteItem item={item} theme={theme} onRemove={handleRemove} onShare={handleShare} />
   ), [theme, handleRemove, handleShare]);
 
-  const renderEmpty = useMemo(() => () => (
+  const renderEmpty = useCallback(() => (
     <View style={styles.emptyContainer}>
       <Feather name="heart" size={64} color={theme.textSecondary} />
       <Text style={[styles.emptyTitle, { color: theme.text }]}>No favorites yet</Text>
@@ -79,7 +79,7 @@ export default function FavoritesScreen() {
         data={favorites}
         keyExtractor={(item) => item}
         renderItem={renderItem}
-        ListEmptyComponent={renderEmpty()}
+        ListEmptyComponent={renderEmpty}
         contentContainerStyle={[styles.listContent, favorites.length === 0 && styles.emptyList]}
         showsVerticalScrollIndicator={false}
       />

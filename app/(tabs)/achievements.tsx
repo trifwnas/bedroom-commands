@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, Pressable, Modal } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Animated, { 
@@ -18,25 +18,26 @@ import { triggerHaptic } from '../../src/utils/helpers';
 
 export default function AchievementsScreen() {
   const theme = useTheme();
-  const { 
-    statistics, 
-    unlockedAchievements, 
-    getUnlockedAchievements,
-    newAchievements,
-    clearNewAchievements,
-    soundEnabled,
-  } = useAppStore();
+  const statistics = useAppStore(state => state.statistics);
+  const unlockedAchievements = useAppStore(state => state.unlockedAchievements);
+  const newAchievements = useAppStore(state => state.newAchievements);
+  const clearNewAchievements = useAppStore(state => state.clearNewAchievements);
+  const soundEnabled = useAppStore(state => state.soundEnabled);
 
-  const unlockedIds = getUnlockedAchievements().map(a => a.achievementId);
+  const unlockedIds = useMemo(
+    () => unlockedAchievements.map(a => a.achievementId),
+    [unlockedAchievements]
+  );
 
   useEffect(() => {
     if (newAchievements.length > 0 && soundEnabled) {
       triggerHaptic('success');
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         clearNewAchievements();
       }, 3000);
+      return () => clearTimeout(timer);
     }
-  }, [newAchievements]);
+  }, [newAchievements, soundEnabled, clearNewAchievements]);
 
   const renderAchievement = (achievement: typeof ACHIEVEMENTS[0]) => {
     const isUnlocked = unlockedIds.includes(achievement.id);

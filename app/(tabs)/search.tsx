@@ -70,9 +70,9 @@ export default function SearchScreen() {
     shareCommand(command, category);
   }, []);
 
-  const getCategoryInfo = (categoryId: string) => {
+  const getCategoryInfo = useCallback((categoryId: string) => {
     return CATEGORIES.find(c => c.id === categoryId);
-  };
+  }, []);
 
   const renderItem = ({ item }: { item: { text: string; category: Category } }) => {
     const category = getCategoryInfo(item.category);

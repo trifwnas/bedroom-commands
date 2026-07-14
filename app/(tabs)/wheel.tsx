@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, Pressable, Dimensions } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Animated, {
@@ -7,14 +7,11 @@ import Animated, {
   withTiming,
   withSpring,
   runOnJS,
-  interpolate,
-  Extrapolation,
 } from 'react-native-reanimated';
-import { LinearGradient } from 'expo-linear-gradient';
 
 import { useTheme } from '../../src/hooks/useTheme';
 import { useAppStore } from '../../src/store/useAppStore';
-import { CATEGORIES, Category, CategoryInfo } from '../../src/types';
+import { CATEGORIES, CategoryInfo } from '../../src/types';
 import { COMMANDS } from '../../src/data/commands';
 import { triggerHaptic } from '../../src/utils/helpers';
 import { ActionButton } from '../../src/components/ActionButton';
@@ -23,23 +20,15 @@ const { width } = Dimensions.get('window');
 const WHEEL_SIZE = width - 80;
 const SEGMENTS = 5;
 
-interface WheelSegment {
-  category: CategoryInfo;
-  startAngle: number;
-  endAngle: number;
-}
-
 export default function WheelScreen() {
   const theme = useTheme();
-  const { 
-    favorites, 
-    addFavorite, 
-    removeFavorite, 
-    addToHistory, 
-    disabledCategories,
-    soundEnabled,
-    checkAndUnlockAchievements,
-  } = useAppStore();
+  const favorites = useAppStore(state => state.favorites);
+  const addFavorite = useAppStore(state => state.addFavorite);
+  const removeFavorite = useAppStore(state => state.removeFavorite);
+  const addToHistory = useAppStore(state => state.addToHistory);
+  const disabledCategories = useAppStore(state => state.disabledCategories);
+  const soundEnabled = useAppStore(state => state.soundEnabled);
+  const checkAndUnlockAchievements = useAppStore(state => state.checkAndUnlockAchievements);
 
   const [currentCommand, setCurrentCommand] = useState<string>('');
   const [currentCategory, setCurrentCategory] = useState<CategoryInfo | null>(null);
@@ -49,22 +38,44 @@ export default function WheelScreen() {
   const rotation = useSharedValue(0);
   const scale = useSharedValue(1);
 
-  const enabledCategories = CATEGORIES.filter(cat => !disabledCategories.includes(cat.id));
-  const segments: WheelSegment[] = enabledCategories.map((cat, index) => ({
-    category: cat,
-    startAngle: (index * 360) / SEGMENTS,
-    endAngle: ((index + 1) * 360) / SEGMENTS,
-  }));
+  const enabledCategories = useMemo(
+    () => CATEGORIES.filter(cat => !disabledCategories.includes(cat.id)),
+    [disabledCategories]
+  );
+
+  const segments = useMemo(
+    () => enabledCategories.map((cat, index) => ({
+      category: cat,
+      startAngle: (index * 360) / SEGMENTS,
+      endAngle: ((index + 1) * 360) / SEGMENTS,
+    })),
+    [enabledCategories]
+  );
 
   const getRandomCategory = useCallback((): CategoryInfo => {
     const randomIndex = Math.floor(Math.random() * enabledCategories.length);
     return enabledCategories[randomIndex];
   }, [enabledCategories]);
 
-  const getRandomCommand = useCallback((category: Category): string => {
-    const commands = COMMANDS[category] || [];
+  const getRandomCommand = useCallback((category: CategoryInfo): string => {
+    const commands = COMMANDS[category.id] || [];
     return commands[Math.floor(Math.random() * commands.length)];
   }, []);
+
+  const handleSpinComplete = useCallback((category: CategoryInfo) => {
+    const command = getRandomCommand(category);
+    setCurrentCommand(command);
+    setCurrentCategory(category);
+    setShowResult(true);
+    addToHistory(command);
+    checkAndUnlockAchievements();
+
+    if (soundEnabled) {
+      triggerHaptic('success');
+    }
+
+    setIsSpinning(false);
+  }, [getRandomCommand, addToHistory, checkAndUnlockAchievements, soundEnabled]);
 
   const spinWheel = useCallback(() => {
     if (isSpinning) return;
@@ -96,22 +107,7 @@ export default function WheelScreen() {
         }
       }
     );
-  }, [isSpinning, getRandomCategory, enabledCategories, soundEnabled, rotation, scale]);
-
-  const handleSpinComplete = useCallback((category: CategoryInfo) => {
-    const command = getRandomCommand(category.id);
-    setCurrentCommand(command);
-    setCurrentCategory(category);
-    setShowResult(true);
-    addToHistory(command);
-    checkAndUnlockAchievements();
-
-    if (soundEnabled) {
-      triggerHaptic('success');
-    }
-
-    setIsSpinning(false);
-  }, [getRandomCommand, addToHistory, checkAndUnlockAchievements, soundEnabled]);
+  }, [isSpinning, getRandomCategory, enabledCategories, soundEnabled, rotation, scale, handleSpinComplete]);
 
   const handleFavoriteToggle = useCallback(() => {
     if (!currentCommand) return;
@@ -134,11 +130,10 @@ export default function WheelScreen() {
     ],
   }));
 
-  const pointerRotation = useAnimatedStyle(() => ({
-    transform: [{ rotate: `${rotation.value % 360}deg` }],
-  }));
-
-  const isFavorite = currentCommand ? favorites.includes(currentCommand) : false;
+  const isFavorite = useMemo(
+    () => currentCommand ? favorites.includes(currentCommand) : false,
+    [currentCommand, favorites]
+  );
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
@@ -152,7 +147,7 @@ export default function WheelScreen() {
       <View style={styles.wheelContainer}>
         <View style={styles.pointer} />
         <Animated.View style={[styles.wheel, wheelAnimatedStyle]}>
-          {segments.map((segment, index) => {
+          {segments.map((segment) => {
             const angle = segment.startAngle + (segment.endAngle - segment.startAngle) / 2;
             return (
               <View
@@ -179,10 +174,10 @@ export default function WheelScreen() {
         </Animated.View>
       </View>
 
-      {showResult && currentCommand && (
+      {showResult && currentCommand && currentCategory && (
         <View style={styles.resultContainer}>
-          <View style={[styles.resultCard, { backgroundColor: currentCategory?.color }]}>
-            <Text style={styles.resultEmoji}>{currentCategory?.emoji}</Text>
+          <View style={[styles.resultCard, { backgroundColor: currentCategory.color }]}>
+            <Text style={styles.resultEmoji}>{currentCategory.emoji}</Text>
             <Text style={styles.resultText}>{currentCommand}</Text>
             <View style={styles.resultActions}>
               <Pressable onPress={handleFavoriteToggle} style={styles.resultButton}>
