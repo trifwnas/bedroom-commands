@@ -12,9 +12,7 @@ export function shareCommand(command: string, category: string): void {
   if (navigator.share) {
     navigator.share({ title: 'Bedroom Commands', text }).catch(() => {});
   } else if (navigator.clipboard) {
-    navigator.clipboard.writeText(text).then(() => {
-      alert('Copied to clipboard!');
-    });
+    navigator.clipboard.writeText(text).catch(() => {});
   }
 }
 

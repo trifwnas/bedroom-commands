@@ -20,12 +20,13 @@ export default function AchievementsPage() {
   useEffect(() => {
     if (newAchievements.length > 0 && soundEnabled) {
       triggerHaptic('success');
-      const t = setTimeout(clearNewAchievements, 3000);
-      return () => clearTimeout(t);
     }
-  }, [newAchievements, soundEnabled, clearNewAchievements]);
+  }, [newAchievements, soundEnabled]);
 
   const total = unlockedIds.length;
+  const currentAchievement = newAchievements.length > 0
+    ? ACHIEVEMENTS.find(x => x.id === newAchievements[0]?.achievementId)
+    : null;
 
   return (
     <div className="flex-1 overflow-auto p-5 pb-24 scrollbar-thin">
@@ -76,9 +77,8 @@ export default function AchievementsPage() {
         })}
       </div>
 
-      {/* Achievement unlocked popup */}
       <AnimatePresence>
-        {newAchievements.length > 0 && (
+        {currentAchievement && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-6"
             onClick={clearNewAchievements}>
@@ -86,17 +86,14 @@ export default function AchievementsPage() {
               className="bg-[var(--surface)] rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl"
               onClick={e => e.stopPropagation()}>
               <p className="text-2xl font-bold mb-4">Achievement Unlocked!</p>
-              {(() => {
-                const a = ACHIEVEMENTS.find(x => x.id === newAchievements[0]?.achievementId);
-                if (!a) return null;
-                return (
-                  <div className="bg-[var(--primary)]/10 rounded-2xl p-5 mb-5">
-                    <span className="text-4xl">{a.icon}</span>
-                    <p className="text-lg font-bold text-[var(--text)] mt-2">{a.title}</p>
-                    <p className="text-sm text-[var(--text-sec)] mt-1">{a.description}</p>
-                  </div>
-                );
-              })()}
+              <div className="bg-[var(--primary)]/10 rounded-2xl p-5 mb-5">
+                <span className="text-4xl">{currentAchievement.icon}</span>
+                <p className="text-lg font-bold text-[var(--text)] mt-2">{currentAchievement.title}</p>
+                <p className="text-sm text-[var(--text-sec)] mt-1">{currentAchievement.description}</p>
+              </div>
+              {newAchievements.length > 1 && (
+                <p className="text-xs text-[var(--text-sec)] mb-3">+{newAchievements.length - 1} more achievements</p>
+              )}
               <button onClick={clearNewAchievements}
                 className="w-full py-3.5 rounded-xl bg-[var(--primary)] text-white font-bold active:scale-95 transition">
                 Awesome!

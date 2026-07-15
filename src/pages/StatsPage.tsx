@@ -1,11 +1,12 @@
-import { Zap, Heart, Award, Calendar, BarChart3 } from 'lucide-react';
+import { Zap, Heart, Award, Calendar, BarChart3, Target } from 'lucide-react';
 import { useStore } from '../store/useStore';
-import { CATEGORIES } from '../types';
+import { CATEGORIES, MOODS } from '../types';
 
 export default function StatsPage() {
   const statistics = useStore(s => s.statistics);
   const favorites = useStore(s => s.favorites);
   const history = useStore(s => s.history);
+  const completedCommands = useStore(s => s.completedCommands);
 
   const total = Object.values(statistics.categoryDraws).reduce((a, b) => a + b, 0);
 
@@ -20,13 +21,15 @@ export default function StatsPage() {
     { icon: Heart, color: '#ff6b6b', value: favorites.length, label: 'Favorites' },
     { icon: Award, color: '#6bcb77', value: statistics.completedChallenges, label: 'Challenges' },
     { icon: Calendar, color: '#ffd93d', value: statistics.streak, label: 'Day Streak' },
+    { icon: Target, color: '#4d96ff', value: completedCommands.length, label: 'Completed' },
   ];
+
+  const moodTotal = Object.values(statistics.moodDraws).reduce((a, b) => a + b, 0);
 
   return (
     <div className="flex-1 overflow-auto p-5 pb-24 scrollbar-thin">
       <h1 className="text-2xl font-extrabold text-[var(--text)] mb-5">Your Statistics</h1>
 
-      {/* Stat cards */}
       <div className="grid grid-cols-2 gap-3 mb-5">
         {stats.map(s => (
           <div key={s.label} className="bg-[var(--surface)] rounded-2xl p-4 text-center border border-[var(--border)]">
@@ -39,6 +42,24 @@ export default function StatsPage() {
           </div>
         ))}
       </div>
+
+      {/* Completion progress */}
+      {completedCommands.length > 0 && (
+        <div className="bg-[var(--surface)] rounded-2xl p-5 mb-5 border border-[var(--border)]">
+          <h2 className="text-base font-semibold text-[var(--text)] mb-3">Completion</h2>
+          <div className="flex items-center gap-3 mb-2">
+            <span className="text-3xl font-bold text-[var(--primary)]">{completedCommands.length}</span>
+            <span className="text-sm text-[var(--text-sec)]">of 395 commands completed</span>
+          </div>
+          <div className="w-full h-3 bg-[var(--border)] rounded-full overflow-hidden">
+            <div className="h-full rounded-full bg-[var(--primary)] transition-all duration-500"
+              style={{ width: `${Math.min((completedCommands.length / 395) * 100, 100)}%` }} />
+          </div>
+          <p className="text-xs text-[var(--text-sec)] mt-2">
+            {Math.round((completedCommands.length / 395) * 100)}% complete
+          </p>
+        </div>
+      )}
 
       {/* Category breakdown */}
       <div className="bg-[var(--surface)] rounded-2xl p-5 mb-5 border border-[var(--border)]">
@@ -58,6 +79,28 @@ export default function StatsPage() {
           );
         })}
       </div>
+
+      {/* Mood breakdown */}
+      {moodTotal > 0 && (
+        <div className="bg-[var(--surface)] rounded-2xl p-5 mb-5 border border-[var(--border)]">
+          <h2 className="text-base font-semibold text-[var(--text)] mb-4">Mood Breakdown</h2>
+          {MOODS.map(mood => {
+            const count = statistics.moodDraws[mood.id] || 0;
+            const pct = Math.round((count / moodTotal) * 100);
+            return (
+              <div key={mood.id} className="flex items-center gap-3 mb-3 last:mb-0">
+                <span className="text-base w-6">{mood.emoji}</span>
+                <span className="text-sm text-[var(--text)] w-16 font-medium">{mood.label}</span>
+                <span className="text-xs text-[var(--text-sec)] w-6 text-right">{count}</span>
+                <div className="flex-1 h-2 bg-[var(--border)] rounded-full overflow-hidden">
+                  <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, background: mood.color }} />
+                </div>
+                <span className="text-xs text-[var(--text-sec)] w-9 text-right">{pct}%</span>
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       {mostDrawn.count > 0 && (
         <div className="bg-[var(--surface)] rounded-2xl p-5 text-center mb-5 border border-[var(--border)]">

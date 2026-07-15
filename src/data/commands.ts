@@ -1,6 +1,5 @@
-import type { Category } from '../types';
-import type { CategoryInfo } from '../types';
-import { CATEGORIES } from '../types';
+import type { Category, Mood, CategoryInfo } from '../types';
+import { CATEGORIES, CATEGORY_MAP } from '../types';
 
 export const COMMANDS: Record<Category, string[]> = {
   Romantic: [
@@ -236,7 +235,7 @@ export const COMMANDS: Record<Category, string[]> = {
     "Do a boudoir photo shoot for each other",
     "Create a 'yes/no/maybe' list of desires",
     "Practice the art of seduction with a countdown",
-    "Try outling each other's bodies with fingers",
+    "Try outlining each other's bodies with fingers",
     "Exchange erotic massages",
     "Play 'I dare you' with romantic dares",
     "Create a 'pleasure map' of each other's bodies",
@@ -394,7 +393,6 @@ export const COMMANDS: Record<Category, string[]> = {
     "Practice loving-kindness meditation",
     "Have a quiet evening in with candles",
     "Do a body scan meditation together",
-    "Take a scenic train ride",
     "Enjoy a slow cup of tea together",
     "Practice gentle yoga poses together",
     "Listen to ambient sounds of nature",
@@ -402,7 +400,6 @@ export const COMMANDS: Record<Category, string[]> = {
     "Do a gentle hand massage",
     "Create a calm corner in your home",
     "Practice mirror meditation together",
-    "Have a candlelit dinner at home",
     "Take a moonlit walk",
     "Do a gentle neck and shoulder massage",
     "Practice visualization of a peaceful place",
@@ -424,3 +421,62 @@ export const COMMAND_TO_CATEGORY = new Map<string, CategoryInfo>();
 CATEGORIES.forEach(cat => {
   COMMANDS[cat.id]?.forEach(cmd => COMMAND_TO_CATEGORY.set(cmd, cat));
 });
+
+export const COMMAND_MOODS = new Map<string, Mood>([
+  ["Slow dance together to your favorite song", "sweet"],
+  ["Watch the sunrise or sunset together", "sweet"],
+  ["Build a blanket fort and watch movies inside", "sweet"],
+  ["Give your partner a massage", "flirty"],
+  ["Have a pillow fight", "playful"],
+  ["Play truth or dare", "playful"],
+  ["Do karaoke together", "playful"],
+  ["Create a secret handshake together", "sweet"],
+  ["Build Lego creations together", "sweet"],
+  ["Try a new position", "wild"],
+  ["Use a blindfold", "spicy"],
+  ["Role-play your fantasies", "wild"],
+  ["Take a bubble bath with scented oils", "flirty"],
+  ["Play a game of strip poker", "wild"],
+  ["Explore tantra or tantric exercises", "wild"],
+  ["Go for a midnight stroll", "sweet"],
+  ["Take a spontaneous road trip", "flirty"],
+  ["Go on a hot air balloon ride", "flirty"],
+  ["Try indoor skydiving or bungee jumping", "wild"],
+  ["Take a bubble bath together", "sweet"],
+  ["Have a movie marathon in bed", "sweet"],
+  ["Practice deep breathing exercises together", "sweet"],
+  ["Enjoy a calming meditation session", "sweet"],
+  ["Read a book to each other", "sweet"],
+  ["Take a nap together in a cozy spot", "sweet"],
+  ["Make a cozy blanket fort", "sweet"],
+  ["Have a slow dance in the living room", "sweet"],
+  ["Practice loving-kindness meditation", "sweet"],
+  ["Have a quiet evening in with candles", "sweet"],
+  ["Create a romantic breakfast in bed", "sweet"],
+  ["Write love letters to your future selves", "sweet"],
+  ["Have a themed costume night", "playful"],
+  ["Play hide and seek in the dark", "playful"],
+  ["Have a lip-sync battle", "playful"],
+  ["Make up funny songs about each other", "playful"],
+  ["Have a staring contest", "playful"],
+  ["Do the cinnamon challenge together", "playful"],
+  ["Write down a secret fantasy and share it", "spicy"],
+  ["Create a sexy bucket list", "spicy"],
+  ["Experiment with ice cubes or hot wax", "wild"],
+  ["Explore sensory deprivation", "wild"],
+  ["Try 10 minutes of continuous kissing", "flirty"],
+  ["Create a 'yes/no/maybe' list of desires", "wild"],
+  ["Practice tantric breathing techniques", "wild"],
+  ["Have a 'naughty' pillow talk session", "wild"],
+  ["Try a new place in the house", "wild"],
+  ["Have a candlelit dinner at home", "sweet"],
+  ["Stargaze and name a star together", "sweet"],
+  ["Create a memory jar together and fill it with notes", "sweet"],
+  ["Write love letters for a future anniversary", "sweet"],
+  ["Exchange handwritten love notes", "sweet"],
+  ["Have a couples' game night with romantic prizes", "flirty"],
+]);
+
+export function getCommandMood(command: string, category: Category): Mood {
+  return COMMAND_MOODS.get(command) || CATEGORY_MAP[category].defaultMood;
+}

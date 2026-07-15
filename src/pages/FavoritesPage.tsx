@@ -3,18 +3,25 @@ import { Heart, Share2, Trash2 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { COMMAND_TO_CATEGORY } from '../data/commands';
 import { shareCommand, triggerHaptic } from '../utils';
+import { useToast } from '../components/Toast';
+import { useConfirm } from '../components/Toast';
 
 export default function FavoritesPage() {
   const favorites = useStore(s => s.favorites);
   const removeFavorite = useStore(s => s.removeFavorite);
+  const completedCommands = useStore(s => s.completedCommands);
   const soundEnabled = useStore(s => s.soundEnabled);
+  const { showToast } = useToast();
+  const { confirm } = useConfirm();
 
-  const handleRemove = useCallback((cmd: string) => {
-    if (confirm('Remove from favorites?')) {
+  const handleRemove = useCallback(async (cmd: string) => {
+    const ok = await confirm({ title: 'Remove Favorite', message: 'Remove this from your favorites?', danger: true, confirmLabel: 'Remove' });
+    if (ok) {
       removeFavorite(cmd);
       if (soundEnabled) triggerHaptic('light');
+      showToast('Removed from favorites', 'info');
     }
-  }, [removeFavorite, soundEnabled]);
+  }, [removeFavorite, soundEnabled, showToast, confirm]);
 
   if (favorites.length === 0) {
     return (
@@ -34,17 +41,21 @@ export default function FavoritesPage() {
       <div className="space-y-3">
         {favorites.map(cmd => {
           const cat = COMMAND_TO_CATEGORY.get(cmd);
+          const done = completedCommands.includes(cmd);
           return (
             <div key={cmd} className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden flex">
-              {cat && (
-                <div className="w-1.5 shrink-0" style={{ background: cat.color }} />
-              )}
+              {cat && <div className="w-1.5 shrink-0" style={{ background: cat.color }} />}
               <div className="flex-1 p-4">
                 {cat && (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold text-white mb-2.5"
-                    style={{ background: cat.color }}>
-                    {cat.emoji} {cat.name}
-                  </span>
+                  <div className="flex items-center gap-2 mb-2.5">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold text-white"
+                      style={{ background: cat.color }}>
+                      {cat.emoji} {cat.name}
+                    </span>
+                    {done && (
+                      <span className="text-xs px-2 py-1 rounded-lg bg-green-500/10 text-green-600 font-semibold">Done ✓</span>
+                    )}
+                  </div>
                 )}
                 <p className="text-[var(--text)] font-medium leading-relaxed mb-3">{cmd}</p>
                 <div className="flex justify-end gap-2">

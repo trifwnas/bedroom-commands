@@ -5,6 +5,7 @@ import { useStore } from '../store/useStore';
 import { CATEGORIES } from '../types';
 import { shareCommand, triggerHaptic } from '../utils';
 import { Timer } from '../components/Timer';
+import { useToast } from '../components/Toast';
 
 export default function DailyPage() {
   const dailyChallenge = useStore(s => s.dailyChallenge);
@@ -16,6 +17,7 @@ export default function DailyPage() {
   const removeFavorite = useStore(s => s.removeFavorite);
   const soundEnabled = useStore(s => s.soundEnabled);
   const completedChallenges = useStore(s => s.statistics.completedChallenges);
+  const { showToast } = useToast();
 
   const [showTimer, setShowTimer] = useState(false);
 
@@ -56,7 +58,11 @@ export default function DailyPage() {
         <div className="text-xs font-semibold uppercase tracking-widest opacity-80 mb-4">{category.name}</div>
         <p className="text-xl font-bold leading-relaxed mb-4">{dailyChallenge.command}</p>
         <div className="flex justify-center gap-3">
-          <button onClick={() => { isFav ? removeFavorite(dailyChallenge.command) : addFavorite(dailyChallenge.command); if (soundEnabled) triggerHaptic('light'); }}
+          <button onClick={() => {
+            isFav ? removeFavorite(dailyChallenge.command) : addFavorite(dailyChallenge.command);
+            if (soundEnabled) triggerHaptic('light');
+            showToast(isFav ? 'Removed from favorites' : 'Added to favorites', 'success');
+          }}
             className="p-3 rounded-full bg-white/20 hover:bg-white/30 transition active:scale-90">
             <Heart size={22} fill={isFav ? 'white' : 'none'} className="text-white" />
           </button>
@@ -68,7 +74,7 @@ export default function DailyPage() {
       </motion.div>
 
       {!dailyChallenge.completed && (
-        <button onClick={() => { completeDailyChallenge(); if (soundEnabled) triggerHaptic('success'); }}
+        <button onClick={() => { completeDailyChallenge(); if (soundEnabled) triggerHaptic('success'); showToast('Challenge completed!', 'success'); }}
           className="w-full py-4 rounded-2xl bg-[var(--success)] text-white text-lg font-bold flex items-center justify-center gap-2 mb-5 active:scale-95 transition shadow-lg shadow-[var(--success)]/30 touch-target">
           <Check size={22} /> Mark as Complete
         </button>
@@ -79,7 +85,7 @@ export default function DailyPage() {
           className="flex-1 py-3.5 rounded-xl bg-[var(--surface)] text-[var(--text)] border border-[var(--border)] font-semibold flex items-center justify-center gap-2 text-sm active:scale-95 transition touch-target">
           <Clock size={16} /> Start Timer
         </button>
-        <button onClick={() => { addToHistory(dailyChallenge.command); if (soundEnabled) triggerHaptic('light'); }}
+        <button onClick={() => { addToHistory(dailyChallenge.command); if (soundEnabled) triggerHaptic('light'); showToast('Added to history', 'info'); }}
           className="flex-1 py-3.5 rounded-xl bg-[var(--surface)] text-[var(--text)] border border-[var(--border)] font-semibold flex items-center justify-center gap-2 text-sm active:scale-95 transition touch-target">
           <PlusCircle size={16} /> Add to History
         </button>

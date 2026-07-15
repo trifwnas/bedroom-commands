@@ -1,10 +1,22 @@
 import { Clock, Trash2 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { COMMAND_TO_CATEGORY } from '../data/commands';
+import { useConfirm } from '../components/Toast';
+import { useToast } from '../components/Toast';
 
 export default function HistoryPage() {
   const history = useStore(s => s.history);
   const clearHistory = useStore(s => s.clearHistory);
+  const { confirm } = useConfirm();
+  const { showToast } = useToast();
+
+  const handleClear = async () => {
+    const ok = await confirm({ title: 'Clear History', message: 'This will remove all your draw history. This cannot be undone.', danger: true, confirmLabel: 'Clear' });
+    if (ok) {
+      clearHistory();
+      showToast('History cleared', 'info');
+    }
+  };
 
   if (history.length === 0) {
     return (
@@ -22,7 +34,7 @@ export default function HistoryPage() {
     <div className="flex-1 overflow-auto p-5 pb-24 scrollbar-thin">
       <div className="flex justify-between items-center mb-4">
         <p className="text-sm text-[var(--text-sec)]">{history.length} items</p>
-        <button onClick={() => { if (confirm('Clear all history?')) clearHistory(); }}
+        <button onClick={handleClear}
           className="flex items-center gap-1.5 text-sm text-red-500 font-medium hover:text-red-600 transition active:scale-95 touch-target">
           <Trash2 size={14} /> Clear
         </button>
@@ -39,7 +51,7 @@ export default function HistoryPage() {
                 </div>
               )}
               <div className="flex-1 min-w-0">
-                <p className="text-[var(--text)] font-medium leading-relaxed truncate">{cmd}</p>
+                <p className="text-[var(--text)] font-medium leading-relaxed">{cmd}</p>
                 {cat && <p className="text-xs text-[var(--text-sec)] mt-0.5">{cat.name}</p>}
               </div>
             </div>

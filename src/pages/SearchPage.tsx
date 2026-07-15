@@ -1,24 +1,27 @@
 import { useState, useMemo } from 'react';
 import { Search, Heart, Share2, X } from 'lucide-react';
 import { useStore } from '../store/useStore';
-import { COMMANDS } from '../data/commands';
+import { COMMANDS, getCommandMood } from '../data/commands';
 import type { Category } from '../types';
-import { CATEGORIES, CATEGORY_MAP } from '../types';
+import { CATEGORIES, CATEGORY_MAP, MOODS } from '../types';
 import { shareCommand, triggerHaptic } from '../utils';
+import { useToast } from '../components/Toast';
 
 export default function SearchPage() {
   const favorites = useStore(s => s.favorites);
   const addFavorite = useStore(s => s.addFavorite);
   const removeFavorite = useStore(s => s.removeFavorite);
+  const completedCommands = useStore(s => s.completedCommands);
   const soundEnabled = useStore(s => s.soundEnabled);
+  const { showToast } = useToast();
 
   const [query, setQuery] = useState('');
   const [filterCat, setFilterCat] = useState<Category | 'All'>('All');
 
   const allCommands = useMemo(() => {
-    const cmds: { text: string; category: Category }[] = [];
+    const cmds: { text: string; category: Category; mood: string }[] = [];
     (Object.keys(COMMANDS) as Category[]).forEach(cat => {
-      COMMANDS[cat].forEach(cmd => cmds.push({ text: cmd, category: cat }));
+      COMMANDS[cat].forEach(cmd => cmds.push({ text: cmd, category: cat, mood: getCommandMood(cmd, cat) }));
     });
     return cmds;
   }, []);
@@ -55,7 +58,6 @@ export default function SearchPage() {
         </p>
       </div>
 
-      {/* Filter chips */}
       <div className="flex gap-2 overflow-x-auto px-5 py-3 scrollbar-none">
         {['All', ...CATEGORIES.map(c => c.id)].map(cat => (
           <button key={cat} onClick={() => setFilterCat(cat as any)}
@@ -69,7 +71,6 @@ export default function SearchPage() {
         ))}
       </div>
 
-      {/* Results */}
       <div className="flex-1 overflow-auto px-5 pb-5 scrollbar-thin">
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
@@ -82,26 +83,36 @@ export default function SearchPage() {
             {filtered.map(cmd => {
               const cat = CATEGORY_MAP[cmd.category];
               const isFav = favorites.includes(cmd.text);
+              const isDone = completedCommands.includes(cmd.text);
               return (
                 <div key={cmd.text} className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden flex">
-                  {/* Category color bar */}
-                  {cat && (
-                    <div className="w-1.5 shrink-0" style={{ background: cat.color }} />
-                  )}
+                  {cat && <div className="w-1.5 shrink-0" style={{ background: cat.color }} />}
                   <div className="flex-1 p-4">
-                    {cat && (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold text-white mb-2.5"
-                        style={{ background: cat.color }}>
-                        {cat.emoji} {cat.name}
+                    <div className="flex items-center gap-2 mb-2 flex-wrap">
+                      {cat && (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold text-white"
+                          style={{ background: cat.color }}>
+                          {cat.emoji} {cat.name}
+                        </span>
+                      )}
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--bg)] text-[var(--text-sec)] font-medium">
+                        {MOODS.find(m => m.id === cmd.mood)?.emoji} {MOODS.find(m => m.id === cmd.mood)?.label}
                       </span>
-                    )}
+                      {isDone && (
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/10 text-green-600 font-semibold">Done ✓</span>
+                      )}
+                    </div>
                     <p className="text-[var(--text)] font-medium leading-relaxed mb-3">{cmd.text}</p>
                     <div className="flex justify-end gap-2">
                       <button onClick={() => shareCommand(cmd.text, cmd.category)}
                         className="p-2.5 rounded-xl bg-[var(--bg)] hover:bg-[var(--border)] transition active:scale-90">
                         <Share2 size={16} className="text-[var(--text)]" />
                       </button>
-                      <button onClick={() => { isFav ? removeFavorite(cmd.text) : addFavorite(cmd.text); if (soundEnabled) triggerHaptic('light'); }}
+                      <button onClick={() => {
+                        isFav ? removeFavorite(cmd.text) : addFavorite(cmd.text);
+                        if (soundEnabled) triggerHaptic('light');
+                        showToast(isFav ? 'Removed from favorites' : 'Added to favorites', 'success');
+                      }}
                         className="p-2.5 rounded-xl bg-[var(--bg)] hover:bg-[var(--border)] transition active:scale-90">
                         <Heart size={16} className={isFav ? 'text-[var(--primary)]' : 'text-[var(--text-sec)]'} fill={isFav ? 'currentColor' : 'none'} />
                       </button>

@@ -1,7 +1,8 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, Zap } from 'lucide-react';
 import { useStore } from '../store/useStore';
+import { useToast } from '../components/Toast';
 import type { CategoryInfo } from '../types';
 import { CATEGORIES } from '../types';
 import { COMMANDS } from '../data/commands';
@@ -31,12 +32,16 @@ export default function WheelPage() {
   const disabledCategories = useStore(s => s.disabledCategories);
   const soundEnabled = useStore(s => s.soundEnabled);
   const checkAndUnlockAchievements = useStore(s => s.checkAndUnlockAchievements);
+  const { showToast } = useToast();
 
   const [command, setCommand] = useState('');
   const [category, setCategory] = useState<CategoryInfo | null>(null);
   const [spinning, setSpinning] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [rotation, setRotation] = useState(0);
+  const spinTimerRef = useRef<number | null>(null);
+
+  useEffect(() => () => { if (spinTimerRef.current) clearTimeout(spinTimerRef.current); }, []);
 
   const enabled = useMemo(
     () => CATEGORIES.filter(c => !disabledCategories.includes(c.id)),
@@ -67,7 +72,8 @@ export default function WheelPage() {
 
     setRotation(targetRot);
 
-    setTimeout(() => {
+    if (spinTimerRef.current) clearTimeout(spinTimerRef.current);
+    spinTimerRef.current = window.setTimeout(() => {
       const cmds = COMMANDS[target.id] || [];
       const cmd = cmds[Math.floor(Math.random() * cmds.length)];
       setCommand(cmd);
@@ -77,6 +83,7 @@ export default function WheelPage() {
       checkAndUnlockAchievements();
       if (soundEnabled) triggerHaptic('success');
       setSpinning(false);
+      spinTimerRef.current = null;
     }, 4000);
   }, [spinning, enabled, segments, rotation, soundEnabled, addToHistory, checkAndUnlockAchievements]);
 
@@ -89,21 +96,16 @@ export default function WheelPage() {
         <p className="text-sm text-[var(--text-sec)] mt-1">Spin to discover a new adventure!</p>
       </div>
 
-      {/* Wheel */}
       <div className="flex justify-center items-center py-6 relative">
-        {/* Pointer - proper triangle */}
         <div className="absolute top-4 z-20 drop-shadow-md">
           <svg width="28" height="24" viewBox="0 0 28 24">
             <polygon points="14,24 0,0 28,0" fill="var(--text)" />
           </svg>
         </div>
 
-        {/* Wheel container */}
         <div className="relative" style={{ width: WHEEL_SIZE, height: WHEEL_SIZE }}>
-          {/* SVG wheel with proper arcs */}
           <svg
-            width={WHEEL_SIZE}
-            height={WHEEL_SIZE}
+            width={WHEEL_SIZE} height={WHEEL_SIZE}
             viewBox={`0 0 ${WHEEL_SIZE} ${WHEEL_SIZE}`}
             className="rounded-full shadow-2xl"
             style={{
@@ -113,22 +115,14 @@ export default function WheelPage() {
           >
             {segments.map(({ cat, startAngle, endAngle }) => (
               <g key={cat.id}>
-                <path
-                  d={describeArc(CENTER, CENTER, RADIUS, startAngle, endAngle)}
-                  fill={cat.color}
-                  stroke="white"
-                  strokeWidth="2"
-                />
+                <path d={describeArc(CENTER, CENTER, RADIUS, startAngle, endAngle)}
+                  fill={cat.color} stroke="white" strokeWidth="2" />
               </g>
             ))}
-            {/* Center hub */}
             <circle cx={CENTER} cy={CENTER} r="30" fill="var(--primary)" stroke="white" strokeWidth="4" />
-            <text x={CENTER} y={CENTER + 1} textAnchor="middle" dominantBaseline="central" fontSize="20" fill="white">
-              💕
-            </text>
+            <text x={CENTER} y={CENTER + 1} textAnchor="middle" dominantBaseline="central" fontSize="20" fill="white">💕</text>
           </svg>
 
-          {/* Category labels overlay */}
           {segments.map(({ cat, midAngle }) => {
             const rad = ((midAngle - 90) * Math.PI) / 180;
             const labelR = RADIUS * 0.62;
@@ -136,10 +130,7 @@ export default function WheelPage() {
             const y = CENTER + labelR * Math.sin(rad);
             return (
               <div key={cat.id} className="absolute flex flex-col items-center pointer-events-none"
-                style={{
-                  left: x, top: y,
-                  transform: 'translate(-50%, -50%)',
-                }}>
+                style={{ left: x, top: y, transform: 'translate(-50%, -50%)' }}>
                 <span className="text-lg drop-shadow-sm">{cat.emoji}</span>
                 <span className="text-[8px] font-bold text-white drop-shadow-sm leading-tight">{cat.name}</span>
               </div>
@@ -148,7 +139,6 @@ export default function WheelPage() {
         </div>
       </div>
 
-      {/* Result */}
       {showResult && command && category && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="px-5 mb-4">
           <div className="rounded-2xl p-6 text-center text-white" style={{ background: category.color }}>
@@ -157,7 +147,11 @@ export default function WheelPage() {
             <p className="text-lg font-bold mt-2 leading-relaxed">{command}</p>
             <div className="flex justify-center gap-3 mt-4">
               <button
-                onClick={() => { isFav ? removeFavorite(command) : addFavorite(command); if (soundEnabled) triggerHaptic('light'); }}
+                onClick={() => {
+                  isFav ? removeFavorite(command) : addFavorite(command);
+                  if (soundEnabled) triggerHaptic('light');
+                  showToast(isFav ? 'Removed from favorites' : 'Added to favorites', 'success');
+                }}
                 className="p-3 rounded-full bg-white/20 hover:bg-white/30 transition active:scale-90">
                 <Heart size={22} fill={isFav ? 'white' : 'none'} className="text-white" />
               </button>
@@ -166,7 +160,6 @@ export default function WheelPage() {
         </motion.div>
       )}
 
-      {/* Spin button */}
       <div className="px-5">
         <button onClick={spin} disabled={spinning}
           className="w-full py-4 rounded-2xl bg-[var(--primary)] text-white text-lg font-bold flex items-center justify-center gap-2.5 shadow-lg shadow-[var(--primary)]/30 active:scale-95 transition disabled:opacity-40 touch-target">
