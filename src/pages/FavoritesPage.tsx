@@ -19,7 +19,9 @@ export default function FavoritesPage() {
   if (favorites.length === 0) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center px-10 text-center pb-24">
-        <Heart size={48} className="text-[var(--text-sec)] mb-4" />
+        <div className="w-16 h-16 rounded-full bg-[var(--bg)] flex items-center justify-center mb-4">
+          <Heart size={28} className="text-[var(--text-sec)]" />
+        </div>
         <p className="text-lg font-semibold text-[var(--text)]">No favorites yet</p>
         <p className="text-sm text-[var(--text-sec)] mt-1">Tap the heart icon on any command to save it here</p>
       </div>
@@ -27,28 +29,34 @@ export default function FavoritesPage() {
   }
 
   return (
-    <div className="flex-1 overflow-auto p-5 pb-24">
+    <div className="flex-1 overflow-auto p-5 pb-24 scrollbar-thin">
+      <p className="text-sm text-[var(--text-sec)] mb-3">{favorites.length} saved commands</p>
       <div className="space-y-3">
         {favorites.map(cmd => {
           const cat = COMMAND_TO_CATEGORY.get(cmd);
           return (
-            <div key={cmd} className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-4 shadow-sm">
+            <div key={cmd} className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden flex">
               {cat && (
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold text-white mb-2.5"
-                  style={{ background: cat.color }}>
-                  {cat.emoji} {cat.name}
-                </span>
+                <div className="w-1.5 shrink-0" style={{ background: cat.color }} />
               )}
-              <p className="text-[var(--text)] font-medium leading-relaxed mb-3">{cmd}</p>
-              <div className="flex justify-end gap-2">
-                <button onClick={() => shareCommand(cmd, cat?.name || 'Unknown')}
-                  className="p-2.5 rounded-xl bg-[var(--bg)] hover:bg-[var(--border)] transition">
-                  <Share2 size={16} className="text-[var(--text)]" />
-                </button>
-                <button onClick={() => handleRemove(cmd)}
-                  className="p-2.5 rounded-xl bg-[var(--bg)] hover:bg-red-50 transition">
-                  <Trash2 size={16} className="text-red-500" />
-                </button>
+              <div className="flex-1 p-4">
+                {cat && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold text-white mb-2.5"
+                    style={{ background: cat.color }}>
+                    {cat.emoji} {cat.name}
+                  </span>
+                )}
+                <p className="text-[var(--text)] font-medium leading-relaxed mb-3">{cmd}</p>
+                <div className="flex justify-end gap-2">
+                  <button onClick={() => shareCommand(cmd, cat?.name || 'Unknown')}
+                    className="p-2.5 rounded-xl bg-[var(--bg)] hover:bg-[var(--border)] transition active:scale-90">
+                    <Share2 size={16} className="text-[var(--text)]" />
+                  </button>
+                  <button onClick={() => handleRemove(cmd)}
+                    className="p-2.5 rounded-xl bg-[var(--bg)] hover:bg-red-50 transition active:scale-90">
+                    <Trash2 size={16} className="text-red-500" />
+                  </button>
+                </div>
               </div>
             </div>
           );

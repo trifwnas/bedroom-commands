@@ -28,8 +28,8 @@ export default function AchievementsPage() {
   const total = unlockedIds.length;
 
   return (
-    <div className="flex-1 overflow-auto p-5 pb-24">
-      <div className="bg-[var(--surface)] rounded-2xl p-5 text-center mb-6">
+    <div className="flex-1 overflow-auto p-5 pb-24 scrollbar-thin">
+      <div className="bg-[var(--surface)] rounded-2xl p-5 text-center mb-6 border border-[var(--border)]">
         <h2 className="text-xl font-bold text-[var(--text)] mb-2">Achievements</h2>
         <p className="text-sm text-[var(--text-sec)] mb-3">{total} / {ACHIEVEMENTS.length} unlocked</p>
         <div className="w-full h-2 bg-[var(--border)] rounded-full overflow-hidden">
@@ -48,11 +48,11 @@ export default function AchievementsPage() {
             <div key={a.id}
               className={`flex items-center gap-4 p-4 rounded-2xl border transition-all ${
                 unlocked
-                  ? 'bg-[var(--surface)] border-green-400'
+                  ? 'bg-[var(--surface)] border-green-400 shadow-sm'
                   : 'bg-[var(--surface)] border-[var(--border)]'
               }`}>
               <div className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl shrink-0 ${
-                unlocked ? 'bg-yellow-100' : 'bg-gray-100 opacity-40'
+                unlocked ? 'bg-yellow-100' : 'bg-[var(--bg)] opacity-50'
               }`}>
                 {a.icon}
               </div>
@@ -63,8 +63,8 @@ export default function AchievementsPage() {
                 <p className="text-xs text-[var(--text-sec)] mt-0.5">{a.description}</p>
                 {!unlocked && (
                   <>
-                    <div className="w-full h-1.5 bg-[var(--border)] rounded-full overflow-hidden mt-2">
-                      <div className="h-full rounded-full bg-[var(--primary)]" style={{ width: `${pct}%` }} />
+                    <div className="w-full h-2 bg-[var(--border)] rounded-full overflow-hidden mt-2">
+                      <div className="h-full rounded-full bg-[var(--primary)] transition-all duration-500" style={{ width: `${pct}%` }} />
                     </div>
                     <p className="text-[10px] text-[var(--text-sec)] mt-1">{progress} / {a.requirement}</p>
                   </>
@@ -83,9 +83,9 @@ export default function AchievementsPage() {
             className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-6"
             onClick={clearNewAchievements}>
             <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1 }} exit={{ scale: 0.8 }}
-              className="bg-[var(--surface)] rounded-3xl p-8 max-w-sm w-full text-center"
+              className="bg-[var(--surface)] rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl"
               onClick={e => e.stopPropagation()}>
-              <p className="text-2xl font-bold mb-4">🏆 Achievement Unlocked!</p>
+              <p className="text-2xl font-bold mb-4">Achievement Unlocked!</p>
               {(() => {
                 const a = ACHIEVEMENTS.find(x => x.id === newAchievements[0]?.achievementId);
                 if (!a) return null;
@@ -98,7 +98,7 @@ export default function AchievementsPage() {
                 );
               })()}
               <button onClick={clearNewAchievements}
-                className="w-full py-3.5 rounded-xl bg-[var(--primary)] text-white font-bold">
+                className="w-full py-3.5 rounded-xl bg-[var(--primary)] text-white font-bold active:scale-95 transition">
                 Awesome!
               </button>
             </motion.div>

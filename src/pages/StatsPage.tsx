@@ -23,13 +23,13 @@ export default function StatsPage() {
   ];
 
   return (
-    <div className="flex-1 overflow-auto p-5 pb-24">
+    <div className="flex-1 overflow-auto p-5 pb-24 scrollbar-thin">
       <h1 className="text-2xl font-extrabold text-[var(--text)] mb-5">Your Statistics</h1>
 
       {/* Stat cards */}
       <div className="grid grid-cols-2 gap-3 mb-5">
         {stats.map(s => (
-          <div key={s.label} className="bg-[var(--surface)] rounded-2xl p-4 text-center">
+          <div key={s.label} className="bg-[var(--surface)] rounded-2xl p-4 text-center border border-[var(--border)]">
             <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3"
               style={{ background: `${s.color}20` }}>
               <s.icon size={22} style={{ color: s.color }} />
@@ -41,7 +41,7 @@ export default function StatsPage() {
       </div>
 
       {/* Category breakdown */}
-      <div className="bg-[var(--surface)] rounded-2xl p-5 mb-5">
+      <div className="bg-[var(--surface)] rounded-2xl p-5 mb-5 border border-[var(--border)]">
         <h2 className="text-base font-semibold text-[var(--text)] mb-4">Category Breakdown</h2>
         {CATEGORIES.map(cat => {
           const pct = total === 0 ? 0 : Math.round(((statistics.categoryDraws[cat.id] || 0) / total) * 100);
@@ -60,7 +60,7 @@ export default function StatsPage() {
       </div>
 
       {mostDrawn.count > 0 && (
-        <div className="bg-[var(--surface)] rounded-2xl p-5 text-center mb-5">
+        <div className="bg-[var(--surface)] rounded-2xl p-5 text-center mb-5 border border-[var(--border)]">
           <p className="text-xs uppercase tracking-wider text-[var(--text-sec)] mb-2">Most Played Category</p>
           <div className="flex items-center justify-center gap-2">
             <span className="text-2xl">{CATEGORIES.find(c => c.id === mostDrawn.category)?.emoji}</span>
@@ -70,7 +70,7 @@ export default function StatsPage() {
         </div>
       )}
 
-      <div className="bg-[var(--primary)]/10 rounded-2xl p-5 text-center">
+      <div className="bg-[var(--primary)]/10 rounded-2xl p-5 text-center border border-[var(--primary)]/20">
         <BarChart3 size={20} className="text-[var(--primary)] mx-auto mb-2" />
         <p className="text-sm italic text-[var(--text)]">
           "{history[0] || 'Start drawing cards to see your activity!'}"

@@ -7,6 +7,22 @@ import { CATEGORIES } from '../types';
 import { COMMANDS } from '../data/commands';
 import { triggerHaptic } from '../utils';
 
+const WHEEL_SIZE = 280;
+const CENTER = WHEEL_SIZE / 2;
+const RADIUS = CENTER - 2;
+
+function polarToCartesian(cx: number, cy: number, r: number, angleDeg: number) {
+  const rad = ((angleDeg - 90) * Math.PI) / 180;
+  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+}
+
+function describeArc(cx: number, cy: number, r: number, startAngle: number, endAngle: number) {
+  const start = polarToCartesian(cx, cy, r, endAngle);
+  const end = polarToCartesian(cx, cy, r, startAngle);
+  const largeArc = endAngle - startAngle > 180 ? 1 : 0;
+  return `M ${cx} ${cy} L ${start.x} ${start.y} A ${r} ${r} 0 ${largeArc} 0 ${end.x} ${end.y} Z`;
+}
+
 export default function WheelPage() {
   const favorites = useStore(s => s.favorites);
   const addFavorite = useStore(s => s.addFavorite);
@@ -27,6 +43,17 @@ export default function WheelPage() {
     [disabledCategories]
   );
 
+  const segments = useMemo(() => {
+    const count = enabled.length;
+    const segAngle = 360 / count;
+    return enabled.map((cat, i) => ({
+      cat,
+      startAngle: i * segAngle,
+      endAngle: (i + 1) * segAngle,
+      midAngle: i * segAngle + segAngle / 2,
+    }));
+  }, [enabled]);
+
   const spin = useCallback(() => {
     if (spinning || enabled.length === 0) return;
     setSpinning(true);
@@ -34,11 +61,9 @@ export default function WheelPage() {
     if (soundEnabled) triggerHaptic('medium');
 
     const target = enabled[Math.floor(Math.random() * enabled.length)];
-    const segAngle = 360 / 5;
-    const idx = enabled.findIndex(c => c.id === target.id);
-    const middle = idx * segAngle + segAngle / 2;
+    const seg = segments.find(s => s.cat.id === target.id)!;
     const spins = 5 + Math.random() * 3;
-    const targetRot = rotation + spins * 360 + (360 - middle);
+    const targetRot = rotation + spins * 360 + (360 - seg.midAngle);
 
     setRotation(targetRot);
 
@@ -53,7 +78,7 @@ export default function WheelPage() {
       if (soundEnabled) triggerHaptic('success');
       setSpinning(false);
     }, 4000);
-  }, [spinning, enabled, rotation, soundEnabled, addToHistory, checkAndUnlockAchievements]);
+  }, [spinning, enabled, segments, rotation, soundEnabled, addToHistory, checkAndUnlockAchievements]);
 
   const isFav = command ? favorites.includes(command) : false;
 
@@ -66,45 +91,60 @@ export default function WheelPage() {
 
       {/* Wheel */}
       <div className="flex justify-center items-center py-6 relative">
-        {/* Pointer */}
-        <div className="absolute top-4 z-10">
-          <div style={{ width: 0, height: 0, borderLeft: '12px solid transparent', borderRight: '12px solid transparent', borderTop: '20px solid #333' }} />
+        {/* Pointer - proper triangle */}
+        <div className="absolute top-4 z-20 drop-shadow-md">
+          <svg width="28" height="24" viewBox="0 0 28 24">
+            <polygon points="14,24 0,0 28,0" fill="var(--text)" />
+          </svg>
         </div>
 
-        {/* Wheel */}
-        <div className="relative" style={{ width: 280, height: 280 }}>
-          <div
-            className="w-full h-full rounded-full overflow-hidden shadow-2xl relative"
+        {/* Wheel container */}
+        <div className="relative" style={{ width: WHEEL_SIZE, height: WHEEL_SIZE }}>
+          {/* SVG wheel with proper arcs */}
+          <svg
+            width={WHEEL_SIZE}
+            height={WHEEL_SIZE}
+            viewBox={`0 0 ${WHEEL_SIZE} ${WHEEL_SIZE}`}
+            className="rounded-full shadow-2xl"
             style={{
               transform: `rotate(${rotation}deg)`,
               transition: spinning ? 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)' : 'none',
             }}
           >
-            {enabled.map((cat, i) => {
-              const angle = (i * 360) / 5;
-              return (
-                <div key={cat.id}
-                  className="absolute left-1/2 top-0 h-1/2 flex items-center justify-center"
-                  style={{
-                    width: 140,
-                    background: cat.color,
-                    transformOrigin: 'bottom center',
-                    transform: `rotate(${angle + 36}deg)`,
-                    clipPath: 'polygon(0 0, 100% 0, 50% 100%)',
-                  }}>
-                  <div className="flex flex-col items-center -mt-4">
-                    <span className="text-xl">{cat.emoji}</span>
-                    <span className="text-[9px] font-bold text-white mt-0.5">{cat.name}</span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="w-16 h-16 rounded-full bg-[var(--primary)] border-4 border-white shadow-lg flex items-center justify-center">
-              <Heart size={24} className="text-white" fill="white" />
-            </div>
-          </div>
+            {segments.map(({ cat, startAngle, endAngle }) => (
+              <g key={cat.id}>
+                <path
+                  d={describeArc(CENTER, CENTER, RADIUS, startAngle, endAngle)}
+                  fill={cat.color}
+                  stroke="white"
+                  strokeWidth="2"
+                />
+              </g>
+            ))}
+            {/* Center hub */}
+            <circle cx={CENTER} cy={CENTER} r="30" fill="var(--primary)" stroke="white" strokeWidth="4" />
+            <text x={CENTER} y={CENTER + 1} textAnchor="middle" dominantBaseline="central" fontSize="20" fill="white">
+              💕
+            </text>
+          </svg>
+
+          {/* Category labels overlay */}
+          {segments.map(({ cat, midAngle }) => {
+            const rad = ((midAngle - 90) * Math.PI) / 180;
+            const labelR = RADIUS * 0.62;
+            const x = CENTER + labelR * Math.cos(rad);
+            const y = CENTER + labelR * Math.sin(rad);
+            return (
+              <div key={cat.id} className="absolute flex flex-col items-center pointer-events-none"
+                style={{
+                  left: x, top: y,
+                  transform: 'translate(-50%, -50%)',
+                }}>
+                <span className="text-lg drop-shadow-sm">{cat.emoji}</span>
+                <span className="text-[8px] font-bold text-white drop-shadow-sm leading-tight">{cat.name}</span>
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -113,12 +153,15 @@ export default function WheelPage() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="px-5 mb-4">
           <div className="rounded-2xl p-6 text-center text-white" style={{ background: category.color }}>
             <span className="text-3xl">{category.emoji}</span>
+            <p className="text-xs font-semibold uppercase tracking-widest opacity-80 mt-1">{category.name}</p>
             <p className="text-lg font-bold mt-2 leading-relaxed">{command}</p>
-            <button
-              onClick={() => { isFav ? removeFavorite(command) : addFavorite(command); if (soundEnabled) triggerHaptic('light'); }}
-              className="mt-4 p-3 rounded-full bg-white/20 hover:bg-white/30 transition">
-              <Heart size={24} fill={isFav ? 'white' : 'none'} className="text-white" />
-            </button>
+            <div className="flex justify-center gap-3 mt-4">
+              <button
+                onClick={() => { isFav ? removeFavorite(command) : addFavorite(command); if (soundEnabled) triggerHaptic('light'); }}
+                className="p-3 rounded-full bg-white/20 hover:bg-white/30 transition active:scale-90">
+                <Heart size={22} fill={isFav ? 'white' : 'none'} className="text-white" />
+              </button>
+            </div>
           </div>
         </motion.div>
       )}
@@ -126,14 +169,14 @@ export default function WheelPage() {
       {/* Spin button */}
       <div className="px-5">
         <button onClick={spin} disabled={spinning}
-          className="w-full py-4 rounded-2xl bg-[var(--primary)] text-white text-lg font-bold flex items-center justify-center gap-2.5 shadow-lg shadow-[var(--primary)]/30 active:scale-95 transition disabled:opacity-40">
+          className="w-full py-4 rounded-2xl bg-[var(--primary)] text-white text-lg font-bold flex items-center justify-center gap-2.5 shadow-lg shadow-[var(--primary)]/30 active:scale-95 transition disabled:opacity-40 touch-target">
           <Zap size={22} /> {spinning ? 'Spinning...' : 'Spin!'}
         </button>
       </div>
 
       {!showResult && !spinning && (
         <p className="text-center text-sm text-[var(--text-sec)] italic mt-4 px-5">
-          Tap Spin to pick a random category
+          Pick a random category from the wheel
         </p>
       )}
     </div>

@@ -46,13 +46,13 @@ export default function SettingsPage() {
   ];
 
   return (
-    <div className="flex-1 overflow-auto p-5 pb-24">
+    <div className="flex-1 overflow-auto p-5 pb-24 scrollbar-thin">
       {/* Theme */}
       <Section title="APPEARANCE">
         <div className="bg-[var(--surface)] rounded-2xl border border-[var(--border)] overflow-hidden">
           {themes.map(t => (
             <button key={t.mode} onClick={() => { setThemeMode(t.mode); triggerHaptic('light'); }}
-              className={`w-full flex items-center justify-between px-4 py-3.5 transition ${
+              className={`w-full flex items-center justify-between px-4 py-3.5 transition active:scale-99 ${
                 themeMode === t.mode ? 'bg-[var(--primary)]/10' : ''
               }`}>
               <div className="flex items-center gap-3">
@@ -72,10 +72,7 @@ export default function SettingsPage() {
             <Volume2 size={18} className="text-[var(--text)]" />
             <span className="text-[var(--text)] font-medium">Sound Effects</span>
           </div>
-          <button onClick={() => { setSoundEnabled(!soundEnabled); if (!soundEnabled) triggerHaptic('light'); }}
-            className={`w-12 h-7 rounded-full transition-colors relative ${soundEnabled ? 'bg-[var(--primary)]' : 'bg-[var(--border)]'}`}>
-            <div className={`absolute top-0.5 w-6 h-6 rounded-full bg-white shadow transition-transform ${soundEnabled ? 'translate-x-5' : 'translate-x-0.5'}`} />
-          </button>
+          <ToggleSwitch enabled={soundEnabled} onToggle={() => { setSoundEnabled(!soundEnabled); if (!soundEnabled) triggerHaptic('light'); }} />
         </div>
       </Section>
 
@@ -86,15 +83,12 @@ export default function SettingsPage() {
             const enabled = !disabledCategories.includes(cat.id);
             return (
               <button key={cat.id} onClick={() => { toggleCategory(cat.id); triggerHaptic('light'); }}
-                className={`w-full flex items-center justify-between px-4 py-3.5 transition border-b border-[var(--border)] last:border-0 ${!enabled ? 'opacity-50' : ''}`}>
+                className={`w-full flex items-center justify-between px-4 py-3.5 transition border-b border-[var(--border)] last:border-0 active:scale-99 ${!enabled ? 'opacity-50' : ''}`}>
                 <div className="flex items-center gap-3">
                   <span className="text-lg">{cat.emoji}</span>
                   <span className="text-[var(--text)] font-medium">{cat.name}</span>
                 </div>
-                <button onClick={(e) => { e.stopPropagation(); toggleCategory(cat.id); triggerHaptic('light'); }}
-                  className={`w-12 h-7 rounded-full transition-colors relative ${enabled ? 'bg-[var(--primary)]' : 'bg-[var(--border)]'}`}>
-                  <div className={`absolute top-0.5 w-6 h-6 rounded-full bg-white shadow transition-transform ${enabled ? 'translate-x-5' : 'translate-x-0.5'}`} />
-                </button>
+                <ToggleSwitch enabled={enabled} onToggle={(e?: React.MouseEvent) => { e?.stopPropagation(); toggleCategory(cat.id); triggerHaptic('light'); }} />
               </button>
             );
           })}
@@ -122,7 +116,8 @@ export default function SettingsPage() {
                 <span className="text-sm font-medium text-[var(--text)]">{cat.name}</span>
               </div>
               <button onClick={() => { setModalCat(cat.id); setShowModal(true); }}
-                className="w-7 h-7 rounded-full flex items-center justify-center text-white" style={{ background: cat.color }}>
+                className="w-7 h-7 rounded-full flex items-center justify-center text-white transition active:scale-90"
+                style={{ background: cat.color }}>
                 <Plus size={14} />
               </button>
             </div>
@@ -131,7 +126,7 @@ export default function SettingsPage() {
                 {customCommands[cat.id].map((cmd, i) => (
                   <div key={i} className="flex items-center justify-between px-3 py-2.5 border-b border-[var(--border)] last:border-0">
                     <span className="text-sm text-[var(--text)] flex-1 mr-2 line-clamp-2">{cmd}</span>
-                    <button onClick={() => removeCustomCommand(cat.id, cmd)} className="p-1 shrink-0">
+                    <button onClick={() => removeCustomCommand(cat.id, cmd)} className="p-1 shrink-0 touch-target flex items-center justify-center">
                       <X size={16} className="text-red-500" />
                     </button>
                   </div>
@@ -147,7 +142,7 @@ export default function SettingsPage() {
       {/* Add command modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-6" onClick={() => setShowModal(false)}>
-          <div className="bg-[var(--surface)] rounded-2xl p-6 max-w-sm w-full" onClick={e => e.stopPropagation()}>
+          <div className="bg-[var(--surface)] rounded-2xl p-6 max-w-sm w-full animate-popIn" onClick={e => e.stopPropagation()}>
             <h3 className="text-lg font-bold text-[var(--text)] text-center mb-1">Add Custom Command</h3>
             <p className="text-sm text-[var(--text-sec)] text-center mb-4">
               {CATEGORIES.find(c => c.id === modalCat)?.emoji} {modalCat}
@@ -156,12 +151,12 @@ export default function SettingsPage() {
               className="w-full px-4 py-3 rounded-xl bg-[var(--bg)] text-[var(--text)] border border-[var(--border)] text-base min-h-[80px] resize-none outline-none mb-4" />
             <div className="flex gap-3">
               <button onClick={() => setShowModal(false)}
-                className="flex-1 py-3 rounded-xl border border-[var(--border)] text-[var(--text)] font-semibold">
+                className="flex-1 py-3 rounded-xl border border-[var(--border)] text-[var(--text)] font-semibold active:scale-95 transition">
                 Cancel
               </button>
               <button onClick={() => {
                 if (newCmd.trim()) { addCustomCommand(modalCat, newCmd.trim()); setNewCmd(''); setShowModal(false); triggerHaptic('success'); }
-              }} className="flex-1 py-3 rounded-xl bg-[var(--primary)] text-white font-semibold">
+              }} className="flex-1 py-3 rounded-xl bg-[var(--primary)] text-white font-semibold active:scale-95 transition">
                 Add
               </button>
             </div>
@@ -169,6 +164,15 @@ export default function SettingsPage() {
         </div>
       )}
     </div>
+  );
+}
+
+function ToggleSwitch({ enabled, onToggle }: { enabled: boolean; onToggle: (e?: React.MouseEvent) => void }) {
+  return (
+    <button onClick={(e) => onToggle(e)}
+      className={`relative w-12 h-7 rounded-full transition-colors duration-200 ${enabled ? 'bg-[var(--primary)]' : 'bg-[var(--border)]'}`}>
+      <div className={`absolute top-0.5 w-6 h-6 rounded-full bg-white shadow-md transition-transform duration-200 ${enabled ? 'translate-x-5.5' : 'translate-x-0.5'}`} />
+    </button>
   );
 }
 
@@ -184,7 +188,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 function DataRow({ icon: Icon, label, onClick, danger }: { icon: typeof Download; label: string; onClick: () => void; danger?: boolean }) {
   return (
     <button onClick={onClick}
-      className={`w-full flex items-center justify-between px-4 py-3.5 transition border-b border-[var(--border)] last:border-0 hover:bg-[var(--bg)]`}>
+      className={`w-full flex items-center justify-between px-4 py-3.5 transition border-b border-[var(--border)] last:border-0 hover:bg-[var(--bg)] active:scale-99`}>
       <div className="flex items-center gap-3">
         <Icon size={18} className={danger ? 'text-red-500' : 'text-[var(--text)]'} />
         <span className={`font-medium ${danger ? 'text-red-500' : 'text-[var(--text)]'}`}>{label}</span>

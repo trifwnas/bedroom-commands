@@ -33,6 +33,8 @@ export default function SearchPage() {
     return result;
   }, [allCommands, filterCat, query]);
 
+  const total = allCommands.length;
+
   return (
     <div className="flex-1 flex flex-col pb-24">
       <div className="px-5 pt-4">
@@ -41,18 +43,23 @@ export default function SearchPage() {
           <input type="text" placeholder="Search commands..." value={query} onChange={e => setQuery(e.target.value)}
             className="flex-1 bg-transparent text-[var(--text)] text-base outline-none placeholder:text-[var(--text-sec)]" />
           {query && (
-            <button onClick={() => setQuery('')} className="p-1">
+            <button onClick={() => setQuery('')} className="p-1 touch-target flex items-center justify-center">
               <X size={18} className="text-[var(--text-sec)]" />
             </button>
           )}
         </div>
+        <p className="text-xs text-[var(--text-sec)] mt-2 px-1">
+          {query || filterCat !== 'All'
+            ? `${filtered.length} of ${total} commands`
+            : `${total} commands total`}
+        </p>
       </div>
 
       {/* Filter chips */}
       <div className="flex gap-2 overflow-x-auto px-5 py-3 scrollbar-none">
         {['All', ...CATEGORIES.map(c => c.id)].map(cat => (
           <button key={cat} onClick={() => setFilterCat(cat as any)}
-            className={`shrink-0 px-4 py-2 rounded-full text-sm font-semibold border transition-all active:scale-95 ${
+            className={`shrink-0 px-4 py-2 rounded-full text-sm font-semibold border transition-all active:scale-95 touch-target ${
               filterCat === cat
                 ? 'bg-[var(--primary)] text-white border-[var(--primary)]'
                 : 'bg-[var(--surface)] text-[var(--text)] border-[var(--border)]'
@@ -63,10 +70,10 @@ export default function SearchPage() {
       </div>
 
       {/* Results */}
-      <div className="flex-1 overflow-auto px-5 pb-5">
+      <div className="flex-1 overflow-auto px-5 pb-5 scrollbar-thin">
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
-            <Search size={48} className="text-[var(--text-sec)] mb-4" />
+            <Search size={48} className="text-[var(--text-sec)] mb-4 opacity-40" />
             <p className="text-lg font-semibold text-[var(--text)]">No commands found</p>
             <p className="text-sm text-[var(--text-sec)] mt-1">Try adjusting your search or filters</p>
           </div>
@@ -76,23 +83,29 @@ export default function SearchPage() {
               const cat = CATEGORY_MAP[cmd.category];
               const isFav = favorites.includes(cmd.text);
               return (
-                <div key={cmd.text} className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-4">
+                <div key={cmd.text} className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden flex">
+                  {/* Category color bar */}
                   {cat && (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold text-white mb-2.5"
-                      style={{ background: cat.color }}>
-                      {cat.emoji} {cat.name}
-                    </span>
+                    <div className="w-1.5 shrink-0" style={{ background: cat.color }} />
                   )}
-                  <p className="text-[var(--text)] font-medium leading-relaxed mb-3">{cmd.text}</p>
-                  <div className="flex justify-end gap-2">
-                    <button onClick={() => shareCommand(cmd.text, cmd.category)}
-                      className="p-2.5 rounded-xl bg-[var(--bg)] hover:bg-[var(--border)] transition">
-                      <Share2 size={16} className="text-[var(--text)]" />
-                    </button>
-                    <button onClick={() => { isFav ? removeFavorite(cmd.text) : addFavorite(cmd.text); if (soundEnabled) triggerHaptic('light'); }}
-                      className="p-2.5 rounded-xl bg-[var(--bg)] hover:bg-[var(--border)] transition">
-                      <Heart size={16} className={isFav ? 'text-[var(--primary)]' : 'text-[var(--text-sec)]'} fill={isFav ? 'currentColor' : 'none'} />
-                    </button>
+                  <div className="flex-1 p-4">
+                    {cat && (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold text-white mb-2.5"
+                        style={{ background: cat.color }}>
+                        {cat.emoji} {cat.name}
+                      </span>
+                    )}
+                    <p className="text-[var(--text)] font-medium leading-relaxed mb-3">{cmd.text}</p>
+                    <div className="flex justify-end gap-2">
+                      <button onClick={() => shareCommand(cmd.text, cmd.category)}
+                        className="p-2.5 rounded-xl bg-[var(--bg)] hover:bg-[var(--border)] transition active:scale-90">
+                        <Share2 size={16} className="text-[var(--text)]" />
+                      </button>
+                      <button onClick={() => { isFav ? removeFavorite(cmd.text) : addFavorite(cmd.text); if (soundEnabled) triggerHaptic('light'); }}
+                        className="p-2.5 rounded-xl bg-[var(--bg)] hover:bg-[var(--border)] transition active:scale-90">
+                        <Heart size={16} className={isFav ? 'text-[var(--primary)]' : 'text-[var(--text-sec)]'} fill={isFav ? 'currentColor' : 'none'} />
+                      </button>
+                    </div>
                   </div>
                 </div>
               );

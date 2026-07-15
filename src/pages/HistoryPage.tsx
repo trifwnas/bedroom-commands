@@ -9,19 +9,21 @@ export default function HistoryPage() {
   if (history.length === 0) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center px-10 text-center pb-24">
-        <Clock size={48} className="text-[var(--text-sec)] mb-4" />
+        <div className="w-16 h-16 rounded-full bg-[var(--bg)] flex items-center justify-center mb-4">
+          <Clock size={28} className="text-[var(--text-sec)]" />
+        </div>
         <p className="text-lg font-semibold text-[var(--text)]">No history yet</p>
-        <p className="text-sm text-[var(--text-sec)] mt-1">Draw some cards to see your activity history</p>
+        <p className="text-sm text-[var(--text-sec)] mt-1">Draw some cards to see your activity here</p>
       </div>
     );
   }
 
   return (
-    <div className="flex-1 overflow-auto p-5 pb-24">
+    <div className="flex-1 overflow-auto p-5 pb-24 scrollbar-thin">
       <div className="flex justify-between items-center mb-4">
         <p className="text-sm text-[var(--text-sec)]">{history.length} items</p>
         <button onClick={() => { if (confirm('Clear all history?')) clearHistory(); }}
-          className="flex items-center gap-1.5 text-sm text-red-500 font-medium hover:text-red-600 transition">
+          className="flex items-center gap-1.5 text-sm text-red-500 font-medium hover:text-red-600 transition active:scale-95 touch-target">
           <Trash2 size={14} /> Clear
         </button>
       </div>
