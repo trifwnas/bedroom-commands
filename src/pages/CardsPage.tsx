@@ -1,12 +1,12 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Zap, Heart, HeartOff, Share2, Undo2, RotateCcw, Clock } from 'lucide-react';
+import { Zap, Heart, Share2, Undo2, RotateCcw, Clock } from 'lucide-react';
 import { CategorySelector } from '../components/CategorySelector';
 import { Timer } from '../components/Timer';
 import { useStore } from '../store/useStore';
 import type { Category } from '../types';
 import { CATEGORIES, CATEGORY_MAP } from '../types';
-import { COMMANDS, COMMAND_TO_CATEGORY } from '../data/commands';
+import { COMMANDS } from '../data/commands';
 import { triggerHaptic, shareCommand } from '../utils';
 
 export default function CardsPage() {

@@ -7,7 +7,7 @@ import { useDarkMode } from '../hooks/useTheme';
 import { triggerHaptic } from '../utils';
 
 export default function SettingsPage() {
-  const isDark = useDarkMode();
+  useDarkMode();
   const customCommands = useStore(s => s.customCommands);
   const addCustomCommand = useStore(s => s.addCustomCommand);
   const removeCustomCommand = useStore(s => s.removeCustomCommand);

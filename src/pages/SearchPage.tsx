@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo } from 'react';
 import { Search, Heart, Share2, X } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { COMMANDS } from '../data/commands';

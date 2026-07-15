@@ -1,5 +1,5 @@
-import { ReactNode, ButtonHTMLAttributes } from 'react';
-import { LucideIcon } from 'lucide-react';
+import type { ReactNode, ButtonHTMLAttributes } from 'react';
+import type { LucideIcon } from 'lucide-react';
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: LucideIcon;

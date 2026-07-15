@@ -1,7 +1,6 @@
 import { Clock, Trash2 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { COMMAND_TO_CATEGORY } from '../data/commands';
-import { formatDate } from '../utils';
 
 export default function HistoryPage() {
   const history = useStore(s => s.history);
