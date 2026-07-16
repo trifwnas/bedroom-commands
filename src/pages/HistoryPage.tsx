@@ -21,8 +21,8 @@ export default function HistoryPage() {
   if (history.length === 0) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center px-10 text-center pb-28">
-        <div className="w-16 h-16 rounded-full bg-[var(--bg)] flex items-center justify-center mb-5">
-          <Clock size={28} className="text-[var(--text-sec)]" />
+        <div className="w-20 h-20 rounded-full bg-[var(--primary)]/10 flex items-center justify-center mb-5">
+          <Clock size={32} className="text-[var(--primary)]" />
         </div>
         <p className="text-lg font-semibold text-[var(--text)]">No history yet</p>
         <p className="text-sm text-[var(--text-sec)] mt-1.5">Draw some cards to see your activity here</p>
@@ -31,14 +31,15 @@ export default function HistoryPage() {
   }
 
   return (
-    <div className="flex-1 overflow-auto p-6 pb-28 scrollbar-thin">
-      <div className="flex justify-between items-center mb-5">
-        <p className="text-sm text-[var(--text-sec)]">{history.length} items</p>
+    <div className="flex-1 overflow-auto px-6 pt-6 pb-28 scrollbar-thin">
+      <div className="flex justify-between items-center mb-1">
+        <h1 className="text-2xl font-extrabold text-[var(--text)]">Draw History</h1>
         <button onClick={handleClear}
           className="flex items-center gap-1.5 text-sm text-red-500 font-medium hover:text-red-600 transition active:scale-95 touch-target">
           <Trash2 size={14} /> Clear
         </button>
       </div>
+      <p className="text-sm text-[var(--text-sec)] mb-5">{history.length} items</p>
       <div className="space-y-4">
         {history.map((cmd, i) => {
           const cat = COMMAND_TO_CATEGORY.get(cmd);

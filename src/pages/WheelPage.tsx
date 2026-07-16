@@ -8,7 +8,7 @@ import { CATEGORIES } from '../types';
 import { COMMANDS } from '../data/commands';
 import { triggerHaptic } from '../utils';
 
-const WHEEL_SIZE = 280;
+const WHEEL_SIZE = 300;
 const CENTER = WHEEL_SIZE / 2;
 const RADIUS = CENTER - 2;
 
@@ -96,7 +96,7 @@ export default function WheelPage() {
         <p className="text-sm text-[var(--text-sec)] mt-1.5">Spin to discover a new adventure!</p>
       </div>
 
-      <div className="flex justify-center items-center py-8 relative">
+      <div className="flex justify-center items-center py-6 relative">
         <div className="absolute top-4 z-20 drop-shadow-md">
           <svg width="28" height="24" viewBox="0 0 28 24">
             <polygon points="14,24 0,0 28,0" fill="var(--text)" />
@@ -140,12 +140,12 @@ export default function WheelPage() {
       </div>
 
       {showResult && command && category && (
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="px-6 mb-5">
-          <div className="rounded-2xl p-6 text-center text-white" style={{ background: category.color }}>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="px-6 mb-4">
+          <div className="rounded-3xl p-6 text-center text-white shadow-lg" style={{ background: category.color }}>
             <span className="text-3xl">{category.emoji}</span>
             <p className="text-xs font-semibold uppercase tracking-widest opacity-80 mt-1">{category.name}</p>
             <p className="text-lg font-bold mt-2 leading-relaxed">{command}</p>
-            <div className="flex justify-center gap-3 mt-4">
+            <div className="flex justify-center gap-3 mt-5">
               <button
                 onClick={() => {
                   isFav ? removeFavorite(command) : addFavorite(command);

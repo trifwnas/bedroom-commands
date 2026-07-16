@@ -40,8 +40,9 @@ export default function SearchPage() {
 
   return (
     <div className="flex-1 flex flex-col pb-28">
-      <div className="px-6 pt-5">
-        <div className="flex items-center gap-3 bg-[var(--surface)] border border-[var(--border)] rounded-xl px-4 py-3.5">
+      <div className="px-6 pt-6">
+        <h1 className="text-2xl font-extrabold text-[var(--text)] mb-4">Search</h1>
+        <div className="flex items-center gap-3 bg-[var(--surface)] border border-[var(--border)] rounded-xl px-4 py-3">
           <Search size={18} className="text-[var(--text-sec)] shrink-0" />
           <input type="text" placeholder="Search commands..." value={query} onChange={e => setQuery(e.target.value)}
             className="flex-1 bg-transparent text-[var(--text)] text-base outline-none placeholder:text-[var(--text-sec)]" />
@@ -51,7 +52,7 @@ export default function SearchPage() {
             </button>
           )}
         </div>
-        <p className="text-xs text-[var(--text-sec)] mt-2.5 px-1">
+        <p className="text-xs text-[var(--text-sec)] mt-2 px-1">
           {query || filterCat !== 'All'
             ? `${filtered.length} of ${total} commands`
             : `${total} commands total`}

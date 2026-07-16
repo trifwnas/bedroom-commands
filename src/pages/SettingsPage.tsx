@@ -71,7 +71,8 @@ export default function SettingsPage() {
   ];
 
   return (
-    <div className="flex-1 overflow-auto p-6 pb-28 scrollbar-thin">
+    <div className="flex-1 overflow-auto px-6 pt-6 pb-28 scrollbar-thin">
+      <h1 className="text-2xl font-extrabold text-[var(--text)] mb-6">Settings</h1>
       <Section title="APPEARANCE">
         <div className="bg-[var(--surface)] rounded-2xl border border-[var(--border)] overflow-hidden">
           {themes.map(t => (

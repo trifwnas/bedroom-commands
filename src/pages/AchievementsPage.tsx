@@ -29,9 +29,9 @@ export default function AchievementsPage() {
     : null;
 
   return (
-    <div className="flex-1 overflow-auto p-6 pb-28 scrollbar-thin">
+    <div className="flex-1 overflow-auto px-6 pt-6 pb-28 scrollbar-thin">
+      <h1 className="text-2xl font-extrabold text-[var(--text)] mb-5">Achievements</h1>
       <div className="bg-[var(--surface)] rounded-2xl p-6 text-center mb-8 border border-[var(--border)]">
-        <h2 className="text-xl font-bold text-[var(--text)] mb-2">Achievements</h2>
         <p className="text-sm text-[var(--text-sec)] mb-3.5">{total} / {ACHIEVEMENTS.length} unlocked</p>
         <div className="w-full h-2.5 bg-[var(--border)] rounded-full overflow-hidden">
           <div className="h-full rounded-full bg-[var(--primary)] transition-all duration-500"

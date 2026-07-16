@@ -26,18 +26,19 @@ export default function FavoritesPage() {
   if (favorites.length === 0) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center px-10 text-center pb-28">
-        <div className="w-16 h-16 rounded-full bg-[var(--bg)] flex items-center justify-center mb-5">
-          <Heart size={28} className="text-[var(--text-sec)]" />
+        <div className="w-20 h-20 rounded-full bg-[var(--primary)]/10 flex items-center justify-center mb-5">
+          <Heart size={32} className="text-[var(--primary)]" />
         </div>
         <p className="text-lg font-semibold text-[var(--text)]">No favorites yet</p>
-        <p className="text-sm text-[var(--text-sec)] mt-1.5">Tap the heart icon on any command to save it here</p>
+        <p className="text-sm text-[var(--text-sec)] mt-1.5">Tap the heart on any command to save it here</p>
       </div>
     );
   }
 
   return (
-    <div className="flex-1 overflow-auto p-6 pb-28 scrollbar-thin">
-      <p className="text-sm text-[var(--text-sec)] mb-4">{favorites.length} saved commands</p>
+    <div className="flex-1 overflow-auto px-6 pt-6 pb-28 scrollbar-thin">
+      <h1 className="text-2xl font-extrabold text-[var(--text)] mb-1">My Favorites</h1>
+      <p className="text-sm text-[var(--text-sec)] mb-5">{favorites.length} saved commands</p>
       <div className="space-y-4">
         {favorites.map(cmd => {
           const cat = COMMAND_TO_CATEGORY.get(cmd);

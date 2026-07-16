@@ -38,9 +38,9 @@ export default function DailyPage() {
   }
 
   return (
-    <div className="flex-1 flex flex-col p-6 pb-28 overflow-auto">
-      <p className="text-sm text-[var(--text-sec)] mb-1.5">{greeting}</p>
-      <h1 className="text-2xl font-extrabold text-[var(--text)] mb-8">Today's Challenge</h1>
+    <div className="flex-1 flex flex-col px-6 pt-6 pb-28 overflow-auto">
+      <p className="text-sm text-[var(--text-sec)] mb-1">{greeting}</p>
+      <h1 className="text-2xl font-extrabold text-[var(--text)] mb-6">Today's Challenge</h1>
 
       <motion.div
         key={dailyChallenge.command}

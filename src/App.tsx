@@ -38,12 +38,6 @@ const pages: Record<TabId, React.ComponentType> = {
   achievements: AchievementsPage, settings: SettingsPage,
 };
 
-const headers: Record<TabId, string> = {
-  cards: 'Bedroom Commands', wheel: 'Spin the Wheel', daily: 'Daily Challenge',
-  search: 'Search Commands', favorites: 'My Favorites', history: 'Draw History',
-  stats: 'Statistics', achievements: 'Achievements', settings: 'Settings',
-};
-
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabId>('cards');
   const [showMore, setShowMore] = useState(false);
@@ -67,11 +61,6 @@ export default function App() {
   return (
     <div className="min-h-dvh flex flex-col bg-[var(--bg)] text-[var(--text)]">
       {!hasSeenOnboarding && <Onboarding />}
-
-      {/* Header */}
-      <header className="sticky top-0 z-40 bg-[var(--bg)]/80 backdrop-blur-xl border-b border-[var(--border)]">
-        <h1 className="text-lg font-bold text-[var(--text)] px-6 py-3.5">{headers[activeTab]}</h1>
-      </header>
 
       {/* Page */}
       <main className="flex-1 flex flex-col overflow-hidden">
@@ -103,22 +92,25 @@ export default function App() {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="absolute bottom-0 left-0 right-0 bg-[var(--surface)] rounded-t-3xl p-7 pb-10"
+              className="absolute bottom-0 left-0 right-0 bg-[var(--surface)] rounded-t-3xl p-6 pb-10"
               onClick={e => e.stopPropagation()}
               style={{ paddingBottom: 'calc(1.5rem + var(--safe-bottom))' }}
             >
-              <div className="flex justify-between items-center mb-6">
+              <div className="flex justify-center mb-3">
+                <div className="w-10 h-1 rounded-full bg-[var(--border)]" />
+              </div>
+              <div className="flex justify-between items-center mb-5">
                 <h2 className="text-lg font-bold text-[var(--text)]">More</h2>
                 <button onClick={() => setShowMore(false)} className="p-2 rounded-full hover:bg-[var(--border)]">
                   <X size={20} className="text-[var(--text)]" />
                 </button>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1">
                 {MORE_ITEMS.map(item => {
                   const active = activeTab === item.id;
                   return (
                     <button key={item.id} onClick={() => navigateTo(item.id)}
-                      className={`w-full flex items-center gap-4 px-4 py-4 rounded-xl transition-all active:scale-98 ${
+                      className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all active:scale-98 ${
                         active ? 'bg-[var(--primary)]/10 text-[var(--primary)]' : 'text-[var(--text)] hover:bg-[var(--bg)]'
                       }`}>
                       <item.icon size={22} className={active ? 'text-[var(--primary)]' : 'text-[var(--text-sec)]'} />
@@ -133,7 +125,7 @@ export default function App() {
       </AnimatePresence>
 
       {/* Tab bar */}
-      <nav className="sticky bottom-0 z-40 bg-[var(--surface)] border-t border-[var(--border)]"
+      <nav className="sticky bottom-0 z-40 bg-[var(--surface)]/95 backdrop-blur-xl border-t border-[var(--border)]"
         style={{ paddingBottom: 'var(--safe-bottom)' }}>
         <div className="flex items-stretch">
           {MAIN_TABS.map(tab => {
@@ -145,11 +137,11 @@ export default function App() {
                 }`}>
                 {active && (
                   <motion.div layoutId="tab-indicator"
-                    className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full bg-[var(--primary)]"
+                    className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-[3px] rounded-full bg-[var(--primary)]"
                     transition={{ type: 'spring', stiffness: 400, damping: 30 }} />
                 )}
-                <tab.icon size={22} strokeWidth={active ? 2.5 : 1.5} />
-                <span className={`text-[10px] mt-0.5 ${active ? 'font-bold' : 'font-medium'}`}>{tab.label}</span>
+                <tab.icon size={24} strokeWidth={active ? 2.5 : 1.5} />
+                <span className={`text-[11px] mt-1 ${active ? 'font-bold' : 'font-medium'}`}>{tab.label}</span>
               </button>
             );
           })}
@@ -159,11 +151,11 @@ export default function App() {
             }`}>
             {moreActive && (
               <motion.div layoutId="tab-indicator"
-                className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full bg-[var(--primary)]"
+                className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-[3px] rounded-full bg-[var(--primary)]"
                 transition={{ type: 'spring', stiffness: 400, damping: 30 }} />
             )}
-            <Menu size={22} strokeWidth={moreActive ? 2.5 : 1.5} />
-            <span className={`text-[10px] mt-0.5 ${moreActive ? 'font-bold' : 'font-medium'}`}>More</span>
+            <Menu size={24} strokeWidth={moreActive ? 2.5 : 1.5} />
+            <span className={`text-[11px] mt-1 ${moreActive ? 'font-bold' : 'font-medium'}`}>More</span>
           </button>
         </div>
       </nav>

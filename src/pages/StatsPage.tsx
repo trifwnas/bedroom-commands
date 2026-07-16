@@ -27,11 +27,23 @@ export default function StatsPage() {
   const moodTotal = Object.values(statistics.moodDraws).reduce((a, b) => a + b, 0);
 
   return (
-    <div className="flex-1 overflow-auto p-6 pb-28 scrollbar-thin">
+    <div className="flex-1 overflow-auto px-6 pt-6 pb-28 scrollbar-thin">
       <h1 className="text-2xl font-extrabold text-[var(--text)] mb-6">Your Statistics</h1>
 
-      <div className="grid grid-cols-2 gap-3.5 mb-6">
-        {stats.map(s => (
+      <div className="grid grid-cols-3 gap-3 mb-6">
+        {stats.slice(0, 3).map(s => (
+          <div key={s.label} className="bg-[var(--surface)] rounded-2xl p-4 text-center border border-[var(--border)]">
+            <div className="w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2"
+              style={{ background: `${s.color}20` }}>
+              <s.icon size={20} style={{ color: s.color }} />
+            </div>
+            <p className="text-xl font-bold text-[var(--text)]">{s.value}</p>
+            <p className="text-[10px] text-[var(--text-sec)] mt-0.5 leading-tight">{s.label}</p>
+          </div>
+        ))}
+      </div>
+      <div className="grid grid-cols-2 gap-3 mb-6">
+        {stats.slice(3).map(s => (
           <div key={s.label} className="bg-[var(--surface)] rounded-2xl p-5 text-center border border-[var(--border)]">
             <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3"
               style={{ background: `${s.color}20` }}>
