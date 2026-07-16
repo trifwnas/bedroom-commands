@@ -144,12 +144,12 @@ export default function CardsPage() {
   const moodInfo = MOODS.find(m => m.id === currentMood);
 
   return (
-    <div className="flex-1 flex flex-col pb-24 overflow-auto">
-      <div className="px-5 pt-4 pb-2">
+    <div className="flex-1 flex flex-col pb-28 overflow-auto">
+      <div className="px-6 pt-6 pb-3">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-extrabold text-[var(--text)]">Bedroom Commands</h1>
-            <p className="text-sm text-[var(--text-sec)] mt-1">
+            <p className="text-sm text-[var(--text-sec)] mt-1.5">
               {completedCommands.length} of 395 completed
             </p>
           </div>
@@ -165,7 +165,7 @@ export default function CardsPage() {
 
       {/* Completion progress bar */}
       {completedCommands.length > 0 && (
-        <div className="px-5 mb-2">
+        <div className="px-6 mb-4">
           <div className="w-full h-1.5 bg-[var(--border)] rounded-full overflow-hidden">
             <div className="h-full rounded-full bg-[var(--primary)] transition-all duration-500"
               style={{ width: `${Math.min((completedCommands.length / 395) * 100, 100)}%` }} />
@@ -176,7 +176,7 @@ export default function CardsPage() {
       <CategorySelector selected={selectedCategory} onSelect={setSelectedCategory} />
 
       {/* Mood filter toggle */}
-      <div className="px-5 pt-1 pb-1">
+      <div className="px-6 pt-2 pb-2">
         <button onClick={() => setShowMoodFilter(!showMoodFilter)}
           className="flex items-center gap-2 text-sm font-medium text-[var(--text-sec)] hover:text-[var(--text)] transition">
           <Sparkles size={14} />
@@ -193,7 +193,7 @@ export default function CardsPage() {
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
-            <div className="flex gap-2 overflow-x-auto px-5 py-2 scrollbar-none">
+            <div className="flex gap-2 overflow-x-auto px-6 py-3 scrollbar-none">
               <button onClick={() => setSelectedMood('all')}
                 className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all active:scale-95 ${
                   selectedMood === 'all'
@@ -219,8 +219,8 @@ export default function CardsPage() {
       </AnimatePresence>
 
       {/* 3D Flip Card */}
-      <div className="flex justify-center py-6 px-5 perspective-[1000px]">
-        <div className="relative w-full max-w-sm" style={{ minHeight: 280 }}>
+      <div className="flex justify-center py-8 px-6 perspective-[1000px]">
+        <div className="relative w-full max-w-sm" style={{ minHeight: 300 }}>
           {/* Confetti overlay */}
           <AnimatePresence>
             {showConfetti && (
@@ -258,7 +258,7 @@ export default function CardsPage() {
             onClick={() => !currentCommand && drawCard()}
           >
             {/* Back of card (face down - category pattern) */}
-            <div className="w-full rounded-3xl p-6 text-center text-white shadow-2xl flex flex-col items-center justify-center min-h-[280px]"
+            <div className="w-full rounded-3xl p-8 text-center text-white shadow-2xl flex flex-col items-center justify-center min-h-[300px]"
               style={{
                 ...gradientStyle,
                 backfaceVisibility: 'hidden',
@@ -273,7 +273,7 @@ export default function CardsPage() {
             </div>
 
             {/* Front of card (face up - command) */}
-            <div className="w-full rounded-3xl p-6 text-center text-white shadow-2xl flex flex-col items-center justify-center min-h-[280px]"
+            <div className="w-full rounded-3xl p-8 text-center text-white shadow-2xl flex flex-col items-center justify-center min-h-[300px]"
               style={{
                 ...gradientStyle,
                 backfaceVisibility: 'hidden',
@@ -282,8 +282,8 @@ export default function CardsPage() {
                 top: 0,
                 left: 0,
               }}>
-              <span className="text-4xl mb-1">{currentCatInfo.emoji}</span>
-              <div className="flex items-center gap-2 mb-4">
+              <span className="text-4xl mb-2">{currentCatInfo.emoji}</span>
+              <div className="flex items-center gap-2 mb-5">
                 <span className="text-xs font-semibold uppercase tracking-widest opacity-80">{currentCatInfo.name}</span>
                 {moodInfo && (
                   <span className="text-xs px-2 py-0.5 rounded-full bg-white/20 font-medium">
@@ -292,7 +292,7 @@ export default function CardsPage() {
                 )}
               </div>
 
-              <p className="text-xl font-bold leading-relaxed mb-4">
+              <p className="text-xl font-bold leading-relaxed mb-6">
                 {currentCommand}
               </p>
 
@@ -319,15 +319,15 @@ export default function CardsPage() {
       </div>
 
       {/* Primary action */}
-      <div className="px-5">
+      <div className="px-6 mt-2">
         <button onClick={drawCard} disabled={isDrawing}
-          className="w-full py-4 rounded-2xl bg-[var(--primary)] text-white text-lg font-bold flex items-center justify-center gap-2.5 shadow-lg shadow-[var(--primary)]/30 active:scale-95 transition disabled:opacity-40 touch-target">
+          className="w-full py-4.5 rounded-2xl bg-[var(--primary)] text-white text-lg font-bold flex items-center justify-center gap-2.5 shadow-lg shadow-[var(--primary)]/30 active:scale-95 transition disabled:opacity-40 touch-target">
           <Zap size={22} /> {isDrawing ? 'Drawing...' : 'Draw Card'}
         </button>
       </div>
 
       {/* Secondary actions */}
-      <div className="px-5 mt-3 flex gap-3">
+      <div className="px-6 mt-4 flex gap-3">
         <button onClick={handleUndo} disabled={!canUndo || !currentCommand}
           className="flex-1 py-3 rounded-xl bg-[var(--surface)] text-[var(--text)] border border-[var(--border)] font-semibold flex items-center justify-center gap-2 text-sm active:scale-95 transition disabled:opacity-30 touch-target">
           <Undo2 size={16} /> Undo

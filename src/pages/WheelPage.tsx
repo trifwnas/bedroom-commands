@@ -90,13 +90,13 @@ export default function WheelPage() {
   const isFav = command ? favorites.includes(command) : false;
 
   return (
-    <div className="flex-1 flex flex-col pb-24 overflow-auto">
-      <div className="px-5 pt-4 pb-2 text-center">
+    <div className="flex-1 flex flex-col pb-28 overflow-auto">
+      <div className="px-6 pt-5 pb-3 text-center">
         <h1 className="text-2xl font-extrabold text-[var(--text)]">Spin the Wheel</h1>
-        <p className="text-sm text-[var(--text-sec)] mt-1">Spin to discover a new adventure!</p>
+        <p className="text-sm text-[var(--text-sec)] mt-1.5">Spin to discover a new adventure!</p>
       </div>
 
-      <div className="flex justify-center items-center py-6 relative">
+      <div className="flex justify-center items-center py-8 relative">
         <div className="absolute top-4 z-20 drop-shadow-md">
           <svg width="28" height="24" viewBox="0 0 28 24">
             <polygon points="14,24 0,0 28,0" fill="var(--text)" />
@@ -140,7 +140,7 @@ export default function WheelPage() {
       </div>
 
       {showResult && command && category && (
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="px-5 mb-4">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="px-6 mb-5">
           <div className="rounded-2xl p-6 text-center text-white" style={{ background: category.color }}>
             <span className="text-3xl">{category.emoji}</span>
             <p className="text-xs font-semibold uppercase tracking-widest opacity-80 mt-1">{category.name}</p>
@@ -160,7 +160,7 @@ export default function WheelPage() {
         </motion.div>
       )}
 
-      <div className="px-5">
+      <div className="px-6 mt-1">
         <button onClick={spin} disabled={spinning}
           className="w-full py-4 rounded-2xl bg-[var(--primary)] text-white text-lg font-bold flex items-center justify-center gap-2.5 shadow-lg shadow-[var(--primary)]/30 active:scale-95 transition disabled:opacity-40 touch-target">
           <Zap size={22} /> {spinning ? 'Spinning...' : 'Spin!'}
@@ -168,7 +168,7 @@ export default function WheelPage() {
       </div>
 
       {!showResult && !spinning && (
-        <p className="text-center text-sm text-[var(--text-sec)] italic mt-4 px-5">
+        <p className="text-center text-sm text-[var(--text-sec)] italic mt-5 px-6">
           Pick a random category from the wheel
         </p>
       )}

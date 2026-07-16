@@ -70,7 +70,7 @@ export default function App() {
 
       {/* Header */}
       <header className="sticky top-0 z-40 bg-[var(--bg)]/80 backdrop-blur-xl border-b border-[var(--border)]">
-        <h1 className="text-lg font-bold text-[var(--text)] px-5 py-3">{headers[activeTab]}</h1>
+        <h1 className="text-lg font-bold text-[var(--text)] px-6 py-3.5">{headers[activeTab]}</h1>
       </header>
 
       {/* Page */}
@@ -103,22 +103,22 @@ export default function App() {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="absolute bottom-0 left-0 right-0 bg-[var(--surface)] rounded-t-3xl p-6 pb-10"
+              className="absolute bottom-0 left-0 right-0 bg-[var(--surface)] rounded-t-3xl p-7 pb-10"
               onClick={e => e.stopPropagation()}
               style={{ paddingBottom: 'calc(1.5rem + var(--safe-bottom))' }}
             >
-              <div className="flex justify-between items-center mb-5">
+              <div className="flex justify-between items-center mb-6">
                 <h2 className="text-lg font-bold text-[var(--text)]">More</h2>
                 <button onClick={() => setShowMore(false)} className="p-2 rounded-full hover:bg-[var(--border)]">
                   <X size={20} className="text-[var(--text)]" />
                 </button>
               </div>
-              <div className="space-y-1">
+              <div className="space-y-2">
                 {MORE_ITEMS.map(item => {
                   const active = activeTab === item.id;
                   return (
                     <button key={item.id} onClick={() => navigateTo(item.id)}
-                      className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all active:scale-98 ${
+                      className={`w-full flex items-center gap-4 px-4 py-4 rounded-xl transition-all active:scale-98 ${
                         active ? 'bg-[var(--primary)]/10 text-[var(--primary)]' : 'text-[var(--text)] hover:bg-[var(--bg)]'
                       }`}>
                       <item.icon size={22} className={active ? 'text-[var(--primary)]' : 'text-[var(--text-sec)]'} />

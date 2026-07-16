@@ -29,17 +29,17 @@ export default function AchievementsPage() {
     : null;
 
   return (
-    <div className="flex-1 overflow-auto p-5 pb-24 scrollbar-thin">
-      <div className="bg-[var(--surface)] rounded-2xl p-5 text-center mb-6 border border-[var(--border)]">
+    <div className="flex-1 overflow-auto p-6 pb-28 scrollbar-thin">
+      <div className="bg-[var(--surface)] rounded-2xl p-6 text-center mb-8 border border-[var(--border)]">
         <h2 className="text-xl font-bold text-[var(--text)] mb-2">Achievements</h2>
-        <p className="text-sm text-[var(--text-sec)] mb-3">{total} / {ACHIEVEMENTS.length} unlocked</p>
-        <div className="w-full h-2 bg-[var(--border)] rounded-full overflow-hidden">
+        <p className="text-sm text-[var(--text-sec)] mb-3.5">{total} / {ACHIEVEMENTS.length} unlocked</p>
+        <div className="w-full h-2.5 bg-[var(--border)] rounded-full overflow-hidden">
           <div className="h-full rounded-full bg-[var(--primary)] transition-all duration-500"
             style={{ width: `${(total / ACHIEVEMENTS.length) * 100}%` }} />
         </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-4">
         {ACHIEVEMENTS.map(a => {
           const unlocked = unlockedIds.includes(a.id);
           const progress = getAchievementProgress(a, statistics);
@@ -47,7 +47,7 @@ export default function AchievementsPage() {
 
           return (
             <div key={a.id}
-              className={`flex items-center gap-4 p-4 rounded-2xl border transition-all ${
+              className={`flex items-center gap-4 p-5 rounded-2xl border transition-all ${
                 unlocked
                   ? 'bg-[var(--surface)] border-green-400 shadow-sm'
                   : 'bg-[var(--surface)] border-[var(--border)]'

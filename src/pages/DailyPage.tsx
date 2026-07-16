@@ -38,15 +38,15 @@ export default function DailyPage() {
   }
 
   return (
-    <div className="flex-1 flex flex-col p-5 pb-24 overflow-auto">
-      <p className="text-sm text-[var(--text-sec)] mb-1">{greeting}</p>
-      <h1 className="text-2xl font-extrabold text-[var(--text)] mb-6">Today's Challenge</h1>
+    <div className="flex-1 flex flex-col p-6 pb-28 overflow-auto">
+      <p className="text-sm text-[var(--text-sec)] mb-1.5">{greeting}</p>
+      <h1 className="text-2xl font-extrabold text-[var(--text)] mb-8">Today's Challenge</h1>
 
       <motion.div
         key={dailyChallenge.command}
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="rounded-3xl p-8 text-center text-white mb-6 shadow-lg"
+        className="rounded-3xl p-8 text-center text-white mb-8 shadow-lg"
         style={{ background: `linear-gradient(135deg, ${category.gradient[0]}, ${category.gradient[1]})` }}
       >
         {dailyChallenge.completed && (
@@ -54,10 +54,10 @@ export default function DailyPage() {
             <Check size={14} /> Completed!
           </div>
         )}
-        <div className="text-4xl mb-2">{category.emoji}</div>
-        <div className="text-xs font-semibold uppercase tracking-widest opacity-80 mb-4">{category.name}</div>
-        <p className="text-xl font-bold leading-relaxed mb-4">{dailyChallenge.command}</p>
-        <div className="flex justify-center gap-3">
+        <div className="text-4xl mb-3">{category.emoji}</div>
+        <div className="text-xs font-semibold uppercase tracking-widest opacity-80 mb-5">{category.name}</div>
+        <p className="text-xl font-bold leading-relaxed mb-5">{dailyChallenge.command}</p>
+        <div className="flex justify-center gap-3.5">
           <button onClick={() => {
             isFav ? removeFavorite(dailyChallenge.command) : addFavorite(dailyChallenge.command);
             if (soundEnabled) triggerHaptic('light');
@@ -75,12 +75,12 @@ export default function DailyPage() {
 
       {!dailyChallenge.completed && (
         <button onClick={() => { completeDailyChallenge(); if (soundEnabled) triggerHaptic('success'); showToast('Challenge completed!', 'success'); }}
-          className="w-full py-4 rounded-2xl bg-[var(--success)] text-white text-lg font-bold flex items-center justify-center gap-2 mb-5 active:scale-95 transition shadow-lg shadow-[var(--success)]/30 touch-target">
+          className="w-full py-4 rounded-2xl bg-[var(--success)] text-white text-lg font-bold flex items-center justify-center gap-2 mb-6 active:scale-95 transition shadow-lg shadow-[var(--success)]/30 touch-target">
           <Check size={22} /> Mark as Complete
         </button>
       )}
 
-      <div className="flex gap-3 mb-6">
+      <div className="flex gap-3 mb-8">
         <button onClick={() => setShowTimer(true)}
           className="flex-1 py-3.5 rounded-xl bg-[var(--surface)] text-[var(--text)] border border-[var(--border)] font-semibold flex items-center justify-center gap-2 text-sm active:scale-95 transition touch-target">
           <Clock size={16} /> Start Timer
@@ -91,7 +91,7 @@ export default function DailyPage() {
         </button>
       </div>
 
-      <div className="bg-[var(--surface)] rounded-2xl p-4 flex items-center gap-4 border border-[var(--border)]">
+      <div className="bg-[var(--surface)] rounded-2xl p-5 flex items-center gap-4 border border-[var(--border)]">
         <Calendar size={24} className="text-[var(--primary)]" />
         <div>
           <p className="text-2xl font-bold text-[var(--text)]">{completedChallenges}</p>

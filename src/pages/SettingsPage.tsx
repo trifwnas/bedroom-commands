@@ -71,7 +71,7 @@ export default function SettingsPage() {
   ];
 
   return (
-    <div className="flex-1 overflow-auto p-5 pb-24 scrollbar-thin">
+    <div className="flex-1 overflow-auto p-6 pb-28 scrollbar-thin">
       <Section title="APPEARANCE">
         <div className="bg-[var(--surface)] rounded-2xl border border-[var(--border)] overflow-hidden">
           {themes.map(t => (
@@ -201,7 +201,7 @@ function ToggleSwitch({ enabled, onToggle }: { enabled: boolean; onToggle: (e?: 
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="mb-6">
+    <div className="mb-8">
       <h3 className="text-xs font-semibold text-[var(--text-sec)] uppercase tracking-wider mb-3 px-1">{title}</h3>
       {children}
     </div>
