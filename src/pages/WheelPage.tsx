@@ -90,10 +90,10 @@ export default function WheelPage() {
   const isFav = command ? favorites.includes(command) : false;
 
   return (
-    <div className="flex-1 flex flex-col pb-28 overflow-auto">
-      <div className="px-6 pt-5 pb-3 text-center">
+    <div className="flex-1 flex flex-col px-6 pt-6 pb-28 overflow-auto">
+      <div className="text-center mb-6">
         <h1 className="text-2xl font-extrabold text-[var(--text)]">Spin the Wheel</h1>
-        <p className="text-sm text-[var(--text-sec)] mt-1.5">Spin to discover a new adventure!</p>
+        <p className="text-sm text-[var(--text-sec)] mt-1">Spin to discover a new adventure!</p>
       </div>
 
       <div className="flex justify-center items-center py-6 relative">
@@ -140,7 +140,7 @@ export default function WheelPage() {
       </div>
 
       {showResult && command && category && (
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="px-6 mb-4">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-4">
           <div className="rounded-3xl p-6 text-center text-white shadow-lg" style={{ background: category.color }}>
             <span className="text-3xl">{category.emoji}</span>
             <p className="text-xs font-semibold uppercase tracking-widest opacity-80 mt-1">{category.name}</p>
@@ -160,7 +160,7 @@ export default function WheelPage() {
         </motion.div>
       )}
 
-      <div className="px-6 mt-1">
+      <div className="mt-1">
         <button onClick={spin} disabled={spinning}
           className="w-full py-4 rounded-2xl bg-[var(--primary)] text-white text-lg font-bold flex items-center justify-center gap-2.5 shadow-lg shadow-[var(--primary)]/30 active:scale-95 transition disabled:opacity-40 touch-target">
           <Zap size={22} /> {spinning ? 'Spinning...' : 'Spin!'}
@@ -168,7 +168,7 @@ export default function WheelPage() {
       </div>
 
       {!showResult && !spinning && (
-        <p className="text-center text-sm text-[var(--text-sec)] italic mt-5 px-6">
+        <p className="text-center text-sm text-[var(--text-sec)] italic mt-5">
           Pick a random category from the wheel
         </p>
       )}

@@ -32,14 +32,14 @@ export default function HistoryPage() {
 
   return (
     <div className="flex-1 overflow-auto px-6 pt-6 pb-28 scrollbar-thin">
-      <div className="flex justify-between items-center mb-1">
-        <h1 className="text-2xl font-extrabold text-[var(--text)]">Draw History</h1>
+      <h1 className="text-2xl font-extrabold text-[var(--text)] mb-6">Draw History</h1>
+      <div className="flex justify-between items-center mb-5">
+        <p className="text-sm text-[var(--text-sec)]">{history.length} items</p>
         <button onClick={handleClear}
           className="flex items-center gap-1.5 text-sm text-red-500 font-medium hover:text-red-600 transition active:scale-95 touch-target">
           <Trash2 size={14} /> Clear
         </button>
       </div>
-      <p className="text-sm text-[var(--text-sec)] mb-5">{history.length} items</p>
       <div className="space-y-4">
         {history.map((cmd, i) => {
           const cat = COMMAND_TO_CATEGORY.get(cmd);

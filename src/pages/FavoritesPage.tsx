@@ -37,7 +37,7 @@ export default function FavoritesPage() {
 
   return (
     <div className="flex-1 overflow-auto px-6 pt-6 pb-28 scrollbar-thin">
-      <h1 className="text-2xl font-extrabold text-[var(--text)] mb-1">My Favorites</h1>
+      <h1 className="text-2xl font-extrabold text-[var(--text)] mb-6">My Favorites</h1>
       <p className="text-sm text-[var(--text-sec)] mb-5">{favorites.length} saved commands</p>
       <div className="space-y-4">
         {favorites.map(cmd => {

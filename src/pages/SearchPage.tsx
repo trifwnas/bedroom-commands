@@ -39,27 +39,25 @@ export default function SearchPage() {
   const total = allCommands.length;
 
   return (
-    <div className="flex-1 flex flex-col pb-28">
-      <div className="px-6 pt-6">
-        <h1 className="text-2xl font-extrabold text-[var(--text)] mb-4">Search</h1>
-        <div className="flex items-center gap-3 bg-[var(--surface)] border border-[var(--border)] rounded-xl px-4 py-3">
-          <Search size={18} className="text-[var(--text-sec)] shrink-0" />
-          <input type="text" placeholder="Search commands..." value={query} onChange={e => setQuery(e.target.value)}
-            className="flex-1 bg-transparent text-[var(--text)] text-base outline-none placeholder:text-[var(--text-sec)]" />
-          {query && (
-            <button onClick={() => setQuery('')} className="p-1 touch-target flex items-center justify-center">
-              <X size={18} className="text-[var(--text-sec)]" />
-            </button>
-          )}
-        </div>
-        <p className="text-xs text-[var(--text-sec)] mt-2 px-1">
-          {query || filterCat !== 'All'
-            ? `${filtered.length} of ${total} commands`
-            : `${total} commands total`}
-        </p>
+    <div className="flex-1 flex flex-col px-6 pt-6 pb-28 overflow-auto">
+      <h1 className="text-2xl font-extrabold text-[var(--text)] mb-6">Search</h1>
+      <div className="flex items-center gap-3 bg-[var(--surface)] border border-[var(--border)] rounded-xl px-4 py-3 mb-3">
+        <Search size={18} className="text-[var(--text-sec)] shrink-0" />
+        <input type="text" placeholder="Search commands..." value={query} onChange={e => setQuery(e.target.value)}
+          className="flex-1 bg-transparent text-[var(--text)] text-base outline-none placeholder:text-[var(--text-sec)]" />
+        {query && (
+          <button onClick={() => setQuery('')} className="p-1 touch-target flex items-center justify-center">
+            <X size={18} className="text-[var(--text-sec)]" />
+          </button>
+        )}
       </div>
+      <p className="text-xs text-[var(--text-sec)] mb-4">
+        {query || filterCat !== 'All'
+          ? `${filtered.length} of ${total} commands`
+          : `${total} commands total`}
+      </p>
 
-      <div className="flex gap-2 overflow-x-auto px-6 py-3 scrollbar-none">
+      <div className="flex gap-2 overflow-x-auto py-3 mb-3 scrollbar-none">
         {['All', ...CATEGORIES.map(c => c.id)].map(cat => (
           <button key={cat} onClick={() => setFilterCat(cat as any)}
             className={`shrink-0 px-4 py-2 rounded-full text-sm font-semibold border transition-all active:scale-95 touch-target ${
@@ -72,7 +70,7 @@ export default function SearchPage() {
         ))}
       </div>
 
-      <div className="flex-1 overflow-auto px-6 pb-6 scrollbar-thin">
+      <div className="flex-1 overflow-auto pb-6 scrollbar-thin">
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <Search size={48} className="text-[var(--text-sec)] mb-4 opacity-40" />

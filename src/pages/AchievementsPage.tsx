@@ -30,7 +30,7 @@ export default function AchievementsPage() {
 
   return (
     <div className="flex-1 overflow-auto px-6 pt-6 pb-28 scrollbar-thin">
-      <h1 className="text-2xl font-extrabold text-[var(--text)] mb-5">Achievements</h1>
+      <h1 className="text-2xl font-extrabold text-[var(--text)] mb-6">Achievements</h1>
       <div className="bg-[var(--surface)] rounded-2xl p-6 text-center mb-8 border border-[var(--border)]">
         <p className="text-sm text-[var(--text-sec)] mb-3.5">{total} / {ACHIEVEMENTS.length} unlocked</p>
         <div className="w-full h-2.5 bg-[var(--border)] rounded-full overflow-hidden">

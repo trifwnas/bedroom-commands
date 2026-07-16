@@ -11,7 +11,7 @@ export function CategorySelector({ selected, onSelect }: Props) {
   const disabledCategories = useStore(s => s.disabledCategories);
 
   return (
-    <div className="flex gap-2 overflow-x-auto px-5 py-2 scrollbar-none">
+    <div className="flex gap-2 overflow-x-auto px-6 py-2 scrollbar-none">
       <button
         onClick={() => onSelect('Random')}
         className={`shrink-0 px-4 py-2 rounded-full text-sm font-semibold transition-all active:scale-95 touch-target ${
