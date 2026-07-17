@@ -144,37 +144,35 @@ export default function CardsPage() {
   const moodInfo = MOODS.find(m => m.id === currentMood);
 
   return (
-    <div className="flex-1 flex flex-col pb-28 overflow-auto">
+    <div className="flex-1 flex flex-col px-6 pt-6 pb-28 overflow-auto">
       {/* Header with progress */}
-      <div className="px-6 pt-6 pb-2">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-extrabold text-[var(--text)]">Bedroom Commands</h1>
-            <p className="text-sm text-[var(--text-sec)] mt-1">
-              {completedCommands.length} of 395 completed
-            </p>
-          </div>
-          {completedCommands.length > 0 && (
-            <div className="relative w-12 h-12">
-              <svg className="w-12 h-12 -rotate-90" viewBox="0 0 36 36">
-                <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--border)" strokeWidth="3" />
-                <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--primary)" strokeWidth="3"
-                  strokeDasharray={`${Math.min((completedCommands.length / 395) * 97.4, 97.4)} 97.4`}
-                  strokeLinecap="round" className="transition-all duration-700" />
-              </svg>
-              <span className="absolute inset-0 flex items-center justify-center text-[11px] font-bold text-[var(--primary)]">
-                {Math.round((completedCommands.length / 395) * 100)}%
-              </span>
-            </div>
-          )}
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-extrabold text-[var(--text)]">Bedroom Commands</h1>
+          <p className="text-sm text-[var(--text-sec)] mt-1">
+            {completedCommands.length} of 395 completed
+          </p>
         </div>
+        {completedCommands.length > 0 && (
+          <div className="relative w-12 h-12">
+            <svg className="w-12 h-12 -rotate-90" viewBox="0 0 36 36">
+              <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--border)" strokeWidth="3" />
+              <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--primary)" strokeWidth="3"
+                strokeDasharray={`${Math.min((completedCommands.length / 395) * 97.4, 97.4)} 97.4`}
+                strokeLinecap="round" className="transition-all duration-700" />
+            </svg>
+            <span className="absolute inset-0 flex items-center justify-center text-[11px] font-bold text-[var(--primary)]">
+              {Math.round((completedCommands.length / 395) * 100)}%
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Category selector */}
       <CategorySelector selected={selectedCategory} onSelect={setSelectedCategory} />
 
       {/* Mood filter toggle */}
-      <div className="px-6 pt-1 pb-1">
+      <div className="pt-1 pb-1">
         <button onClick={() => setShowMoodFilter(!showMoodFilter)}
           className="flex items-center gap-2 text-sm font-medium text-[var(--text-sec)] hover:text-[var(--text)] transition">
           <Sparkles size={14} />
@@ -191,7 +189,7 @@ export default function CardsPage() {
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
-            <div className="flex gap-2 overflow-x-auto px-6 py-2 scrollbar-none">
+            <div className="flex gap-2 overflow-x-auto py-2 -mx-6 px-6 scrollbar-none">
               <button onClick={() => setSelectedMood('all')}
                 className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all active:scale-95 ${
                   selectedMood === 'all'
@@ -217,7 +215,7 @@ export default function CardsPage() {
       </AnimatePresence>
 
       {/* Card */}
-      <div className="flex-1 flex justify-center items-center py-4 px-6 perspective-[1000px] min-h-0">
+      <div className="flex-1 flex justify-center items-center py-4 perspective-[1000px] min-h-0">
         <div className="relative w-full max-w-sm" style={{ maxHeight: 340 }}>
           {/* Confetti overlay */}
           <AnimatePresence>
@@ -317,7 +315,7 @@ export default function CardsPage() {
       </div>
 
       {/* Actions */}
-      <div className="px-6 pb-2">
+      <div className="mt-2">
         <button onClick={drawCard} disabled={isDrawing}
           className="w-full py-4 rounded-2xl bg-[var(--primary)] text-white text-lg font-bold flex items-center justify-center gap-2.5 shadow-lg shadow-[var(--primary)]/30 active:scale-[0.98] transition disabled:opacity-40 touch-target">
           <Zap size={22} /> {isDrawing ? 'Drawing...' : 'Draw Card'}
