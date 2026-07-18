@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { HashRouter, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Gamepad2, RotateCw, Sun, Search, Menu, Heart, Clock, BarChart3, Award, Settings, X } from 'lucide-react';
 import { useStore } from './store/useStore';
@@ -200,8 +200,8 @@ export default function App() {
   }, [isDark]);
 
   return (
-    <HashRouter>
+    <BrowserRouter>
       <AppContent />
-    </HashRouter>
+    </BrowserRouter>
   );
 }
