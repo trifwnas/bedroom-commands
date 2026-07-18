@@ -145,27 +145,9 @@ export default function CardsPage() {
 
   return (
     <div className="flex-1 flex flex-col px-6 pt-6 pb-28 overflow-auto">
-      {/* Header with progress */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-extrabold text-[var(--text)]">Bedroom Commands</h1>
-          <p className="text-sm text-[var(--text-sec)] mt-1">
-            {completedCommands.length} of 395 completed
-          </p>
-        </div>
-        {completedCommands.length > 0 && (
-          <div className="relative w-12 h-12">
-            <svg className="w-12 h-12 -rotate-90" viewBox="0 0 36 36">
-              <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--border)" strokeWidth="3" />
-              <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--primary)" strokeWidth="3"
-                strokeDasharray={`${Math.min((completedCommands.length / 395) * 97.4, 97.4)} 97.4`}
-                strokeLinecap="round" className="transition-all duration-700" />
-            </svg>
-            <span className="absolute inset-0 flex items-center justify-center text-[11px] font-bold text-[var(--primary)]">
-              {Math.round((completedCommands.length / 395) * 100)}%
-            </span>
-          </div>
-        )}
+      {/* Header */}
+      <div className="mb-6">
+        <h1 className="text-2xl font-extrabold text-[var(--text)]">Bedroom Commands</h1>
       </div>
 
       {/* Category selector */}

@@ -56,22 +56,6 @@ export default function StatsPage() {
       </div>
 
       {/* Completion progress */}
-      {completedCommands.length > 0 && (
-        <div className="bg-[var(--surface)] rounded-2xl p-6 mb-6 border border-[var(--border)]">
-          <h2 className="text-base font-semibold text-[var(--text)] mb-4">Completion</h2>
-          <div className="flex items-center gap-3 mb-4">
-            <span className="text-3xl font-bold text-[var(--primary)]">{completedCommands.length}</span>
-            <span className="text-sm text-[var(--text-sec)]">of 395 commands completed</span>
-          </div>
-          <div className="w-full h-3 bg-[var(--border)] rounded-full overflow-hidden">
-            <div className="h-full rounded-full bg-[var(--primary)] transition-all duration-500"
-              style={{ width: `${Math.min((completedCommands.length / 395) * 100, 100)}%` }} />
-          </div>
-          <p className="text-xs text-[var(--text-sec)] mt-3">
-            {Math.round((completedCommands.length / 395) * 100)}% complete
-          </p>
-        </div>
-      )}
 
       {/* Category breakdown */}
       <div className="bg-[var(--surface)] rounded-2xl p-6 mb-6 border border-[var(--border)]">

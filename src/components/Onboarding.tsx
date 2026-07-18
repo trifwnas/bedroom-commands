@@ -4,7 +4,7 @@ import { ChevronRight, Sparkles } from 'lucide-react';
 import { useStore } from '../store/useStore';
 
 const STEPS = [
-  { emoji: '💕', title: 'Welcome to Bedroom Commands', desc: 'A fun couples card game with 395+ commands across 5 categories', color: '#ff6b6b' },
+  { emoji: '💕', title: 'Welcome to Bedroom Commands', desc: 'A fun couples card game with hundreds of commands across 5 categories', color: '#ff6b6b' },
   { emoji: '🎲', title: 'Draw Cards', desc: 'Tap to draw random commands from Romantic, Playful, Spicy, Adventure, and Relaxing categories', color: '#ffd93d' },
   { emoji: '🎡', title: 'Spin the Wheel', desc: 'Use the wheel to randomly select a category, then get a command from it', color: '#ff595e' },
   { emoji: '🏆', title: 'Daily Challenges', desc: 'Complete daily challenges to build streaks and earn achievements', color: '#6bcb77' },

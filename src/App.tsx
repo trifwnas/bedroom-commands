@@ -17,10 +17,10 @@ import AchievementsPage from './pages/AchievementsPage';
 import SettingsPage from './pages/SettingsPage';
 
 const SEO: Record<string, { title: string; description: string }> = {
-  '/': { title: 'Bedroom Commands — 395+ Fun Couples Card Game | Romantic, Spicy & Playful Challenges', description: 'A free couples card game with 395+ romantic, playful, spicy, adventure, and relaxing challenges. Draw cards, spin the wheel, and discover new experiences together.' },
+  '/': { title: 'Bedroom Commands — Fun Couples Card Game | Romantic, Spicy & Playful Challenges', description: 'A free couples card game with hundreds of romantic, playful, spicy, adventure, and relaxing challenges. Draw cards, spin the wheel, and discover new experiences together.' },
   '/wheel': { title: 'Spin the Wheel — Bedroom Commands', description: 'Spin the wheel to discover a random romantic, playful, or spicy couples challenge. Let fate decide your next bedroom command.' },
   '/daily': { title: "Today's Challenge — Bedroom Commands", description: 'Get a fresh daily couples challenge every day. Romantic, spicy, and playful commands to keep your relationship exciting.' },
-  '/search': { title: 'Search Commands — Bedroom Commands', description: 'Browse and search through 395+ couples commands. Filter by category, mood, or keyword to find the perfect challenge.' },
+  '/search': { title: 'Search Commands — Bedroom Commands', description: 'Browse and search through hundreds of couples commands. Filter by category, mood, or keyword to find the perfect challenge.' },
   '/favorites': { title: 'Favorite Commands — Bedroom Commands', description: 'Your saved bedroom commands. Access your favorite romantic, playful, and spicy couples challenges anytime.' },
   '/history': { title: 'Command History — Bedroom Commands', description: 'Review your past drawn bedroom commands. Track which couples challenges you have explored.' },
   '/stats': { title: 'Statistics — Bedroom Commands', description: 'View your couples game statistics. Track completed commands, favorite categories, and relationship milestones.' },
