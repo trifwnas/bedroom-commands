@@ -172,7 +172,7 @@ export default function CardsPage() {
       <CategorySelector selected={selectedCategory} onSelect={setSelectedCategory} />
 
       {/* Mood filter toggle */}
-      <div className="pt-1 pb-1">
+      <div className="pt-2 pb-2">
         <button onClick={() => setShowMoodFilter(!showMoodFilter)}
           className="flex items-center gap-2 text-sm font-medium text-[var(--text-sec)] hover:text-[var(--text)] transition">
           <Sparkles size={14} />
@@ -215,7 +215,7 @@ export default function CardsPage() {
       </AnimatePresence>
 
       {/* Card */}
-      <div className="flex-1 flex justify-center items-center py-3 perspective-[1000px] min-h-0">
+      <div className="flex-1 flex justify-center items-center py-4 perspective-[1000px] min-h-0">
         <div className="relative w-full max-w-sm">
           {/* Confetti overlay */}
           <AnimatePresence>
@@ -317,12 +317,12 @@ export default function CardsPage() {
       </div>
 
       {/* Actions */}
-      <div className="mt-2">
+      <div className="mt-4">
         <button onClick={drawCard} disabled={isDrawing}
           className="w-full py-4 rounded-2xl bg-[var(--primary)] text-white text-lg font-bold flex items-center justify-center gap-3 shadow-lg shadow-[var(--primary)]/30 active:scale-[0.98] transition disabled:opacity-40 touch-target">
           <Zap size={22} /> {isDrawing ? 'Drawing...' : 'Draw Card'}
         </button>
-        <div className="mt-3 flex gap-3">
+        <div className="mt-4 flex gap-3">
           <button onClick={handleUndo} disabled={!canUndo || !currentCommand}
             className="flex-1 py-3.5 rounded-xl bg-[var(--surface)] text-[var(--text-sec)] border border-[var(--border)] font-semibold flex items-center justify-center gap-2 text-sm active:scale-95 transition disabled:opacity-30 touch-target">
             <Undo2 size={16} /> Undo
@@ -340,7 +340,7 @@ export default function CardsPage() {
 
       <Timer open={showTimer} onClose={() => setShowTimer(false)} initialMinutes={timerMinutes} />
 
-      <p className="text-center text-xs mt-4" style={{ color: 'color-mix(in srgb, var(--text-sec) 40%, transparent)' }}>
+      <p className="text-center text-xs mt-6" style={{ color: 'color-mix(in srgb, var(--text-sec) 40%, transparent)' }}>
         A <a href="https://tafhub.com/" target="_blank" rel="noopener noreferrer" className="underline hover:opacity-100 transition opacity-80">TafHub</a> project
       </p>
     </div>
