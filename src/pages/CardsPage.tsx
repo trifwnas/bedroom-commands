@@ -215,8 +215,8 @@ export default function CardsPage() {
       </AnimatePresence>
 
       {/* Card */}
-      <div className="flex-1 flex justify-center items-center py-4 perspective-[1000px] min-h-0">
-        <div className="relative w-full max-w-sm" style={{ maxHeight: 340 }}>
+      <div className="flex-1 flex justify-center items-center py-3 perspective-[1000px] min-h-0">
+        <div className="relative w-full max-w-sm">
           {/* Confetti overlay */}
           <AnimatePresence>
             {showConfetti && (
@@ -254,7 +254,7 @@ export default function CardsPage() {
             onClick={() => !currentCommand && drawCard()}
           >
             {/* Back of card */}
-            <div className="w-full rounded-3xl p-8 text-center text-white shadow-2xl flex flex-col items-center justify-center aspect-[3/4]"
+            <div className="w-full rounded-3xl p-6 text-center text-white shadow-2xl flex flex-col items-center justify-center"
               style={{
                 ...gradientStyle,
                 backfaceVisibility: 'hidden',
@@ -269,7 +269,7 @@ export default function CardsPage() {
             </div>
 
             {/* Front of card */}
-            <div className="w-full rounded-3xl p-8 text-center text-white shadow-2xl flex flex-col items-center justify-center aspect-[3/4]"
+            <div className="w-full rounded-3xl p-6 text-center text-white shadow-2xl flex flex-col items-center justify-center"
               style={{
                 ...gradientStyle,
                 backfaceVisibility: 'hidden',
@@ -279,7 +279,7 @@ export default function CardsPage() {
                 left: 0,
               }}>
               <span className="text-4xl mb-2">{currentCatInfo.emoji}</span>
-              <div className="flex items-center gap-2 mb-4">
+              <div className="flex items-center gap-2 mb-3">
                 <span className="text-xs font-semibold uppercase tracking-widest opacity-80">{currentCatInfo.name}</span>
                 {moodInfo && (
                   <span className="text-xs px-2 py-0.5 rounded-full bg-white/20 font-medium">
@@ -295,18 +295,18 @@ export default function CardsPage() {
               {/* Action buttons on card */}
               <div className="flex gap-3">
                 <button onClick={(e) => { e.stopPropagation(); handleFavorite(); }}
-                  className="p-2.5 rounded-full bg-white/20 hover:bg-white/30 transition active:scale-90">
-                  <Heart size={20} fill={isFavorite ? 'white' : 'none'} className="text-white" />
+                  className="p-3 rounded-full bg-white/20 hover:bg-white/30 transition active:scale-90">
+                  <Heart size={22} fill={isFavorite ? 'white' : 'none'} className="text-white" />
                 </button>
                 <button onClick={(e) => { e.stopPropagation(); handleShare(); }}
-                  className="p-2.5 rounded-full bg-white/20 hover:bg-white/30 transition active:scale-90">
-                  <Share2 size={20} className="text-white" />
+                  className="p-3 rounded-full bg-white/20 hover:bg-white/30 transition active:scale-90">
+                  <Share2 size={22} className="text-white" />
                 </button>
                 <button onClick={(e) => { e.stopPropagation(); handleComplete(); }}
-                  className={`p-2.5 rounded-full transition active:scale-90 ${
+                  className={`p-3 rounded-full transition active:scale-90 ${
                     isCompleted ? 'bg-white/40' : 'bg-white/20 hover:bg-white/30'
                   }`}>
-                  <Check size={20} className="text-white" fill={isCompleted ? 'white' : 'none'} />
+                  <Check size={22} className="text-white" fill={isCompleted ? 'white' : 'none'} />
                 </button>
               </div>
             </div>
@@ -317,21 +317,21 @@ export default function CardsPage() {
       {/* Actions */}
       <div className="mt-2">
         <button onClick={drawCard} disabled={isDrawing}
-          className="w-full py-4 rounded-2xl bg-[var(--primary)] text-white text-lg font-bold flex items-center justify-center gap-2.5 shadow-lg shadow-[var(--primary)]/30 active:scale-[0.98] transition disabled:opacity-40 touch-target">
+          className="w-full py-4 rounded-2xl bg-[var(--primary)] text-white text-lg font-bold flex items-center justify-center gap-3 shadow-lg shadow-[var(--primary)]/30 active:scale-[0.98] transition disabled:opacity-40 touch-target">
           <Zap size={22} /> {isDrawing ? 'Drawing...' : 'Draw Card'}
         </button>
-        <div className="mt-3 flex gap-2">
+        <div className="mt-3 flex gap-3">
           <button onClick={handleUndo} disabled={!canUndo || !currentCommand}
-            className="flex-1 py-3 rounded-xl bg-[var(--surface)] text-[var(--text-sec)] border border-[var(--border)] font-semibold flex items-center justify-center gap-1.5 text-sm active:scale-95 transition disabled:opacity-30 touch-target">
-            <Undo2 size={15} /> Undo
+            className="flex-1 py-3.5 rounded-xl bg-[var(--surface)] text-[var(--text-sec)] border border-[var(--border)] font-semibold flex items-center justify-center gap-2 text-sm active:scale-95 transition disabled:opacity-30 touch-target">
+            <Undo2 size={16} /> Undo
           </button>
           <button onClick={() => setShowTimer(true)}
-            className="flex-1 py-3 rounded-xl bg-[var(--surface)] text-[var(--text-sec)] border border-[var(--border)] font-semibold flex items-center justify-center gap-1.5 text-sm active:scale-95 transition touch-target">
-            <Clock size={15} /> Timer
+            className="flex-1 py-3.5 rounded-xl bg-[var(--surface)] text-[var(--text-sec)] border border-[var(--border)] font-semibold flex items-center justify-center gap-2 text-sm active:scale-95 transition touch-target">
+            <Clock size={16} /> Timer
           </button>
           <button onClick={handleReset}
-            className="flex-1 py-3 rounded-xl bg-[var(--surface)] text-[var(--text-sec)] border border-[var(--border)] font-semibold flex items-center justify-center gap-1.5 text-sm active:scale-95 transition touch-target">
-            <RotateCcw size={15} /> Reset
+            className="flex-1 py-3.5 rounded-xl bg-[var(--surface)] text-[var(--text-sec)] border border-[var(--border)] font-semibold flex items-center justify-center gap-2 text-sm active:scale-95 transition touch-target">
+            <RotateCcw size={16} /> Reset
           </button>
         </div>
       </div>
