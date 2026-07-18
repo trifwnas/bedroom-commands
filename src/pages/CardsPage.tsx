@@ -260,19 +260,19 @@ export default function CardsPage() {
               }}
             >
             {/* Back of card */}
-            <div className="w-full rounded-3xl p-6 text-center text-white shadow-2xl flex flex-col items-center justify-center"
+            <div className="w-full min-h-[420px] rounded-3xl p-8 text-center text-white shadow-2xl flex flex-col items-center justify-center"
               style={{
                 ...gradientStyle,
                 backfaceVisibility: 'hidden',
                 WebkitBackfaceVisibility: 'hidden',
               }}>
-              <span className="text-5xl mb-3">🎲</span>
+              <span className="text-6xl mb-4">🎲</span>
               <span className="text-sm font-semibold uppercase tracking-widest opacity-80">Tap to Draw</span>
               <p className="text-xs opacity-50 mt-2">or use the button below</p>
             </div>
 
             {/* Front of card */}
-            <div className="w-full rounded-3xl p-6 text-center text-white shadow-2xl flex flex-col items-center justify-center absolute inset-0"
+            <div className="w-full min-h-[420px] rounded-3xl p-8 text-center text-white shadow-2xl flex flex-col items-center justify-center absolute inset-0"
               style={{
                 ...gradientStyle,
                 backfaceVisibility: 'hidden',
