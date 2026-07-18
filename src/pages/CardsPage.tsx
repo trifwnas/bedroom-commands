@@ -339,6 +339,10 @@ export default function CardsPage() {
       </div>
 
       <Timer open={showTimer} onClose={() => setShowTimer(false)} initialMinutes={timerMinutes} />
+
+      <p className="text-center text-xs mt-4" style={{ color: 'color-mix(in srgb, var(--text-sec) 40%, transparent)' }}>
+        A <a href="https://tafhub.com/" target="_blank" rel="noopener noreferrer" className="underline hover:opacity-100 transition opacity-80">TafHub</a> project
+      </p>
     </div>
   );
 }
