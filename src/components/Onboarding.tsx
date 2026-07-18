@@ -26,19 +26,19 @@ export function Onboarding() {
           transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
           className="bg-[var(--surface)] rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl"
         >
-          <div className="relative inline-block mb-5">
+          <div className="relative inline-block mb-6">
             <div className="absolute inset-0 rounded-full blur-2xl opacity-30"
               style={{ background: STEPS[step].color }} />
-            <div className="relative w-20 h-20 rounded-full flex items-center justify-center mx-auto animate-popIn"
+            <div className="relative w-24 h-24 rounded-full flex items-center justify-center mx-auto animate-popIn"
               style={{ background: `${STEPS[step].color}20` }}>
               <span className="text-5xl">{STEPS[step].emoji}</span>
             </div>
           </div>
 
-          <h2 className="text-xl font-bold text-[var(--text)] mb-2">{STEPS[step].title}</h2>
+          <h2 className="text-xl font-bold text-[var(--text)] mb-3">{STEPS[step].title}</h2>
           <p className="text-sm text-[var(--text-sec)] leading-relaxed mb-6">{STEPS[step].desc}</p>
 
-          <div className="flex justify-center gap-2 mb-6">
+          <div className="flex justify-center gap-2.5 mb-8">
             {STEPS.map((s, i) => (
               <div key={i}
                 className={`h-1.5 rounded-full transition-all duration-300 ${i === step ? 'w-6' : 'w-1.5'}`}
@@ -52,7 +52,7 @@ export function Onboarding() {
               if (step < STEPS.length - 1) setStep(step + 1);
               else setHasSeenOnboarding(true);
             }}
-            className="w-full py-3.5 rounded-2xl text-white font-bold flex items-center justify-center gap-2 transition active:scale-95"
+            className="w-full py-4 rounded-2xl text-white font-bold flex items-center justify-center gap-3 transition active:scale-95"
             style={{ background: STEPS[step].color }}
           >
             {step < STEPS.length - 1 ? (
@@ -63,7 +63,7 @@ export function Onboarding() {
           </button>
 
           <button onClick={() => setHasSeenOnboarding(true)}
-            className="w-full mt-3 py-2 text-sm text-[var(--text-sec)] hover:text-[var(--text)] transition">
+            className="w-full mt-4 py-3 text-sm text-[var(--text-sec)] hover:text-[var(--text)] transition">
             Skip
           </button>
         </motion.div>

@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { motion, useMotionValue, useTransform, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Zap, Heart, Share2, Undo2, RotateCcw, Clock, Check, Sparkles, ChevronDown, ChevronUp } from 'lucide-react';
 import { CategorySelector } from '../components/CategorySelector';
 import { Timer } from '../components/Timer';
@@ -189,9 +189,9 @@ export default function CardsPage() {
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
-            <div className="flex gap-2 overflow-x-auto py-2 -mx-6 px-6 scrollbar-none">
+            <div className="flex gap-2.5 overflow-x-auto py-3 -mx-6 px-6 scrollbar-none">
               <button onClick={() => setSelectedMood('all')}
-                className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all active:scale-95 ${
+                className={`shrink-0 px-4 py-2 rounded-full text-xs font-semibold border transition-all active:scale-95 ${
                   selectedMood === 'all'
                     ? 'bg-[var(--text)] text-[var(--bg)] border-[var(--text)]'
                     : 'bg-[var(--surface)] text-[var(--text)] border-[var(--border)]'
@@ -200,7 +200,7 @@ export default function CardsPage() {
               </button>
               {MOODS.map(mood => (
                 <button key={mood.id} onClick={() => setSelectedMood(mood.id)}
-                  className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all active:scale-95 ${
+                  className={`shrink-0 px-4 py-2 rounded-full text-xs font-semibold border transition-all active:scale-95 ${
                     selectedMood === mood.id
                       ? 'text-white border-transparent'
                       : 'bg-[var(--surface)] text-[var(--text)] border-[var(--border)]'
@@ -279,32 +279,32 @@ export default function CardsPage() {
                 WebkitBackfaceVisibility: 'hidden',
                 transform: 'rotateY(180deg)',
               }}>
-              <span className="text-4xl mb-2">{currentCatInfo.emoji}</span>
-              <div className="flex items-center gap-2 mb-3">
+              <span className="text-4xl mb-3">{currentCatInfo.emoji}</span>
+              <div className="flex items-center gap-2.5 mb-4">
                 <span className="text-xs font-semibold uppercase tracking-widest opacity-80">{currentCatInfo.name}</span>
                 {moodInfo && (
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-white/20 font-medium">
+                  <span className="text-xs px-2.5 py-1 rounded-full bg-white/20 font-medium">
                     {moodInfo.emoji} {moodInfo.label}
                   </span>
                 )}
               </div>
 
-              <p className="text-lg font-bold leading-relaxed mb-5 px-2">
+              <p className="text-lg font-bold leading-relaxed mb-6 px-2">
                 {currentCommand}
               </p>
 
               {/* Action buttons on card */}
-              <div className="flex gap-3">
+              <div className="flex gap-4">
                 <button onClick={(e) => { e.stopPropagation(); handleFavorite(); }}
-                  className="p-3 rounded-full bg-white/20 hover:bg-white/30 transition active:scale-90">
+                  className="p-3.5 rounded-full bg-white/20 hover:bg-white/30 transition active:scale-90">
                   <Heart size={22} fill={isFavorite ? 'white' : 'none'} className="text-white" />
                 </button>
                 <button onClick={(e) => { e.stopPropagation(); handleShare(); }}
-                  className="p-3 rounded-full bg-white/20 hover:bg-white/30 transition active:scale-90">
+                  className="p-3.5 rounded-full bg-white/20 hover:bg-white/30 transition active:scale-90">
                   <Share2 size={22} className="text-white" />
                 </button>
                 <button onClick={(e) => { e.stopPropagation(); handleComplete(); }}
-                  className={`p-3 rounded-full transition active:scale-90 ${
+                  className={`p-3.5 rounded-full transition active:scale-90 ${
                     isCompleted ? 'bg-white/40' : 'bg-white/20 hover:bg-white/30'
                   }`}>
                   <Check size={22} className="text-white" fill={isCompleted ? 'white' : 'none'} />
@@ -324,15 +324,15 @@ export default function CardsPage() {
         </button>
         <div className="mt-4 flex gap-3">
           <button onClick={handleUndo} disabled={!canUndo || !currentCommand}
-            className="flex-1 py-3.5 rounded-xl bg-[var(--surface)] text-[var(--text-sec)] border border-[var(--border)] font-semibold flex items-center justify-center gap-2 text-sm active:scale-95 transition disabled:opacity-30 touch-target">
+            className="flex-1 py-4 rounded-xl bg-[var(--surface)] text-[var(--text-sec)] border border-[var(--border)] font-semibold flex items-center justify-center gap-2 text-sm active:scale-95 transition disabled:opacity-30 touch-target">
             <Undo2 size={16} /> Undo
           </button>
           <button onClick={() => setShowTimer(true)}
-            className="flex-1 py-3.5 rounded-xl bg-[var(--surface)] text-[var(--text-sec)] border border-[var(--border)] font-semibold flex items-center justify-center gap-2 text-sm active:scale-95 transition touch-target">
+            className="flex-1 py-4 rounded-xl bg-[var(--surface)] text-[var(--text-sec)] border border-[var(--border)] font-semibold flex items-center justify-center gap-2 text-sm active:scale-95 transition touch-target">
             <Clock size={16} /> Timer
           </button>
           <button onClick={handleReset}
-            className="flex-1 py-3.5 rounded-xl bg-[var(--surface)] text-[var(--text-sec)] border border-[var(--border)] font-semibold flex items-center justify-center gap-2 text-sm active:scale-95 transition touch-target">
+            className="flex-1 py-4 rounded-xl bg-[var(--surface)] text-[var(--text-sec)] border border-[var(--border)] font-semibold flex items-center justify-center gap-2 text-sm active:scale-95 transition touch-target">
             <RotateCcw size={16} /> Reset
           </button>
         </div>

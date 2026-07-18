@@ -32,8 +32,8 @@ export default function AchievementsPage() {
     <div className="flex-1 overflow-auto px-6 pt-6 pb-28 scrollbar-thin">
       <h1 className="text-2xl font-extrabold text-[var(--text)] mb-6">Achievements</h1>
       <div className="bg-[var(--surface)] rounded-2xl p-6 text-center mb-8 border border-[var(--border)]">
-        <p className="text-sm text-[var(--text-sec)] mb-3.5">{total} / {ACHIEVEMENTS.length} unlocked</p>
-        <div className="w-full h-2.5 bg-[var(--border)] rounded-full overflow-hidden">
+        <p className="text-sm text-[var(--text-sec)] mb-4">{total} / {ACHIEVEMENTS.length} unlocked</p>
+        <div className="w-full h-3 bg-[var(--border)] rounded-full overflow-hidden">
           <div className="h-full rounded-full bg-[var(--primary)] transition-all duration-500"
             style={{ width: `${(total / ACHIEVEMENTS.length) * 100}%` }} />
         </div>
@@ -52,22 +52,22 @@ export default function AchievementsPage() {
                   ? 'bg-[var(--surface)] border-green-400 shadow-sm'
                   : 'bg-[var(--surface)] border-[var(--border)]'
               }`}>
-              <div className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl shrink-0 ${
+              <div className={`w-14 h-14 rounded-full flex items-center justify-center text-2xl shrink-0 ${
                 unlocked ? 'bg-yellow-100' : 'bg-[var(--bg)] opacity-50'
               }`}>
                 {a.icon}
               </div>
               <div className="flex-1 min-w-0">
-                <p className={`font-semibold text-sm ${unlocked ? 'text-[var(--text)]' : 'text-[var(--text-sec)]'}`}>
+                <p className={`font-semibold ${unlocked ? 'text-[var(--text)]' : 'text-[var(--text-sec)]'}`}>
                   {a.title}
                 </p>
-                <p className="text-xs text-[var(--text-sec)] mt-0.5">{a.description}</p>
+                <p className="text-xs text-[var(--text-sec)] mt-1">{a.description}</p>
                 {!unlocked && (
                   <>
-                    <div className="w-full h-2 bg-[var(--border)] rounded-full overflow-hidden mt-2">
+                    <div className="w-full h-2.5 bg-[var(--border)] rounded-full overflow-hidden mt-3">
                       <div className="h-full rounded-full bg-[var(--primary)] transition-all duration-500" style={{ width: `${pct}%` }} />
                     </div>
-                    <p className="text-[10px] text-[var(--text-sec)] mt-1">{progress} / {a.requirement}</p>
+                    <p className="text-[10px] text-[var(--text-sec)] mt-1.5">{progress} / {a.requirement}</p>
                   </>
                 )}
               </div>
@@ -85,17 +85,17 @@ export default function AchievementsPage() {
             <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1 }} exit={{ scale: 0.8 }}
               className="bg-[var(--surface)] rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl"
               onClick={e => e.stopPropagation()}>
-              <p className="text-2xl font-bold mb-4">Achievement Unlocked!</p>
-              <div className="bg-[var(--primary)]/10 rounded-2xl p-5 mb-5">
+              <p className="text-2xl font-bold mb-5">Achievement Unlocked!</p>
+              <div className="bg-[var(--primary)]/10 rounded-2xl p-6 mb-6">
                 <span className="text-4xl">{currentAchievement.icon}</span>
-                <p className="text-lg font-bold text-[var(--text)] mt-2">{currentAchievement.title}</p>
-                <p className="text-sm text-[var(--text-sec)] mt-1">{currentAchievement.description}</p>
+                <p className="text-lg font-bold text-[var(--text)] mt-3">{currentAchievement.title}</p>
+                <p className="text-sm text-[var(--text-sec)] mt-1.5">{currentAchievement.description}</p>
               </div>
               {newAchievements.length > 1 && (
-                <p className="text-xs text-[var(--text-sec)] mb-3">+{newAchievements.length - 1} more achievements</p>
+                <p className="text-xs text-[var(--text-sec)] mb-4">+{newAchievements.length - 1} more achievements</p>
               )}
               <button onClick={clearNewAchievements}
-                className="w-full py-3.5 rounded-xl bg-[var(--primary)] text-white font-bold active:scale-95 transition">
+                className="w-full py-4 rounded-xl bg-[var(--primary)] text-white font-bold active:scale-95 transition">
                 Awesome!
               </button>
             </motion.div>

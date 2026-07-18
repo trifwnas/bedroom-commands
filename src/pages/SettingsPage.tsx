@@ -77,7 +77,7 @@ export default function SettingsPage() {
         <div className="bg-[var(--surface)] rounded-2xl border border-[var(--border)] overflow-hidden">
           {themes.map(t => (
             <button key={t.mode} onClick={() => { setThemeMode(t.mode); triggerHaptic('light'); }}
-              className={`w-full flex items-center justify-between px-4 py-3.5 transition active:scale-99 ${
+              className={`w-full flex items-center justify-between px-5 py-4 transition active:scale-99 ${
                 themeMode === t.mode ? 'bg-[var(--primary)]/10' : ''
               }`}>
               <div className="flex items-center gap-3">
@@ -91,7 +91,7 @@ export default function SettingsPage() {
       </Section>
 
       <Section title="SOUND & HAPTICS">
-        <div className="bg-[var(--surface)] rounded-2xl border border-[var(--border)] px-4 py-3.5 flex items-center justify-between">
+        <div className="bg-[var(--surface)] rounded-2xl border border-[var(--border)] px-5 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Volume2 size={18} className="text-[var(--text)]" />
             <span className="text-[var(--text)] font-medium">Sound Effects</span>
@@ -106,7 +106,7 @@ export default function SettingsPage() {
             const enabled = !disabledCategories.includes(cat.id);
             return (
               <button key={cat.id} onClick={() => { toggleCategory(cat.id); triggerHaptic('light'); }}
-                className={`w-full flex items-center justify-between px-4 py-3.5 transition border-b border-[var(--border)] last:border-0 active:scale-99 ${!enabled ? 'opacity-50' : ''}`}>
+                className={`w-full flex items-center justify-between px-5 py-4 transition border-b border-[var(--border)] last:border-0 active:scale-99 ${!enabled ? 'opacity-50' : ''}`}>
                 <div className="flex items-center gap-3">
                   <span className="text-lg">{cat.emoji}</span>
                   <span className="text-[var(--text)] font-medium">{cat.name}</span>
@@ -128,14 +128,14 @@ export default function SettingsPage() {
 
       <Section title="CUSTOM COMMANDS">
         {CATEGORIES.map(cat => (
-          <div key={cat.id} className="mb-4">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
+          <div key={cat.id} className="mb-5">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-3">
                 <span className="text-lg">{cat.emoji}</span>
                 <span className="text-sm font-medium text-[var(--text)]">{cat.name}</span>
               </div>
               <button onClick={() => { setModalCat(cat.id); setShowModal(true); }}
-                className="w-7 h-7 rounded-full flex items-center justify-center text-white transition active:scale-90"
+                className="w-8 h-8 rounded-full flex items-center justify-center text-white transition active:scale-90"
                 style={{ background: cat.color }}>
                 <Plus size={14} />
               </button>
@@ -143,9 +143,9 @@ export default function SettingsPage() {
             {customCommands[cat.id]?.length > 0 ? (
               <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl overflow-hidden">
                 {customCommands[cat.id].map((cmd, i) => (
-                  <div key={i} className="flex items-center justify-between px-3 py-2.5 border-b border-[var(--border)] last:border-0">
+                  <div key={i} className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)] last:border-0">
                     <span className="text-sm text-[var(--text)] flex-1 mr-2 line-clamp-2">{cmd}</span>
-                    <button onClick={() => removeCustomCommand(cat.id, cmd)} className="p-1 shrink-0 touch-target flex items-center justify-center">
+                    <button onClick={() => removeCustomCommand(cat.id, cmd)} className="p-1.5 shrink-0 touch-target flex items-center justify-center">
                       <X size={16} className="text-red-500" />
                     </button>
                   </div>
@@ -162,14 +162,14 @@ export default function SettingsPage() {
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-6" onClick={() => setShowModal(false)}>
           <div className="bg-[var(--surface)] rounded-2xl p-6 max-w-sm w-full animate-popIn" onClick={e => e.stopPropagation()}>
             <h3 className="text-lg font-bold text-[var(--text)] text-center mb-1">Add Custom Command</h3>
-            <p className="text-sm text-[var(--text-sec)] text-center mb-4">
+            <p className="text-sm text-[var(--text-sec)] text-center mb-5">
               {CATEGORIES.find(c => c.id === modalCat)?.emoji} {modalCat}
             </p>
             <textarea placeholder="Enter your command..." value={newCmd} onChange={e => setNewCmd(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl bg-[var(--bg)] text-[var(--text)] border border-[var(--border)] text-base min-h-[80px] resize-none outline-none mb-4" />
+              className="w-full px-4 py-3.5 rounded-xl bg-[var(--bg)] text-[var(--text)] border border-[var(--border)] text-base min-h-[80px] resize-none outline-none mb-5" />
             <div className="flex gap-3">
               <button onClick={() => setShowModal(false)}
-                className="flex-1 py-3 rounded-xl border border-[var(--border)] text-[var(--text)] font-semibold active:scale-95 transition">
+                className="flex-1 py-4 rounded-xl border border-[var(--border)] text-[var(--text)] font-semibold active:scale-95 transition">
                 Cancel
               </button>
               <button onClick={() => {
@@ -180,7 +180,7 @@ export default function SettingsPage() {
                   triggerHaptic('success');
                   showToast('Custom command added!', 'success');
                 }
-              }} className="flex-1 py-3 rounded-xl bg-[var(--primary)] text-white font-semibold active:scale-95 transition">
+              }} className="flex-1 py-4 rounded-xl bg-[var(--primary)] text-white font-semibold active:scale-95 transition">
                 Add
               </button>
             </div>
@@ -212,7 +212,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 function DataRow({ icon: Icon, label, onClick, danger }: { icon: typeof Download; label: string; onClick: () => void; danger?: boolean }) {
   return (
     <button onClick={onClick}
-      className={`w-full flex items-center justify-between px-4 py-3.5 transition border-b border-[var(--border)] last:border-0 hover:bg-[var(--bg)] active:scale-99`}>
+      className={`w-full flex items-center justify-between px-5 py-4 transition border-b border-[var(--border)] last:border-0 hover:bg-[var(--bg)] active:scale-99`}>
       <div className="flex items-center gap-3">
         <Icon size={18} className={danger ? 'text-red-500' : 'text-[var(--text)]'} />
         <span className={`font-medium ${danger ? 'text-red-500' : 'text-[var(--text)]'}`}>{label}</span>

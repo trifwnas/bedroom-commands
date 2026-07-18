@@ -25,7 +25,7 @@ export default function HistoryPage() {
           <Clock size={32} className="text-[var(--primary)]" />
         </div>
         <p className="text-lg font-semibold text-[var(--text)]">No history yet</p>
-        <p className="text-sm text-[var(--text-sec)] mt-1.5">Draw some cards to see your activity here</p>
+        <p className="text-sm text-[var(--text-sec)] mt-2">Draw some cards to see your activity here</p>
       </div>
     );
   }
@@ -36,7 +36,7 @@ export default function HistoryPage() {
       <div className="flex justify-between items-center mb-5">
         <p className="text-sm text-[var(--text-sec)]">{history.length} items</p>
         <button onClick={handleClear}
-          className="flex items-center gap-1.5 text-sm text-red-500 font-medium hover:text-red-600 transition active:scale-95 touch-target">
+          className="flex items-center gap-2 text-sm text-red-500 font-medium hover:text-red-600 transition active:scale-95 touch-target">
           <Trash2 size={14} /> Clear
         </button>
       </div>
@@ -53,7 +53,7 @@ export default function HistoryPage() {
               )}
               <div className="flex-1 min-w-0">
                 <p className="text-[var(--text)] font-medium leading-relaxed">{cmd}</p>
-                {cat && <p className="text-xs text-[var(--text-sec)] mt-0.5">{cat.name}</p>}
+                {cat && <p className="text-xs text-[var(--text-sec)] mt-1">{cat.name}</p>}
               </div>
             </div>
           );

@@ -30,7 +30,7 @@ export default function FavoritesPage() {
           <Heart size={32} className="text-[var(--primary)]" />
         </div>
         <p className="text-lg font-semibold text-[var(--text)]">No favorites yet</p>
-        <p className="text-sm text-[var(--text-sec)] mt-1.5">Tap the heart on any command to save it here</p>
+        <p className="text-sm text-[var(--text-sec)] mt-2">Tap the heart on any command to save it here</p>
       </div>
     );
   }
@@ -48,24 +48,24 @@ export default function FavoritesPage() {
               {cat && <div className="w-1.5 shrink-0" style={{ background: cat.color }} />}
               <div className="flex-1 p-5">
                 {cat && (
-                  <div className="flex items-center gap-2 mb-2.5">
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold text-white"
+                  <div className="flex items-center gap-2.5 mb-3">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold text-white"
                       style={{ background: cat.color }}>
                       {cat.emoji} {cat.name}
                     </span>
                     {done && (
-                      <span className="text-xs px-2 py-1 rounded-lg bg-green-500/10 text-green-600 font-semibold">Done ✓</span>
+                      <span className="text-xs px-2.5 py-1 rounded-lg bg-green-500/10 text-green-600 font-semibold">Done ✓</span>
                     )}
                   </div>
                 )}
-                <p className="text-[var(--text)] font-medium leading-relaxed mb-3.5">{cmd}</p>
-                <div className="flex justify-end gap-2">
+                <p className="text-[var(--text)] font-medium leading-relaxed mb-4">{cmd}</p>
+                <div className="flex justify-end gap-3">
                   <button onClick={() => shareCommand(cmd, cat?.name || 'Unknown')}
-                    className="p-2.5 rounded-xl bg-[var(--bg)] hover:bg-[var(--border)] transition active:scale-90">
+                    className="p-3 rounded-xl bg-[var(--bg)] hover:bg-[var(--border)] transition active:scale-90">
                     <Share2 size={16} className="text-[var(--text)]" />
                   </button>
                   <button onClick={() => handleRemove(cmd)}
-                    className="p-2.5 rounded-xl bg-[var(--bg)] hover:bg-red-50 transition active:scale-90">
+                    className="p-3 rounded-xl bg-[var(--bg)] hover:bg-red-50 transition active:scale-90">
                     <Trash2 size={16} className="text-red-500" />
                   </button>
                 </div>

@@ -94,20 +94,20 @@ export function Timer({ open, onClose, initialMinutes = 5 }: Props) {
                 <div className="w-10 h-1 rounded-full bg-[var(--border)]" />
               </div>
 
-              <div className="flex justify-between items-center mb-5">
+              <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold text-[var(--text)]">Timer</h2>
-                <button onClick={onClose} className="p-2 rounded-full hover:bg-[var(--border)] touch-target flex items-center justify-center">
+                <button onClick={onClose} className="p-2.5 rounded-full hover:bg-[var(--border)] touch-target flex items-center justify-center">
                   <X size={24} className="text-[var(--text)]" />
                 </button>
               </div>
 
               {!running ? (
                 <div>
-                  <p className="text-sm text-[var(--text-sec)] text-center mb-4">Select duration</p>
-                  <div className="flex flex-wrap justify-center gap-2.5 mb-5">
+                  <p className="text-sm text-[var(--text-sec)] text-center mb-5">Select duration</p>
+                  <div className="flex flex-wrap justify-center gap-3 mb-6">
                     {PRESETS.map(v => (
                       <button key={v} onClick={() => { setMinutes(v); setSeconds(0); triggerHaptic('light'); }}
-                        className={`px-5 py-3 rounded-full text-sm font-semibold border transition-all active:scale-95 touch-target ${
+                        className={`px-6 py-3 rounded-full text-sm font-semibold border transition-all active:scale-95 touch-target ${
                           minutes === v
                             ? 'bg-[var(--primary)] text-white border-[var(--primary)]'
                             : 'bg-[var(--bg)] text-[var(--text)] border-[var(--border)]'
@@ -116,14 +116,14 @@ export function Timer({ open, onClose, initialMinutes = 5 }: Props) {
                       </button>
                     ))}
                   </div>
-                  <div className="flex gap-2.5 justify-center">
+                  <div className="flex gap-3 justify-center">
                     <input type="number" min={1} max={180} placeholder="Custom (min)"
                       value={customTime} onChange={e => setCustomTime(e.target.value)}
-                      className="w-32 px-4 py-3 rounded-xl bg-[var(--bg)] text-[var(--text)] border border-[var(--border)] text-center text-base" />
+                      className="w-32 px-4 py-3.5 rounded-xl bg-[var(--bg)] text-[var(--text)] border border-[var(--border)] text-center text-base" />
                     <button onClick={() => {
                       const v = parseInt(customTime);
                       if (v > 0 && v <= 180) { setMinutes(v); setSeconds(0); setCustomTime(''); triggerHaptic('light'); }
-                    }} className="px-5 py-3 rounded-xl bg-[var(--primary)] text-white font-semibold active:scale-95 transition">
+                    }} className="px-6 py-3.5 rounded-xl bg-[var(--primary)] text-white font-semibold active:scale-95 transition">
                       Set
                     </button>
                   </div>
@@ -162,11 +162,11 @@ export function Timer({ open, onClose, initialMinutes = 5 }: Props) {
               )}
 
               {!running ? (
-                <button onClick={start} className="w-full mt-5 py-4 rounded-2xl bg-[var(--primary)] text-white text-lg font-bold flex items-center justify-center gap-2.5 active:scale-95 transition touch-target">
+                <button onClick={start} className="w-full mt-6 py-4 rounded-2xl bg-[var(--primary)] text-white text-lg font-bold flex items-center justify-center gap-3 active:scale-95 transition touch-target">
                   <Play size={20} fill="currentColor" /> Start Timer
                 </button>
               ) : (
-                <button onClick={reset} className="w-full mt-4 py-3.5 rounded-xl border border-[var(--border)] text-[var(--text)] font-semibold flex items-center justify-center gap-2 active:scale-95 transition touch-target">
+                <button onClick={reset} className="w-full mt-5 py-4 rounded-xl border border-[var(--border)] text-[var(--text)] font-semibold flex items-center justify-center gap-3 active:scale-95 transition touch-target">
                   <RotateCcw size={18} /> Reset
                 </button>
               )}
