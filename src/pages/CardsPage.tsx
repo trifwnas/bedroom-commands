@@ -258,6 +258,7 @@ export default function CardsPage() {
               style={{
                 ...gradientStyle,
                 backfaceVisibility: 'hidden',
+                pointerEvents: isFlipped ? 'none' : 'auto',
                 transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
                 position: isFlipped ? 'absolute' : 'relative',
                 top: 0,
@@ -273,6 +274,7 @@ export default function CardsPage() {
               style={{
                 ...gradientStyle,
                 backfaceVisibility: 'hidden',
+                pointerEvents: isFlipped ? 'auto' : 'none',
                 transform: isFlipped ? 'rotateY(0deg)' : 'rotateY(-180deg)',
                 position: isFlipped ? 'relative' : 'absolute',
                 top: 0,
