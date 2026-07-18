@@ -17,11 +17,11 @@ export default function StatsPage() {
   })();
 
   const stats = [
-    { icon: Zap, color: '#ff595e', value: statistics.totalDraws, label: 'Cards Drawn' },
-    { icon: Heart, color: '#ff6b6b', value: favorites.length, label: 'Favorites' },
-    { icon: Award, color: '#6bcb77', value: statistics.completedChallenges, label: 'Challenges' },
-    { icon: Calendar, color: '#ffd93d', value: statistics.streak, label: 'Day Streak' },
-    { icon: Target, color: '#4d96ff', value: completedCommands.length, label: 'Completed' },
+    { icon: Zap, color: '#cc3a40', value: statistics.totalDraws, label: 'Cards Drawn' },
+    { icon: Heart, color: '#d94059', value: favorites.length, label: 'Favorites' },
+    { icon: Award, color: '#2d8a4e', value: statistics.completedChallenges, label: 'Challenges' },
+    { icon: Calendar, color: '#c49000', value: statistics.streak, label: 'Day Streak' },
+    { icon: Target, color: '#2563c0', value: completedCommands.length, label: 'Completed' },
   ];
 
   const moodTotal = Object.values(statistics.moodDraws).reduce((a, b) => a + b, 0);

@@ -12,19 +12,19 @@ export interface CategoryInfo {
 }
 
 export const CATEGORIES: CategoryInfo[] = [
-  { id: 'Romantic', name: 'Romantic', emoji: '💕', color: '#ff6b6b', gradient: ['#ff6b6b', '#ee5a5a'], defaultMood: 'flirty' },
-  { id: 'Playful', name: 'Playful', emoji: '🎉', color: '#ffd93d', gradient: ['#ffd93d', '#f4c430'], defaultMood: 'playful' },
-  { id: 'Spicy', name: 'Spicy', emoji: '🔥', color: '#ff595e', gradient: ['#ff595e', '#ff4047'], defaultMood: 'spicy' },
-  { id: 'Adventure', name: 'Adventure', emoji: '🌟', color: '#6bcb77', gradient: ['#6bcb77', '#56b368'], defaultMood: 'flirty' },
-  { id: 'Relaxing', name: 'Relaxing', emoji: '🌙', color: '#4d96ff', gradient: ['#4d96ff', '#3d86ef'], defaultMood: 'sweet' },
+  { id: 'Romantic', name: 'Romantic', emoji: '💕', color: '#d94059', gradient: ['#d94059', '#c43049'], defaultMood: 'flirty' },
+  { id: 'Playful', name: 'Playful', emoji: '🎉', color: '#c49000', gradient: ['#c49000', '#b08000'], defaultMood: 'playful' },
+  { id: 'Spicy', name: 'Spicy', emoji: '🔥', color: '#cc3a40', gradient: ['#cc3a40', '#b82e33'], defaultMood: 'spicy' },
+  { id: 'Adventure', name: 'Adventure', emoji: '🌟', color: '#2d8a4e', gradient: ['#2d8a4e', '#237a42'], defaultMood: 'flirty' },
+  { id: 'Relaxing', name: 'Relaxing', emoji: '🌙', color: '#2563c0', gradient: ['#2563c0', '#1d55b0'], defaultMood: 'sweet' },
 ];
 
 export const MOODS: { id: Mood; emoji: string; label: string; color: string }[] = [
-  { id: 'sweet', emoji: '🧊', label: 'Chill', color: '#4d96ff' },
-  { id: 'playful', emoji: '😄', label: 'Fun', color: '#ffd93d' },
-  { id: 'flirty', emoji: '😏', label: 'Flirty', color: '#ff6b6b' },
-  { id: 'spicy', emoji: '🌶️', label: 'Spicy', color: '#ff595e' },
-  { id: 'wild', emoji: '🔥', label: 'Wild', color: '#e74c3c' },
+  { id: 'sweet', emoji: '🧊', label: 'Chill', color: '#2563c0' },
+  { id: 'playful', emoji: '😄', label: 'Fun', color: '#c49000' },
+  { id: 'flirty', emoji: '😏', label: 'Flirty', color: '#d94059' },
+  { id: 'spicy', emoji: '🌶️', label: 'Spicy', color: '#cc3a40' },
+  { id: 'wild', emoji: '🔥', label: 'Wild', color: '#b82e33' },
 ];
 
 export const CATEGORY_MAP = Object.fromEntries(CATEGORIES.map(c => [c.id, c])) as Record<Category, CategoryInfo>;

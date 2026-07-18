@@ -4,11 +4,11 @@ import { ChevronRight, Sparkles } from 'lucide-react';
 import { useStore } from '../store/useStore';
 
 const STEPS = [
-  { emoji: '💕', title: 'Welcome to Bedroom Commands', desc: 'A fun couples card game with hundreds of commands across 5 categories', color: '#ff6b6b' },
-  { emoji: '🎲', title: 'Draw Cards', desc: 'Tap to draw random commands from Romantic, Playful, Spicy, Adventure, and Relaxing categories', color: '#ffd93d' },
-  { emoji: '🎡', title: 'Spin the Wheel', desc: 'Use the wheel to randomly select a category, then get a command from it', color: '#ff595e' },
-  { emoji: '🏆', title: 'Daily Challenges', desc: 'Complete daily challenges to build streaks and earn achievements', color: '#6bcb77' },
-  { emoji: '⚙️', title: 'Customize', desc: 'Filter by mood, add your own commands, toggle categories, and personalize your experience', color: '#4d96ff' },
+  { emoji: '💕', title: 'Welcome to Bedroom Commands', desc: 'A fun couples card game with hundreds of commands across 5 categories', color: '#d94059' },
+  { emoji: '🎲', title: 'Draw Cards', desc: 'Tap to draw random commands from Romantic, Playful, Spicy, Adventure, and Relaxing categories', color: '#c49000' },
+  { emoji: '🎡', title: 'Spin the Wheel', desc: 'Use the wheel to randomly select a category, then get a command from it', color: '#cc3a40' },
+  { emoji: '🏆', title: 'Daily Challenges', desc: 'Complete daily challenges to build streaks and earn achievements', color: '#2d8a4e' },
+  { emoji: '⚙️', title: 'Customize', desc: 'Filter by mood, add your own commands, toggle categories, and personalize your experience', color: '#2563c0' },
 ];
 
 export function Onboarding() {

@@ -58,9 +58,9 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               exit={{ opacity: 0, y: -20, scale: 0.95 }}
               transition={{ type: 'spring', stiffness: 400, damping: 25 }}
               className={`pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-2xl shadow-lg backdrop-blur-xl max-w-sm w-full ${
-                toast.type === 'success' ? 'bg-green-500/90 text-white' :
-                toast.type === 'error' ? 'bg-red-500/90 text-white' :
-                toast.type === 'warning' ? 'bg-amber-500/90 text-white' :
+                toast.type === 'success' ? 'bg-[var(--success)] text-white' :
+                toast.type === 'error' ? 'bg-[var(--error)] text-white' :
+                toast.type === 'warning' ? 'bg-[var(--warning)] text-white' :
                 'bg-[var(--surface)]/95 text-[var(--text)] border border-[var(--border)]'
               }`}
             >

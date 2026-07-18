@@ -98,7 +98,7 @@ export default function SearchPage() {
                         {MOODS.find(m => m.id === cmd.mood)?.emoji} {MOODS.find(m => m.id === cmd.mood)?.label}
                       </span>
                       {isDone && (
-                        <span className="text-xs px-2.5 py-1 rounded-full bg-green-500/10 text-green-600 font-semibold">Done ✓</span>
+                        <span className="text-xs px-2.5 py-1 rounded-full bg-[var(--success)]/10 text-[var(--success)] font-semibold">Done ✓</span>
                       )}
                     </div>
                     <p className="text-[var(--text)] font-medium leading-relaxed mb-4">{cmd.text}</p>

@@ -1,16 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  --primary: #ff595e;
+  --primary: #cc3a40;
   --bg: #f5f5f5;
   --surface: #ffffff;
   --card: #ffffff;
   --text: #1a1a1a;
-  --text-sec: #666666;
+  --text-sec: #555555;
   --border: #e0e0e0;
-  --success: #6bcb77;
-  --warning: #ffd93d;
-  --error: #ff595e;
+  --success: #2d8a4e;
+  --warning: #c49000;
+  --error: #cc3a40;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
@@ -20,8 +20,8 @@
   --surface: #2d2d2d;
   --card: #3d3d3d;
   --text: #ffffff;
-  --text-sec: #a0a0a0;
-  --border: #404040;
+  --text-sec: #b0b0b0;
+  --border: #4a4a4a;
 }
 
 @layer base {

@@ -139,7 +139,7 @@ export default function CardsPage() {
 
   const gradientStyle = currentCommand && currentCommand !== 'All drawn! Hit Reset to start over.'
     ? { background: `linear-gradient(135deg, ${currentCatInfo.gradient[0]}, ${currentCatInfo.gradient[1]})` }
-    : { background: 'linear-gradient(135deg, #e0e0e0, #c0c0c0)' };
+    : { background: 'linear-gradient(135deg, #6b6b6b, #4a4a4a)' };
 
   const moodInfo = MOODS.find(m => m.id === currentMood);
 
@@ -249,8 +249,8 @@ export default function CardsPage() {
                 WebkitBackfaceVisibility: 'hidden',
               }}>
               <span className="text-6xl mb-4">🎲</span>
-              <span className="text-sm font-semibold uppercase tracking-widest opacity-80">Tap to Draw</span>
-              <p className="text-xs opacity-50 mt-2">or use the button below</p>
+              <span className="text-sm font-semibold uppercase tracking-widest text-white/80">Tap to Draw</span>
+              <p className="text-xs text-white/60 mt-2">or use the button below</p>
             </div>
 
             {/* Front of card */}
@@ -322,8 +322,8 @@ export default function CardsPage() {
 
       <Timer open={showTimer} onClose={() => setShowTimer(false)} initialMinutes={timerMinutes} />
 
-      <p className="text-center text-xs mt-6" style={{ color: 'color-mix(in srgb, var(--text-sec) 40%, transparent)' }}>
-        A <a href="https://tafhub.com/" target="_blank" rel="noopener noreferrer" className="underline hover:opacity-100 transition opacity-80">TafHub</a> project
+      <p className="text-center text-xs mt-6" style={{ color: 'color-mix(in srgb, var(--text-sec) 60%, transparent)' }}>
+        A <a href="https://tafhub.com/" target="_blank" rel="noopener noreferrer" className="underline hover:opacity-100 transition opacity-90">TafHub</a> project
       </p>
     </div>
   );

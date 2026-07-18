@@ -54,7 +54,7 @@ export default function FavoritesPage() {
                       {cat.emoji} {cat.name}
                     </span>
                     {done && (
-                      <span className="text-xs px-2.5 py-1 rounded-lg bg-green-500/10 text-green-600 font-semibold">Done ✓</span>
+                      <span className="text-xs px-2.5 py-1 rounded-lg bg-[var(--success)]/10 text-[var(--success)] font-semibold">Done ✓</span>
                     )}
                   </div>
                 )}
