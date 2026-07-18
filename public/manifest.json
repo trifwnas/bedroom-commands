@@ -1,10 +1,21 @@
 {
-  "name": "Bedroom Commands",
-  "short_name": "BedroomCommands",
-  "description": "A fun couples card game with 250+ commands",
+  "name": "Bedroom Commands — Couples Card Game",
+  "short_name": "BedroomCmds",
+  "description": "395+ romantic, playful, spicy, and adventure challenges for couples",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#ff595e",
   "theme_color": "#ff595e",
-  "orientation": "portrait"
+  "id": "/",
+  "categories": ["games", "entertainment", "lifestyle"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
 }
