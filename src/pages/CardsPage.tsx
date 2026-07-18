@@ -246,23 +246,25 @@ export default function CardsPage() {
           </AnimatePresence>
 
           {/* Card flip container */}
-          <motion.div
+          <div
             className="w-full cursor-pointer"
-            style={{ transformStyle: 'preserve-3d' }}
-            animate={{ rotateY: isFlipped ? 180 : 0 }}
-            transition={{ duration: 0.6, type: 'spring', stiffness: 200, damping: 25 }}
+            style={{ perspective: 1000 }}
             onClick={() => !currentCommand && drawCard()}
           >
+            <div
+              className="w-full relative"
+              style={{
+                transformStyle: 'preserve-3d',
+                transition: 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+              }}
+            >
             {/* Back of card */}
             <div className="w-full rounded-3xl p-6 text-center text-white shadow-2xl flex flex-col items-center justify-center"
               style={{
                 ...gradientStyle,
                 backfaceVisibility: 'hidden',
-                pointerEvents: isFlipped ? 'none' : 'auto',
-                transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
-                position: isFlipped ? 'absolute' : 'relative',
-                top: 0,
-                left: 0,
+                WebkitBackfaceVisibility: 'hidden',
               }}>
               <span className="text-5xl mb-3">🎲</span>
               <span className="text-sm font-semibold uppercase tracking-widest opacity-80">Tap to Draw</span>
@@ -270,15 +272,12 @@ export default function CardsPage() {
             </div>
 
             {/* Front of card */}
-            <div className="w-full rounded-3xl p-6 text-center text-white shadow-2xl flex flex-col items-center justify-center"
+            <div className="w-full rounded-3xl p-6 text-center text-white shadow-2xl flex flex-col items-center justify-center absolute inset-0"
               style={{
                 ...gradientStyle,
                 backfaceVisibility: 'hidden',
-                pointerEvents: isFlipped ? 'auto' : 'none',
-                transform: isFlipped ? 'rotateY(0deg)' : 'rotateY(-180deg)',
-                position: isFlipped ? 'relative' : 'absolute',
-                top: 0,
-                left: 0,
+                WebkitBackfaceVisibility: 'hidden',
+                transform: 'rotateY(180deg)',
               }}>
               <span className="text-4xl mb-2">{currentCatInfo.emoji}</span>
               <div className="flex items-center gap-2 mb-3">
@@ -312,7 +311,8 @@ export default function CardsPage() {
                 </button>
               </div>
             </div>
-          </motion.div>
+            </div>
+          </div>
         </div>
       </div>
 
