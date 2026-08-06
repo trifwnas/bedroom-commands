@@ -10,6 +10,8 @@ import { CATEGORIES, CATEGORY_MAP, MOODS } from '../types';
 import { COMMANDS, COMMAND_TO_CATEGORY, getCommandMood } from '../data/commands';
 import { triggerHaptic, shareCommand } from '../utils';
 
+const EMPTY_FILTER_MSG = 'No commands match your current filters. Try a different category or mood.';
+
 export default function CardsPage() {
   const favorites = useStore(s => s.favorites);
   const addFavorite = useStore(s => s.addFavorite);
@@ -55,50 +57,52 @@ export default function CardsPage() {
 
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = window.setTimeout(() => {
-      const cats = disabledCategories.length > 0
-        ? CATEGORIES.filter(c => !disabledCategories.includes(c.id))
-        : CATEGORIES;
-
-      let availableCmds: { text: string; cat: typeof CATEGORIES[0] }[] = [];
-
-      for (const cat of cats) {
-        const allCmds = COMMANDS[cat.id] || [];
-        const remaining = allCmds.filter(c => !drawnCommands.includes(c));
-        for (const cmd of remaining) {
-          const mood = getCommandMood(cmd, cat.id);
-          if (selectedMood !== 'all' && mood !== selectedMood) continue;
-          if (disabledMoods.includes(mood)) continue;
-          availableCmds.push({ text: cmd, cat });
+      const buildPool = (drawn: string[]) => {
+        const cats = disabledCategories.length > 0
+          ? CATEGORIES.filter(c => !disabledCategories.includes(c.id))
+          : CATEGORIES;
+        const pool: { text: string; cat: typeof CATEGORIES[0] }[] = [];
+        for (const cat of cats) {
+          for (const cmd of COMMANDS[cat.id] || []) {
+            if (drawn.includes(cmd)) continue;
+            const mood = getCommandMood(cmd, cat.id);
+            if (selectedMood !== 'all' && mood !== selectedMood) continue;
+            if (disabledMoods.includes(mood)) continue;
+            if (selectedCategory !== 'Random' && cat.id !== selectedCategory) continue;
+            pool.push({ text: cmd, cat });
+          }
         }
+        return pool;
+      };
+
+      let pool = buildPool(drawnCommands);
+      let reshuffled = false;
+      if (pool.length === 0) {
+        pool = buildPool([]);
+        reshuffled = true;
       }
 
-      if (selectedCategory !== 'Random') {
-        availableCmds = availableCmds.filter(c => c.cat.id === selectedCategory);
-      }
-
-      const pick = availableCmds.length > 0
-        ? availableCmds[Math.floor(Math.random() * availableCmds.length)]
-        : null;
-
-      if (pick) {
+      if (pool.length === 0) {
+        setCurrentCommand(EMPTY_FILTER_MSG);
+        setCurrentCatInfo(CATEGORIES[0]);
+        setCurrentMood('sweet');
+      } else {
+        const pick = pool[Math.floor(Math.random() * pool.length)];
         setCurrentCommand(pick.text);
         setCurrentCatInfo(pick.cat);
         setCurrentMood(getCommandMood(pick.text, pick.cat.id));
-        setDrawnCommands(prev => [...prev, pick.text]);
+        setDrawnCommands(reshuffled ? [pick.text] : [...drawnCommands, pick.text]);
+        if (reshuffled) showToast('All cards drawn — reshuffling the deck!', 'success');
         addToHistory(pick.text);
         checkAndUnlockAchievements();
-        setTimeout(() => setIsFlipped(true), 100);
-      } else {
-        setCurrentCommand('All drawn! Hit Reset to start over.');
-        setCurrentCatInfo(CATEGORIES[0]);
-        setCurrentMood('sweet');
       }
 
       if (soundEnabled) triggerHaptic('success');
       setIsDrawing(false);
+      setTimeout(() => setIsFlipped(true), 100);
       setTimeout(() => setFlash(false), 200);
     }, 300);
-  }, [selectedCategory, selectedMood, isDrawing, drawnCommands, disabledCategories, disabledMoods, soundEnabled, addToHistory, checkAndUnlockAchievements]);
+  }, [selectedCategory, selectedMood, isDrawing, drawnCommands, disabledCategories, disabledMoods, soundEnabled, addToHistory, checkAndUnlockAchievements, showToast]);
 
   const handleFavorite = () => {
     if (!currentCommand) return;
@@ -137,7 +141,9 @@ export default function CardsPage() {
     if (soundEnabled) triggerHaptic('light');
   };
 
-  const gradientStyle = currentCommand && currentCommand !== 'All drawn! Hit Reset to start over.'
+  const isEmptyState = currentCommand === EMPTY_FILTER_MSG;
+
+  const gradientStyle = !isEmptyState && currentCommand
     ? { background: `linear-gradient(135deg, ${currentCatInfo.gradient[0]}, ${currentCatInfo.gradient[1]})` }
     : { background: 'linear-gradient(135deg, #6b6b6b, #4a4a4a)' };
 
@@ -261,37 +267,41 @@ export default function CardsPage() {
                 WebkitBackfaceVisibility: 'hidden',
                 transform: 'rotateY(180deg)',
               }}>
-              <span className="text-4xl mb-3">{currentCatInfo.emoji}</span>
-              <div className="flex items-center gap-2.5 mb-4">
-                <span className="text-xs font-semibold uppercase tracking-widest opacity-80">{currentCatInfo.name}</span>
-                {moodInfo && (
-                  <span className="text-xs px-2.5 py-1 rounded-full bg-white/20 font-medium">
-                    {moodInfo.emoji} {moodInfo.label}
-                  </span>
-                )}
-              </div>
+              <span className="text-4xl mb-3">{isEmptyState ? '🎴' : currentCatInfo.emoji}</span>
+              {!isEmptyState && (
+                <div className="flex items-center gap-2.5 mb-4">
+                  <span className="text-xs font-semibold uppercase tracking-widest opacity-80">{currentCatInfo.name}</span>
+                  {moodInfo && (
+                    <span className="text-xs px-2.5 py-1 rounded-full bg-white/20 font-medium">
+                      {moodInfo.emoji} {moodInfo.label}
+                    </span>
+                  )}
+                </div>
+              )}
 
               <p className="text-lg font-bold leading-relaxed mb-6 px-2">
                 {currentCommand}
               </p>
 
               {/* Action buttons on card */}
-              <div className="flex gap-4">
-                <button onClick={(e) => { e.stopPropagation(); handleFavorite(); }}
-                  className="p-3.5 rounded-full bg-white/20 hover:bg-white/30 transition active:scale-90">
-                  <Heart size={22} fill={isFavorite ? 'white' : 'none'} className="text-white" />
-                </button>
-                <button onClick={(e) => { e.stopPropagation(); handleShare(); }}
-                  className="p-3.5 rounded-full bg-white/20 hover:bg-white/30 transition active:scale-90">
-                  <Share2 size={22} className="text-white" />
-                </button>
-                <button onClick={(e) => { e.stopPropagation(); handleComplete(); }}
-                  className={`p-3.5 rounded-full transition active:scale-90 ${
-                    isCompleted ? 'bg-white/40' : 'bg-white/20 hover:bg-white/30'
-                  }`}>
-                  <Check size={22} className="text-white" fill={isCompleted ? 'white' : 'none'} />
-                </button>
-              </div>
+              {!isEmptyState && (
+                <div className="flex gap-4">
+                  <button onClick={(e) => { e.stopPropagation(); handleFavorite(); }}
+                    className="p-3.5 rounded-full bg-white/20 hover:bg-white/30 transition active:scale-90">
+                    <Heart size={22} fill={isFavorite ? 'white' : 'none'} className="text-white" />
+                  </button>
+                  <button onClick={(e) => { e.stopPropagation(); handleShare(); }}
+                    className="p-3.5 rounded-full bg-white/20 hover:bg-white/30 transition active:scale-90">
+                    <Share2 size={22} className="text-white" />
+                  </button>
+                  <button onClick={(e) => { e.stopPropagation(); handleComplete(); }}
+                    className={`p-3.5 rounded-full transition active:scale-90 ${
+                      isCompleted ? 'bg-white/40' : 'bg-white/20 hover:bg-white/30'
+                    }`}>
+                    <Check size={22} className="text-white" fill={isCompleted ? 'white' : 'none'} />
+                  </button>
+                </div>
+              )}
             </div>
             </div>
           </div>

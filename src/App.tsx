@@ -78,11 +78,13 @@ function AppContent() {
   };
 
   return (
-    <div className="min-h-dvh flex flex-col bg-[var(--bg)] text-[var(--text)]">
+    <div className="min-h-dvh flex flex-col items-center text-[var(--text)]">
       {!hasSeenOnboarding && <Onboarding />}
 
-      {/* Page */}
-      <main className="flex-1 flex flex-col overflow-hidden">
+      {/* App shell — centered phone-width column on desktop */}
+      <div className="w-full max-w-md min-h-dvh flex flex-col relative bg-[var(--bg)] sm:border-x sm:border-[var(--border)] sm:shadow-2xl sm:shadow-black/10">
+        {/* Page */}
+        <main className="flex-1 flex flex-col overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div key={currentPath}
             initial={{ opacity: 0, y: 8 }}
@@ -121,7 +123,7 @@ function AppContent() {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="absolute bottom-0 left-0 right-0 bg-[var(--surface)] rounded-t-3xl p-6 pb-10"
+              className="absolute bottom-0 left-0 right-0 mx-auto max-w-md bg-[var(--surface)] rounded-t-3xl p-6 pb-10"
               onClick={e => e.stopPropagation()}
               style={{ paddingBottom: 'calc(1.5rem + var(--safe-bottom))' }}
             >
@@ -188,6 +190,7 @@ function AppContent() {
           </button>
         </div>
       </nav>
+      </div>
     </div>
   );
 }
