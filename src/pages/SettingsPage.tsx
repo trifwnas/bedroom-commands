@@ -71,7 +71,7 @@ export default function SettingsPage() {
   ];
 
   return (
-    <div className="flex-1 overflow-auto px-6 pt-6 pb-28 scrollbar-thin">
+    <div className="flex-1 overflow-auto px-6 pt-6 pb-28 md:pb-12 scrollbar-thin w-full max-w-2xl mx-auto">
       <h1 className="text-2xl font-extrabold text-[var(--text)] mb-6">Settings</h1>
       <Section title="APPEARANCE">
         <div className="bg-[var(--surface)] rounded-2xl border border-[var(--border)] overflow-hidden">
@@ -127,6 +127,7 @@ export default function SettingsPage() {
       </Section>
 
       <Section title="CUSTOM COMMANDS">
+        <div className="md:grid md:grid-cols-2 md:gap-x-8">
         {CATEGORIES.map(cat => (
           <div key={cat.id} className="mb-5">
             <div className="flex items-center justify-between mb-3">
@@ -156,6 +157,7 @@ export default function SettingsPage() {
             )}
           </div>
         ))}
+        </div>
       </Section>
 
       {showModal && (

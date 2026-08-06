@@ -27,23 +27,11 @@ export default function StatsPage() {
   const moodTotal = Object.values(statistics.moodDraws).reduce((a, b) => a + b, 0);
 
   return (
-    <div className="flex-1 overflow-auto px-6 pt-6 pb-28 scrollbar-thin">
+    <div className="flex-1 overflow-auto px-6 pt-6 pb-28 md:pb-12 scrollbar-thin">
       <h1 className="text-2xl font-extrabold text-[var(--text)] mb-6">Your Statistics</h1>
 
-      <div className="grid grid-cols-3 gap-3 mb-6">
-        {stats.slice(0, 3).map(s => (
-          <div key={s.label} className="bg-[var(--surface)] rounded-2xl p-5 text-center border border-[var(--border)]">
-            <div className="w-11 h-11 rounded-full flex items-center justify-center mx-auto mb-3"
-              style={{ background: `${s.color}20` }}>
-              <s.icon size={20} style={{ color: s.color }} />
-            </div>
-            <p className="text-xl font-bold text-[var(--text)]">{s.value}</p>
-            <p className="text-[10px] text-[var(--text-sec)] mt-1 leading-tight">{s.label}</p>
-          </div>
-        ))}
-      </div>
-      <div className="grid grid-cols-2 gap-3 mb-6">
-        {stats.slice(3).map(s => (
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
+        {stats.map(s => (
           <div key={s.label} className="bg-[var(--surface)] rounded-2xl p-5 text-center border border-[var(--border)]">
             <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3"
               style={{ background: `${s.color}20` }}>
@@ -55,8 +43,7 @@ export default function StatsPage() {
         ))}
       </div>
 
-      {/* Completion progress */}
-
+      <div className="lg:max-w-2xl lg:mx-auto">
       {/* Category breakdown */}
       <div className="bg-[var(--surface)] rounded-2xl p-6 mb-6 border border-[var(--border)]">
         <h2 className="text-base font-semibold text-[var(--text)] mb-4">Category Breakdown</h2>
@@ -115,6 +102,7 @@ export default function StatsPage() {
           "{history[0] || 'Start drawing cards to see your activity!'}"
         </p>
         {history.length > 0 && <p className="text-xs text-[var(--text-sec)] mt-3">Latest card</p>}
+      </div>
       </div>
     </div>
   );

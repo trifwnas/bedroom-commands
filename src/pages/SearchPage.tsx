@@ -39,9 +39,9 @@ export default function SearchPage() {
   const total = allCommands.length;
 
   return (
-    <div className="flex-1 flex flex-col px-6 pt-6 pb-28 overflow-auto">
+    <div className="flex-1 flex flex-col px-6 pt-6 pb-28 md:pb-12 overflow-auto">
       <h1 className="text-2xl font-extrabold text-[var(--text)] mb-6">Search</h1>
-      <div className="flex items-center gap-3 bg-[var(--surface)] border border-[var(--border)] rounded-xl px-4 py-3.5 mb-4">
+      <div className="flex items-center gap-3 bg-[var(--surface)] border border-[var(--border)] rounded-xl px-4 py-3.5 mb-4 lg:max-w-2xl">
         <Search size={18} className="text-[var(--text-sec)] shrink-0" />
         <input type="text" placeholder="Search commands..." value={query} onChange={e => setQuery(e.target.value)}
           className="flex-1 bg-transparent text-[var(--text)] text-base outline-none placeholder:text-[var(--text-sec)]" />
@@ -57,7 +57,7 @@ export default function SearchPage() {
           : `${total} commands total`}
       </p>
 
-      <div className="flex gap-3 overflow-x-auto py-3 mb-4 scrollbar-none">
+      <div className="flex gap-3 overflow-x-auto py-3 mb-4 scrollbar-none md:flex-wrap md:overflow-visible">
         {['All', ...CATEGORIES.map(c => c.id)].map(cat => (
           <button key={cat} onClick={() => setFilterCat(cat as any)}
             className={`shrink-0 px-5 py-2.5 rounded-full text-sm font-semibold border transition-all active:scale-95 touch-target ${
@@ -78,7 +78,7 @@ export default function SearchPage() {
             <p className="text-sm text-[var(--text-sec)] mt-2">Try adjusting your search or filters</p>
           </div>
         ) : (
-          <div className="space-y-4 pt-1">
+          <div className="space-y-4 pt-1 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-4 md:space-y-0">
             {filtered.map(cmd => {
               const cat = CATEGORY_MAP[cmd.category];
               const isFav = favorites.includes(cmd.text);

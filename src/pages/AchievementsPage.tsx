@@ -29,9 +29,9 @@ export default function AchievementsPage() {
     : null;
 
   return (
-    <div className="flex-1 overflow-auto px-6 pt-6 pb-28 scrollbar-thin">
+    <div className="flex-1 overflow-auto px-6 pt-6 pb-28 md:pb-12 scrollbar-thin">
       <h1 className="text-2xl font-extrabold text-[var(--text)] mb-6">Achievements</h1>
-      <div className="bg-[var(--surface)] rounded-2xl p-6 text-center mb-8 border border-[var(--border)]">
+      <div className="bg-[var(--surface)] rounded-2xl p-6 text-center mb-8 border border-[var(--border)] lg:max-w-2xl">
         <p className="text-sm text-[var(--text-sec)] mb-4">{total} / {ACHIEVEMENTS.length} unlocked</p>
         <div className="w-full h-3 bg-[var(--border)] rounded-full overflow-hidden">
           <div className="h-full rounded-full bg-[var(--primary)] transition-all duration-500"
@@ -39,7 +39,7 @@ export default function AchievementsPage() {
         </div>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-4 md:space-y-0">
         {ACHIEVEMENTS.map(a => {
           const unlocked = unlockedIds.includes(a.id);
           const progress = getAchievementProgress(a, statistics);

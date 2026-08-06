@@ -38,7 +38,7 @@ export default function DailyPage() {
   }
 
   return (
-    <div className="flex-1 flex flex-col px-6 pt-6 pb-28 overflow-auto">
+    <div className="flex-1 flex flex-col px-6 pt-6 pb-28 md:pb-12 overflow-auto w-full max-w-2xl mx-auto">
       <p className="text-sm text-[var(--text-sec)] mb-1">{greeting}</p>
       <h1 className="text-2xl font-extrabold text-[var(--text)] mb-6">Today's Challenge</h1>
 

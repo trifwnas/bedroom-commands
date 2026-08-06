@@ -36,10 +36,10 @@ export default function FavoritesPage() {
   }
 
   return (
-    <div className="flex-1 overflow-auto px-6 pt-6 pb-28 scrollbar-thin">
+    <div className="flex-1 overflow-auto px-6 pt-6 pb-28 md:pb-12 scrollbar-thin">
       <h1 className="text-2xl font-extrabold text-[var(--text)] mb-6">My Favorites</h1>
       <p className="text-sm text-[var(--text-sec)] mb-5">{favorites.length} saved commands</p>
-      <div className="space-y-4">
+      <div className="space-y-4 md:grid md:grid-cols-2 md:gap-4 md:space-y-0">
         {favorites.map(cmd => {
           const cat = COMMAND_TO_CATEGORY.get(cmd);
           const done = completedCommands.includes(cmd);

@@ -150,12 +150,18 @@ export default function CardsPage() {
   const moodInfo = MOODS.find(m => m.id === currentMood);
 
   return (
-    <div className="flex-1 flex flex-col px-6 pt-6 pb-28 overflow-auto">
+    <div className="flex-1 flex flex-col px-6 pt-6 pb-28 md:pb-12 overflow-auto">
       {/* Header */}
-      <div className="mb-6">
+      <div className="mb-6 md:mb-8">
         <h1 className="text-2xl font-extrabold text-[var(--text)]">Bedroom Commands</h1>
+        <p className="hidden md:block text-sm text-[var(--text-sec)] mt-1.5">
+          Draw a card and let fate pick your next adventure together.
+        </p>
       </div>
 
+      <div className="md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,360px)] md:gap-10 lg:gap-14 md:items-start">
+      {/* Filters */}
+      <div className="md:order-2">
       {/* Category selector */}
       <CategorySelector selected={selectedCategory} onSelect={setSelectedCategory} />
 
@@ -177,7 +183,7 @@ export default function CardsPage() {
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
-            <div className="flex gap-2.5 overflow-x-auto py-3 -mx-6 px-6 scrollbar-none">
+            <div className="flex gap-2.5 overflow-x-auto py-3 -mx-6 px-6 scrollbar-none md:flex-wrap md:overflow-visible md:mx-0 md:px-0">
               <button onClick={() => setSelectedMood('all')}
                 className={`shrink-0 px-4 py-2 rounded-full text-xs font-semibold border transition-all active:scale-95 ${
                   selectedMood === 'all'
@@ -201,10 +207,13 @@ export default function CardsPage() {
           </motion.div>
         )}
       </AnimatePresence>
+      </div>
 
+      {/* Card + actions column */}
+      <div className="md:order-1">
       {/* Card */}
       <div className="flex-1 flex justify-center items-center py-4 perspective-[1000px] min-h-0">
-        <div className="relative w-full max-w-sm">
+        <div className="relative w-full max-w-sm md:max-w-md">
           {/* Confetti overlay */}
           <AnimatePresence>
             {showConfetti && (
@@ -329,10 +338,12 @@ export default function CardsPage() {
           </button>
         </div>
       </div>
+      </div>
+      </div>
 
       <Timer open={showTimer} onClose={() => setShowTimer(false)} initialMinutes={timerMinutes} />
 
-      <p className="text-center text-xs mt-6" style={{ color: 'color-mix(in srgb, var(--text-sec) 60%, transparent)' }}>
+      <p className="text-center text-xs mt-6 md:hidden" style={{ color: 'color-mix(in srgb, var(--text-sec) 60%, transparent)' }}>
         A <a href="https://tafhub.com/" target="_blank" rel="noopener noreferrer" className="underline hover:opacity-100 transition opacity-90">TafHub</a> project
       </p>
     </div>

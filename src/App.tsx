@@ -78,11 +78,36 @@ function AppContent() {
   };
 
   return (
-    <div className="min-h-dvh flex flex-col items-center text-[var(--text)]">
+    <div className="min-h-dvh flex text-[var(--text)]">
       {!hasSeenOnboarding && <Onboarding />}
 
-      {/* App shell — centered phone-width column on desktop */}
-      <div className="w-full max-w-md min-h-dvh flex flex-col relative bg-[var(--bg)] sm:border-x sm:border-[var(--border)] sm:shadow-2xl sm:shadow-black/10">
+      {/* Desktop sidebar */}
+      <aside className="hidden md:flex md:flex-col w-64 shrink-0 bg-[var(--surface)] border-r border-[var(--border)] sticky top-0 h-dvh z-30">
+        <div className="px-6 pt-7 pb-6">
+          <div className="text-xl font-extrabold text-[var(--primary)] leading-tight">Bedroom Commands</div>
+          <p className="text-xs text-[var(--text-sec)] mt-1.5">750+ challenges for couples</p>
+        </div>
+        <nav className="flex-1 overflow-auto px-3 pb-6 space-y-1 scrollbar-thin">
+          {[...MAIN_TABS, ...MORE_ITEMS].map(item => {
+            const active = currentPath === item.path;
+            return (
+              <button key={item.path} onClick={() => navigateTo(item.path)}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-colors active:scale-[0.98] ${
+                  active ? 'bg-[var(--primary)]/10 text-[var(--primary)]' : 'text-[var(--text)] hover:bg-[var(--bg)]'
+                }`}>
+                <item.icon size={20} className={active ? 'text-[var(--primary)]' : 'text-[var(--text-sec)]'} />
+                {item.label}
+              </button>
+            );
+          })}
+        </nav>
+        <div className="px-6 py-6 text-xs text-[var(--text-sec)]">
+          A <a href="https://tafhub.com/" target="_blank" rel="noopener noreferrer" className="underline">TafHub</a> project
+        </div>
+      </aside>
+
+      {/* Main column */}
+      <div className="flex-1 flex flex-col min-w-0">
         {/* Page */}
         <main className="flex-1 flex flex-col overflow-hidden">
         <AnimatePresence mode="wait">
@@ -91,7 +116,7 @@ function AppContent() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.15 }}
-            className="flex-1 flex flex-col overflow-auto scrollbar-thin"
+            className="flex-1 flex flex-col overflow-auto scrollbar-thin w-full max-w-5xl mx-auto"
           >
             <Routes>
               <Route path="/" element={<CardsPage />} />
@@ -156,7 +181,7 @@ function AppContent() {
       </AnimatePresence>
 
       {/* Tab bar */}
-      <nav className="sticky bottom-0 z-40 bg-[var(--surface)]/95 backdrop-blur-xl border-t border-[var(--border)]"
+      <nav className="md:hidden sticky bottom-0 z-40 bg-[var(--surface)]/95 backdrop-blur-xl border-t border-[var(--border)]"
         style={{ paddingBottom: 'var(--safe-bottom)' }}>
         <div className="flex items-stretch">
           {MAIN_TABS.map(tab => {

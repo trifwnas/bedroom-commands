@@ -90,7 +90,7 @@ export default function WheelPage() {
   const isFav = command ? favorites.includes(command) : false;
 
   return (
-    <div className="flex-1 flex flex-col px-6 pt-6 pb-28 overflow-auto">
+    <div className="flex-1 flex flex-col px-6 pt-6 pb-28 md:pb-12 overflow-auto w-full max-w-2xl mx-auto">
       <div className="text-center mb-6">
         <h1 className="text-2xl font-extrabold text-[var(--text)]">Spin the Wheel</h1>
         <p className="text-sm text-[var(--text-sec)] mt-1">Spin to discover a new adventure!</p>
@@ -175,7 +175,7 @@ export default function WheelPage() {
 
       <div className="mt-2">
         <button onClick={spin} disabled={spinning}
-          className="w-full py-4 rounded-2xl bg-[var(--primary)] text-white text-lg font-bold flex items-center justify-center gap-3 shadow-lg shadow-[var(--primary)]/30 active:scale-95 transition disabled:opacity-40 touch-target">
+          className="w-full md:w-auto md:mx-auto md:flex md:px-16 py-4 rounded-2xl bg-[var(--primary)] text-white text-lg font-bold flex items-center justify-center gap-3 shadow-lg shadow-[var(--primary)]/30 active:scale-95 transition disabled:opacity-40 touch-target">
           <Zap size={22} /> {spinning ? 'Spinning...' : 'Spin!'}
         </button>
       </div>
