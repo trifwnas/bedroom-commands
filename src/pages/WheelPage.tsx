@@ -97,42 +97,55 @@ export default function WheelPage() {
       </div>
 
       <div className="flex justify-center items-center py-6 relative">
-        <div className="absolute top-4 z-20 drop-shadow-md">
-          <svg width="28" height="24" viewBox="0 0 28 24">
-            <polygon points="14,24 0,0 28,0" fill="var(--text)" />
-          </svg>
-        </div>
-
         <div className="relative" style={{ width: WHEEL_SIZE, height: WHEEL_SIZE }}>
-          <svg
-            width={WHEEL_SIZE} height={WHEEL_SIZE}
-            viewBox={`0 0 ${WHEEL_SIZE} ${WHEEL_SIZE}`}
-            className="rounded-full shadow-2xl"
+          {/* Fixed pointer at top */}
+          <div className="absolute left-1/2 -top-5 z-20 -translate-x-1/2 drop-shadow-md">
+            <svg width="28" height="24" viewBox="0 0 28 24">
+              <polygon points="14,24 0,0 28,0" fill="var(--text)" />
+            </svg>
+          </div>
+
+          {/* Rotating wheel */}
+          <div
+            className="w-full h-full"
             style={{
               transform: `rotate(${rotation}deg)`,
+              transformOrigin: 'center',
               transition: spinning ? 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)' : 'none',
             }}
           >
-            {segments.map(({ cat, startAngle, endAngle }) => (
-              <g key={cat.id}>
-                <path d={describeArc(CENTER, CENTER, RADIUS, startAngle, endAngle)}
-                  fill={cat.color} stroke="white" strokeWidth="2" />
-              </g>
-            ))}
-            <circle cx={CENTER} cy={CENTER} r="30" fill="var(--primary)" stroke="white" strokeWidth="4" />
-            <text x={CENTER} y={CENTER + 1} textAnchor="middle" dominantBaseline="central" fontSize="20" fill="white">💕</text>
-          </svg>
+            <svg
+              width={WHEEL_SIZE} height={WHEEL_SIZE}
+              viewBox={`0 0 ${WHEEL_SIZE} ${WHEEL_SIZE}`}
+              className="rounded-full shadow-2xl"
+            >
+              {segments.map(({ cat, startAngle, endAngle }) => (
+                <g key={cat.id}>
+                  <path d={describeArc(CENTER, CENTER, RADIUS, startAngle, endAngle)}
+                    fill={cat.color} stroke="white" strokeWidth="2" />
+                </g>
+              ))}
+              <circle cx={CENTER} cy={CENTER} r="30" fill="var(--primary)" stroke="white" strokeWidth="4" />
+              <text x={CENTER} y={CENTER + 1} textAnchor="middle" dominantBaseline="central" fontSize="20" fill="white">💕</text>
+            </svg>
+          </div>
 
+          {/* Labels orbit with the wheel, staying upright */}
           {segments.map(({ cat, midAngle }) => {
-            const rad = ((midAngle - 90) * Math.PI) / 180;
+            const a = rotation + midAngle;
             const labelR = RADIUS * 0.62;
-            const x = CENTER + labelR * Math.cos(rad);
-            const y = CENTER + labelR * Math.sin(rad);
             return (
-              <div key={cat.id} className="absolute flex flex-col items-center pointer-events-none"
-                style={{ left: x, top: y, transform: 'translate(-50%, -50%)' }}>
-                <span className="text-lg drop-shadow-sm">{cat.emoji}</span>
-                <span className="text-[8px] font-bold text-white drop-shadow-sm leading-tight">{cat.name}</span>
+              <div key={cat.id} className="absolute pointer-events-none"
+                style={{
+                  left: CENTER,
+                  top: CENTER,
+                  transform: `translate(-50%, -50%) rotate(${a}deg) translateY(-${labelR}px)`,
+                  transition: spinning ? 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)' : 'none',
+                }}>
+                <div className="flex flex-col items-center" style={{ transform: `rotate(-${a}deg)` }}>
+                  <span className="text-lg drop-shadow-sm">{cat.emoji}</span>
+                  <span className="text-[8px] font-bold text-white drop-shadow-sm leading-tight">{cat.name}</span>
+                </div>
               </div>
             );
           })}
