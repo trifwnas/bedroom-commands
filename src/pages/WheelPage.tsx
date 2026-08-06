@@ -68,7 +68,7 @@ export default function WheelPage() {
     const target = enabled[Math.floor(Math.random() * enabled.length)];
     const seg = segments.find(s => s.cat.id === target.id)!;
     const spins = 5 + Math.floor(Math.random() * 4);
-    const targetRot = rotation + spins * 360 + (360 - seg.midAngle);
+    const targetRot = (rotation - (rotation % 360)) + spins * 360 + (360 - seg.midAngle);
 
     setRotation(targetRot);
 
