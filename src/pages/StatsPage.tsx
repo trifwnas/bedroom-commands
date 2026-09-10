@@ -1,12 +1,14 @@
 import { Zap, Heart, Award, Calendar, BarChart3, Target } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { CATEGORIES, MOODS } from '../types';
+import { useI18n } from '../i18n';
 
 export default function StatsPage() {
   const statistics = useStore(s => s.statistics);
   const favorites = useStore(s => s.favorites);
   const history = useStore(s => s.history);
   const completedCommands = useStore(s => s.completedCommands);
+  const { t, resolveCommand } = useI18n();
 
   const total = Object.values(statistics.categoryDraws).reduce((a, b) => a + b, 0);
 
@@ -17,18 +19,18 @@ export default function StatsPage() {
   })();
 
   const stats = [
-    { icon: Zap, color: '#cc3a40', value: statistics.totalDraws, label: 'Cards Drawn' },
-    { icon: Heart, color: '#d94059', value: favorites.length, label: 'Favorites' },
-    { icon: Award, color: '#2d8a4e', value: statistics.completedChallenges, label: 'Challenges' },
-    { icon: Calendar, color: '#c49000', value: statistics.streak, label: 'Day Streak' },
-    { icon: Target, color: '#2563c0', value: completedCommands.length, label: 'Completed' },
+    { icon: Zap, color: '#cc3a40', value: statistics.totalDraws, label: t('stats.drawn') },
+    { icon: Heart, color: '#d94059', value: favorites.length, label: t('stats.favorites') },
+    { icon: Award, color: '#2d8a4e', value: statistics.completedChallenges, label: t('stats.challenges') },
+    { icon: Calendar, color: '#c49000', value: statistics.streak, label: t('stats.streak') },
+    { icon: Target, color: '#2563c0', value: completedCommands.length, label: t('stats.completed') },
   ];
 
   const moodTotal = Object.values(statistics.moodDraws).reduce((a, b) => a + b, 0);
 
   return (
     <div className="flex-1 overflow-auto px-6 pt-6 pb-28 md:pb-12 scrollbar-thin">
-      <h1 className="text-2xl font-extrabold text-[var(--text)] mb-6">Your Statistics</h1>
+      <h1 className="text-2xl font-extrabold text-[var(--text)] mb-6">{t('stats.title')}</h1>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
         {stats.map(s => (
@@ -44,15 +46,14 @@ export default function StatsPage() {
       </div>
 
       <div className="lg:max-w-2xl lg:mx-auto">
-      {/* Category breakdown */}
       <div className="bg-[var(--surface)] rounded-2xl p-6 mb-6 border border-[var(--border)]">
-        <h2 className="text-base font-semibold text-[var(--text)] mb-4">Category Breakdown</h2>
+        <h2 className="text-base font-semibold text-[var(--text)] mb-4">{t('stats.categoryBreakdown')}</h2>
         {CATEGORIES.map(cat => {
           const pct = total === 0 ? 0 : Math.round(((statistics.categoryDraws[cat.id] || 0) / total) * 100);
           return (
             <div key={cat.id} className="flex items-center gap-3 mb-4 last:mb-0">
               <span className="text-base w-6">{cat.emoji}</span>
-              <span className="text-sm text-[var(--text)] w-20 font-medium">{cat.name}</span>
+              <span className="text-sm text-[var(--text)] w-20 font-medium">{t(`cat.${cat.id}`)}</span>
               <span className="text-xs text-[var(--text-sec)] w-6 text-right">{statistics.categoryDraws[cat.id] || 0}</span>
               <div className="flex-1 h-2.5 bg-[var(--border)] rounded-full overflow-hidden">
                 <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, background: cat.color }} />
@@ -63,17 +64,16 @@ export default function StatsPage() {
         })}
       </div>
 
-      {/* Mood breakdown */}
       {moodTotal > 0 && (
         <div className="bg-[var(--surface)] rounded-2xl p-6 mb-6 border border-[var(--border)]">
-          <h2 className="text-base font-semibold text-[var(--text)] mb-4">Mood Breakdown</h2>
+          <h2 className="text-base font-semibold text-[var(--text)] mb-4">{t('stats.moodBreakdown')}</h2>
           {MOODS.map(mood => {
             const count = statistics.moodDraws[mood.id] || 0;
             const pct = Math.round((count / moodTotal) * 100);
             return (
               <div key={mood.id} className="flex items-center gap-3 mb-4 last:mb-0">
                 <span className="text-base w-6">{mood.emoji}</span>
-                <span className="text-sm text-[var(--text)] w-16 font-medium">{mood.label}</span>
+                <span className="text-sm text-[var(--text)] w-16 font-medium">{t(`mood.${mood.id}`)}</span>
                 <span className="text-xs text-[var(--text-sec)] w-6 text-right">{count}</span>
                 <div className="flex-1 h-2.5 bg-[var(--border)] rounded-full overflow-hidden">
                   <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, background: mood.color }} />
@@ -87,21 +87,21 @@ export default function StatsPage() {
 
       {mostDrawn.count > 0 && (
         <div className="bg-[var(--surface)] rounded-2xl p-6 text-center mb-6 border border-[var(--border)]">
-          <p className="text-xs uppercase tracking-wider text-[var(--text-sec)] mb-3">Most Played Category</p>
+          <p className="text-xs uppercase tracking-wider text-[var(--text-sec)] mb-3">{t('stats.mostPlayed')}</p>
           <div className="flex items-center justify-center gap-3">
             <span className="text-2xl">{CATEGORIES.find(c => c.id === mostDrawn.category)?.emoji}</span>
-            <span className="text-xl font-bold text-[var(--text)]">{mostDrawn.category}</span>
+            <span className="text-xl font-bold text-[var(--text)]">{t(`cat.${mostDrawn.category}`)}</span>
           </div>
-          <p className="text-sm text-[var(--text-sec)] mt-2">{mostDrawn.count} cards drawn</p>
+          <p className="text-sm text-[var(--text-sec)] mt-2">{t('stats.cardsDrawn', { count: mostDrawn.count })}</p>
         </div>
       )}
 
       <div className="bg-[var(--primary)]/10 rounded-2xl p-6 text-center border border-[var(--primary)]/20">
         <BarChart3 size={20} className="text-[var(--primary)] mx-auto mb-3" />
         <p className="text-sm italic text-[var(--text)]">
-          "{history[0] || 'Start drawing cards to see your activity!'}"
+          "{history[0] ? resolveCommand(history[0]) : t('stats.emptyHint')}"
         </p>
-        {history.length > 0 && <p className="text-xs text-[var(--text-sec)] mt-3">Latest card</p>}
+        {history.length > 0 && <p className="text-xs text-[var(--text-sec)] mt-3">{t('stats.latestCard')}</p>}
       </div>
       </div>
     </div>

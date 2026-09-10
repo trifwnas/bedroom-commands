@@ -1,8 +1,5 @@
-import type { Category, Mood, CategoryInfo } from '../types';
-import { CATEGORIES, CATEGORY_MAP } from '../types';
-
-export const COMMANDS: Record<Category, string[]> = {
-  Romantic: [
+{
+  "Romantic": [
     "Give your partner a massage",
     "Share your favorite memory together",
     "Whisper something romantic in your partner's ear",
@@ -1036,9 +1033,9 @@ export const COMMANDS: Record<Category, string[]> = {
     "Make a tiny love painting with your favorite colors together tonight",
     "Give your partner a love coupon for a movie night with popcorn tonight",
     "Create a love map with your favorite places to dance together tonight",
-    "Write a love note and fold it into a heart and give it tonight",
+    "Write a love note and fold it into a heart and give it tonight"
   ],
-  Playful: [
+  "Playful": [
     "Tell a funny joke",
     "Do a silly dance together",
     "Give each other a high five",
@@ -2038,9 +2035,9 @@ export const COMMANDS: Record<Category, string[]> = {
     "Play hide and seek with a love note as hidden treasure and giggle loudly tonight and smile",
     "Do a silly dance with a pillow on your head and laugh loudly tonight and giggle",
     "Create a funny award for the best joke tonight and present it with a kiss loudly tonight",
-    "Have a staring contest with funny faces and giggle loudly tonight and smile",
+    "Have a staring contest with funny faces and giggle loudly tonight and smile"
   ],
-  Spicy: [
+  "Spicy": [
     "Try a new position",
     "Use a blindfold",
     "Write down a secret fantasy and share it",
@@ -3040,9 +3037,9 @@ export const COMMANDS: Record<Category, string[]> = {
     "Tease them with light touches on their chest and stomach softly tonight and smile",
     "Whisper what you love about their body and kiss their neck softly tonight and smile",
     "Kiss their neck and hold eye contact for a long moment and whisper sexy tonight",
-    "Caress their thighs with warm hands and kiss their lips softly and hold tonight and smile",
+    "Caress their thighs with warm hands and kiss their lips softly and hold tonight and smile"
   ],
-  Adventure: [
+  "Adventure": [
     "Go for a midnight stroll",
     "Plan a surprise getaway",
     "Explore a new part of town together",
@@ -4043,9 +4040,9 @@ export const COMMANDS: Record<Category, string[]> = {
     "Cross a border town for lunch and wander together today and smile and cuddle",
     "Bike along an old railway trail for miles together tomorrow and smile and cuddle",
     "Explore sand dunes and race to the top together today and smile and cuddle",
-    "Sleep under the stars in a hammock together tonight together and smile and cuddle and laugh",
+    "Sleep under the stars in a hammock together tonight together and smile and cuddle and laugh"
   ],
-  Relaxing: [
+  "Relaxing": [
     "Take a bubble bath together",
     "Have a movie marathon in bed",
     "Practice deep breathing exercises together",
@@ -5045,119 +5042,6 @@ export const COMMANDS: Record<Category, string[]> = {
     "Enjoy aromatherapy oils while resting side by side for 20 minutes tonight together and relax and smile and cuddle",
     "Trace each others palms slowly and mindfully for 5 minutes together tonight and smile and cuddle and relax",
     "Bake cookies together filling home with warmth for an hour tonight together and cuddle and smile and relax",
-    "Sit under moonlight and share quiet whispers for 15 minutes tonight together and smile and cuddle and relax",
-  ],
-};
-
-export const getTotalCommandCount = (): number => {
-  return Object.values(COMMANDS).reduce((acc, cmds) => acc + cmds.length, 0);
-};
-
-export const getCategoryCommandCount = (category: Category): number => {
-  return COMMANDS[category]?.length || 0;
-};
-
-export const COMMAND_TO_CATEGORY = new Map<string, CategoryInfo>();
-CATEGORIES.forEach(cat => {
-  COMMANDS[cat.id]?.forEach(cmd => COMMAND_TO_CATEGORY.set(cmd, cat));
-});
-
-export const COMMAND_MOODS = new Map<string, Mood>([
-  ["Slow dance together to your favorite song", "sweet"],
-  ["Watch the sunrise or sunset together", "sweet"],
-  ["Build a blanket fort and watch movies inside", "sweet"],
-  ["Give your partner a massage", "flirty"],
-  ["Have a pillow fight", "playful"],
-  ["Play truth or dare", "playful"],
-  ["Do karaoke together", "playful"],
-  ["Create a secret handshake together", "sweet"],
-  ["Build Lego creations together", "sweet"],
-  ["Try a new position", "wild"],
-  ["Use a blindfold", "spicy"],
-  ["Role-play your fantasies", "wild"],
-  ["Take a bubble bath with scented oils", "flirty"],
-  ["Play a game of strip poker", "wild"],
-  ["Explore tantra or tantric exercises", "wild"],
-  ["Go for a midnight stroll", "sweet"],
-  ["Take a spontaneous road trip", "flirty"],
-  ["Go on a hot air balloon ride", "flirty"],
-  ["Try indoor skydiving or bungee jumping", "wild"],
-  ["Take a bubble bath together", "sweet"],
-  ["Have a movie marathon in bed", "sweet"],
-  ["Practice deep breathing exercises together", "sweet"],
-  ["Enjoy a calming meditation session", "sweet"],
-  ["Read a book to each other", "sweet"],
-  ["Take a nap together in a cozy spot", "sweet"],
-  ["Make a cozy blanket fort", "sweet"],
-  ["Have a slow dance in the living room", "sweet"],
-  ["Practice loving-kindness meditation", "sweet"],
-  ["Have a quiet evening in with candles", "sweet"],
-  ["Create a romantic breakfast in bed", "sweet"],
-  ["Write love letters to your future selves", "sweet"],
-  ["Have a themed costume night", "playful"],
-  ["Play hide and seek in the dark", "playful"],
-  ["Have a lip-sync battle", "playful"],
-  ["Make up funny songs about each other", "playful"],
-  ["Have a staring contest", "playful"],
-  ["Do the cinnamon challenge together", "playful"],
-  ["Write down a secret fantasy and share it", "spicy"],
-  ["Create a sexy bucket list", "spicy"],
-  ["Experiment with ice cubes or hot wax", "wild"],
-  ["Explore sensory deprivation", "wild"],
-  ["Try 10 minutes of continuous kissing", "flirty"],
-  ["Create a 'yes/no/maybe' list of desires", "wild"],
-  ["Practice tantric breathing techniques", "wild"],
-  ["Have a 'naughty' pillow talk session", "wild"],
-  ["Try a new place in the house", "wild"],
-  ["Have a candlelit dinner at home", "sweet"],
-  ["Stargaze and name a star together", "sweet"],
-  ["Create a memory jar together and fill it with notes", "sweet"],
-  ["Write love letters for a future anniversary", "sweet"],
-  ["Exchange handwritten love notes", "sweet"],
-  ["Have a couples' game night with romantic prizes", "flirty"],
-]);
-
-export function getCommandMood(command: string, category: Category): Mood {
-  return COMMAND_MOODS.get(command) || CATEGORY_MAP[category].defaultMood;
+    "Sit under moonlight and share quiet whispers for 15 minutes tonight together and smile and cuddle and relax"
+  ]
 }
-
-export type CommandId = string;
-
-export const cmdId = (category: Category, index: number): CommandId => `b:${category}:${index}`;
-
-export const isBuiltInId = (id: string): boolean => id.startsWith('b:');
-
-export const parseCmdId = (id: string): { category: Category; index: number } | null => {
-  const m = /^b:([A-Za-z]+):(\d+)$/.exec(id);
-  if (!m) return null;
-  return { category: m[1] as Category, index: parseInt(m[2], 10) };
-};
-
-export const COMMAND_MOODS_BY_ID = new Map<CommandId, Mood>();
-CATEGORIES.forEach(cat => {
-  COMMANDS[cat.id].forEach((cmd, i) => {
-    const mood = COMMAND_MOODS.get(cmd);
-    if (mood) COMMAND_MOODS_BY_ID.set(cmdId(cat.id, i), mood);
-  });
-});
-
-export const getCommandMoodAt = (category: Category, index: number): Mood =>
-  COMMAND_MOODS_BY_ID.get(cmdId(category, index)) || CATEGORY_MAP[category].defaultMood;
-
-export const getCommandMoodById = (id: CommandId): Mood => {
-  const p = parseCmdId(id);
-  if (!p) return 'sweet';
-  return getCommandMoodAt(p.category, p.index);
-};
-
-export const getCommandCategory = (id: CommandId): Category | null => {
-  const p = parseCmdId(id);
-  return p ? p.category : null;
-};
-
-export const TEXT_TO_ID = new Map<string, CommandId>();
-CATEGORIES.forEach(cat => {
-  COMMANDS[cat.id].forEach((cmd, i) => TEXT_TO_ID.set(cmd, cmdId(cat.id, i)));
-});
-
-export const toCommandId = (text: string): CommandId => TEXT_TO_ID.get(text) ?? text;

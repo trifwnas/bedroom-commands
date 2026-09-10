@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, createContext, useContext, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, X, AlertTriangle, Info } from 'lucide-react';
+import { useI18n } from '../i18n';
 
 interface Toast {
   id: number;
@@ -23,6 +24,7 @@ let nextId = 0;
 export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
   const timers = useRef<Map<number, number>>(new Map());
+  const { t } = useI18n();
 
   const removeToast = useCallback((id: number) => {
     if (timers.current.has(id)) {
@@ -48,7 +50,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      <div className="fixed top-[var(--safe-top)] left-0 right-0 z-[200] flex flex-col items-center gap-2 p-4 pointer-events-none">
+      <div role="status" aria-live="polite" className="fixed top-[var(--safe-top)] left-0 right-0 z-[200] flex flex-col items-center gap-2 p-4 pointer-events-none">
         <AnimatePresence>
           {toasts.map(toast => (
             <motion.div
@@ -69,7 +71,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               {toast.type === 'warning' && <AlertTriangle size={18} />}
               {toast.type === 'info' && <Info size={18} className="text-[var(--primary)]" />}
               <span className="text-sm font-medium flex-1">{toast.message}</span>
-              <button onClick={() => removeToast(toast.id)} className="shrink-0 p-1 opacity-60 hover:opacity-100">
+              <button onClick={() => removeToast(toast.id)} aria-label={t('a11y.close')} className="shrink-0 p-1 opacity-60 hover:opacity-100">
                 <X size={14} />
               </button>
             </motion.div>
@@ -100,6 +102,7 @@ export function useConfirm() {
 
 export function ConfirmProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<(ConfirmOptions & { resolve: (v: boolean) => void }) | null>(null);
+  const { t } = useI18n();
 
   const confirm = useCallback((options: ConfirmOptions) => {
     return new Promise<boolean>(resolve => {
@@ -126,19 +129,20 @@ export function ConfirmProvider({ children }: { children: React.ReactNode }) {
               initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
               className="bg-[var(--surface)] rounded-2xl p-6 max-w-sm w-full shadow-2xl"
               onClick={e => e.stopPropagation()}
+              role="alertdialog" aria-modal="true" aria-label={state.title}
             >
               <h3 className="text-lg font-bold text-[var(--text)] mb-2">{state.title}</h3>
               <p className="text-sm text-[var(--text-sec)] leading-relaxed mb-6">{state.message}</p>
               <div className="flex gap-3">
                 <button onClick={() => handleClose(false)}
                   className="flex-1 py-3 rounded-xl border border-[var(--border)] text-[var(--text)] font-semibold active:scale-95 transition">
-                  {state.cancelLabel || 'Cancel'}
+                  {state.cancelLabel || t('common.cancel')}
                 </button>
                 <button onClick={() => handleClose(true)}
                   className={`flex-1 py-3 rounded-xl font-semibold active:scale-95 transition text-white ${
                     state.danger ? 'bg-red-500' : 'bg-[var(--primary)]'
                   }`}>
-                  {state.confirmLabel || 'Confirm'}
+                  {state.confirmLabel || t('common.confirm')}
                 </button>
               </div>
             </motion.div>

@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, MotionConfig } from 'framer-motion';
 import { Gamepad2, RotateCw, Sun, Search, Menu, Heart, Clock, BarChart3, Award, Settings, X } from 'lucide-react';
 import { useStore } from './store/useStore';
 import { useDarkMode } from './hooks/useTheme';
 import { Onboarding } from './components/Onboarding';
+import { useI18n } from './i18n';
 
 import CardsPage from './pages/CardsPage';
 import WheelPage from './pages/WheelPage';
@@ -16,48 +17,38 @@ import StatsPage from './pages/StatsPage';
 import AchievementsPage from './pages/AchievementsPage';
 import SettingsPage from './pages/SettingsPage';
 
-const SEO: Record<string, { title: string; description: string }> = {
-  '/': { title: 'Bedroom Commands — Fun Couples Card Game | Romantic, Spicy & Playful Challenges', description: 'A free couples card game with hundreds of romantic, playful, spicy, adventure, and relaxing challenges. Draw cards, spin the wheel, and discover new experiences together.' },
-  '/wheel': { title: 'Spin the Wheel — Bedroom Commands', description: 'Spin the wheel to discover a random romantic, playful, or spicy couples challenge. Let fate decide your next bedroom command.' },
-  '/daily': { title: "Today's Challenge — Bedroom Commands", description: 'Get a fresh daily couples challenge every day. Romantic, spicy, and playful commands to keep your relationship exciting.' },
-  '/search': { title: 'Search Commands — Bedroom Commands', description: 'Browse and search through hundreds of couples commands. Filter by category, mood, or keyword to find the perfect challenge.' },
-  '/favorites': { title: 'Favorite Commands — Bedroom Commands', description: 'Your saved bedroom commands. Access your favorite romantic, playful, and spicy couples challenges anytime.' },
-  '/history': { title: 'Command History — Bedroom Commands', description: 'Review your past drawn bedroom commands. Track which couples challenges you have explored.' },
-  '/stats': { title: 'Statistics — Bedroom Commands', description: 'View your couples game statistics. Track completed commands, favorite categories, and relationship milestones.' },
-  '/achievements': { title: 'Achievements — Bedroom Commands', description: 'Unlock achievements as you explore more couples challenges. Track your progress and milestones.' },
-  '/settings': { title: 'Settings — Bedroom Commands', description: 'Customize your Bedroom Commands experience. Toggle sounds, dark mode, manage categories, and more.' },
+const SEO_PAGES: Record<string, string> = {
+  '/': 'home',
+  '/wheel': 'wheel',
+  '/daily': 'daily',
+  '/search': 'search',
+  '/favorites': 'favorites',
+  '/history': 'history',
+  '/stats': 'stats',
+  '/achievements': 'achievements',
+  '/settings': 'settings',
 };
 
-const MAIN_TABS = [
-  { path: '/', icon: Gamepad2, label: 'Cards' },
-  { path: '/wheel', icon: RotateCw, label: 'Wheel' },
-  { path: '/daily', icon: Sun, label: 'Today' },
-  { path: '/search', icon: Search, label: 'Search' },
-];
-
-const MORE_ITEMS = [
-  { path: '/favorites', icon: Heart, label: 'Favorites' },
-  { path: '/history', icon: Clock, label: 'History' },
-  { path: '/stats', icon: BarChart3, label: 'Stats' },
-  { path: '/achievements', icon: Award, label: 'Achievements' },
-  { path: '/settings', icon: Settings, label: 'Settings' },
-];
-
-function usePageSEO(path: string) {
+function usePageSEO(path: string, t: (k: string) => string) {
   useEffect(() => {
-    const seo = SEO[path] || SEO['/'];
-    document.title = seo.title;
-    const meta = document.querySelector('meta[name="description"]');
-    if (meta) meta.setAttribute('content', seo.description);
-    const ogTitle = document.querySelector('meta[property="og:title"]');
-    if (ogTitle) ogTitle.setAttribute('content', seo.title);
-    const ogDesc = document.querySelector('meta[property="og:description"]');
-    if (ogDesc) ogDesc.setAttribute('content', seo.description);
-    const twTitle = document.querySelector('meta[name="twitter:title"]');
-    if (twTitle) twTitle.setAttribute('content', seo.title);
-    const twDesc = document.querySelector('meta[name="twitter:description"]');
-    if (twDesc) twDesc.setAttribute('content', seo.description);
-  }, [path]);
+    const key = SEO_PAGES[path] || 'home';
+    const title = t(`seo.${key}.title`);
+    const description = t(`seo.${key}.desc`);
+    document.title = title;
+    const setMeta = (attr: string, name: string, content: string) => {
+      const el = document.querySelector(`${attr}[name="${name}"]`);
+      if (el) el.setAttribute('content', content);
+    };
+    const setMetaProp = (attr: string, prop: string, content: string) => {
+      const el = document.querySelector(`${attr}[property="${prop}"]`);
+      if (el) el.setAttribute('content', content);
+    };
+    setMeta('meta', 'description', description);
+    setMetaProp('meta', 'og:title', title);
+    setMetaProp('meta', 'og:description', description);
+    setMeta('meta', 'twitter:title', title);
+    setMeta('meta', 'twitter:description', description);
+  }, [path, t]);
 }
 
 function AppContent() {
@@ -65,17 +56,33 @@ function AppContent() {
   const navigate = useNavigate();
   const [showMore, setShowMore] = useState(false);
   const hasSeenOnboarding = useStore(s => s.hasSeenOnboarding);
+  const { t } = useI18n();
 
   const currentPath = location.pathname;
-  const isMainTab = MAIN_TABS.some(t => t.path === currentPath);
+  const isMainTab = SEO_PAGES[currentPath] ? ['home', 'wheel', 'daily', 'search'].includes(SEO_PAGES[currentPath]) : false;
   const moreActive = !isMainTab;
 
-  usePageSEO(currentPath);
+  usePageSEO(currentPath, t);
 
   const navigateTo = (path: string) => {
     navigate(path);
     setShowMore(false);
   };
+
+  const MAIN_TABS = [
+    { path: '/', icon: Gamepad2, label: t('nav.cards') },
+    { path: '/wheel', icon: RotateCw, label: t('nav.wheel') },
+    { path: '/daily', icon: Sun, label: t('nav.today') },
+    { path: '/search', icon: Search, label: t('nav.search') },
+  ];
+
+  const MORE_ITEMS = [
+    { path: '/favorites', icon: Heart, label: t('nav.favorites') },
+    { path: '/history', icon: Clock, label: t('nav.history') },
+    { path: '/stats', icon: BarChart3, label: t('nav.stats') },
+    { path: '/achievements', icon: Award, label: t('nav.achievements') },
+    { path: '/settings', icon: Settings, label: t('nav.settings') },
+  ];
 
   return (
     <div className="min-h-dvh flex text-[var(--text)]">
@@ -84,8 +91,8 @@ function AppContent() {
       {/* Desktop sidebar */}
       <aside className="hidden md:flex md:flex-col w-64 shrink-0 bg-[var(--surface)] border-r border-[var(--border)] sticky top-0 h-dvh z-30">
         <div className="px-6 pt-7 pb-6">
-          <div className="text-xl font-extrabold text-[var(--primary)] leading-tight">Bedroom Commands</div>
-          <p className="text-xs text-[var(--text-sec)] mt-1.5">750+ challenges for couples</p>
+          <div className="text-xl font-extrabold text-[var(--primary)] leading-tight">{t('app.name')}</div>
+          <p className="text-xs text-[var(--text-sec)] mt-1.5">{t('app.subtitle')}</p>
         </div>
         <nav className="flex-1 overflow-auto px-3 pb-6 space-y-1 scrollbar-thin">
           {[...MAIN_TABS, ...MORE_ITEMS].map(item => {
@@ -102,7 +109,7 @@ function AppContent() {
           })}
         </nav>
         <div className="px-6 py-6 text-xs text-[var(--text-sec)]">
-          A <a href="https://tafhub.com/" target="_blank" rel="noopener noreferrer" className="underline">TafHub</a> project
+          {t('app.tafhub')} <a href="https://tafhub.com/" target="_blank" rel="noopener noreferrer" className="underline">TafHub</a>
         </div>
       </aside>
 
@@ -156,8 +163,8 @@ function AppContent() {
                 <div className="w-10 h-1 rounded-full bg-[var(--border)]" />
               </div>
               <div className="flex justify-between items-center mb-5">
-                <h2 className="text-lg font-bold text-[var(--text)]">More</h2>
-                <button onClick={() => setShowMore(false)} className="p-2 rounded-full hover:bg-[var(--border)]">
+                <h2 className="text-lg font-bold text-[var(--text)]">{t('nav.more')}</h2>
+                <button onClick={() => setShowMore(false)} aria-label={t('a11y.close')} className="p-2 rounded-full hover:bg-[var(--border)]">
                   <X size={20} className="text-[var(--text)]" />
                 </button>
               </div>
@@ -201,7 +208,7 @@ function AppContent() {
               </button>
             );
           })}
-          <button onClick={() => setShowMore(!showMore)}
+          <button onClick={() => setShowMore(!showMore)} aria-label={t('nav.more')}
             className={`relative flex-1 flex flex-col items-center justify-center py-2.5 transition-colors touch-target ${
               moreActive ? 'text-[var(--primary)]' : 'text-[var(--text-sec)]'
             }`}>
@@ -211,7 +218,7 @@ function AppContent() {
                 transition={{ type: 'spring', stiffness: 400, damping: 30 }} />
             )}
             <Menu size={24} strokeWidth={moreActive ? 2.5 : 1.5} />
-            <span className={`text-[11px] mt-1 ${moreActive ? 'font-bold' : 'font-medium'}`}>More</span>
+            <span className={`text-[11px] mt-1 ${moreActive ? 'font-bold' : 'font-medium'}`}>{t('nav.more')}</span>
           </button>
         </div>
       </nav>
@@ -229,7 +236,9 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <AppContent />
+      <MotionConfig reducedMotion="user">
+        <AppContent />
+      </MotionConfig>
     </BrowserRouter>
   );
 }

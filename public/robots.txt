@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://bedroomcommands.app/sitemap.xml
+Sitemap: https://bedroomcommands.tafhub.com/sitemap.xml

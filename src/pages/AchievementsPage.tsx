@@ -4,6 +4,23 @@ import { CheckCircle } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { ACHIEVEMENTS, getAchievementProgress } from '../data/achievements';
 import { triggerHaptic } from '../utils';
+import { useI18n } from '../i18n';
+
+const ACH_TITLE_KEY: Record<string, string> = {
+  first_draw: 'ach.gettingStarted', draw_10: 'ach.warmUp', draw_50: 'ach.gettingIntoIt',
+  draw_100: 'ach.dedicated', draw_500: 'ach.commandMaster', first_favorite: 'ach.saver',
+  favorites_10: 'ach.collector', favorites_50: 'ach.treasury', first_challenge: 'ach.dailyPlayer',
+  challenges_7: 'ach.weekWarrior', challenges_30: 'ach.monthlyChampion', streak_3: 'ach.hatTrick',
+  streak_7: 'ach.weekLong', streak_30: 'ach.monthlyMagic', all_categories: 'ach.explorer',
+};
+
+const ACH_DESC_KEY: Record<string, string> = {
+  first_draw: 'ach.drawFirst', draw_10: 'ach.draw10', draw_50: 'ach.draw50',
+  draw_100: 'ach.draw100', draw_500: 'ach.draw500', first_favorite: 'ach.saveFirst',
+  favorites_10: 'ach.save10', favorites_50: 'ach.save50', first_challenge: 'ach.completeFirst',
+  challenges_7: 'ach.complete7', challenges_30: 'ach.complete30', streak_3: 'ach.streak3',
+  streak_7: 'ach.streak7', streak_30: 'ach.streak30', all_categories: 'ach.drawAll5',
+};
 
 export default function AchievementsPage() {
   const statistics = useStore(s => s.statistics);
@@ -11,6 +28,7 @@ export default function AchievementsPage() {
   const newAchievements = useStore(s => s.newAchievements);
   const clearNewAchievements = useStore(s => s.clearNewAchievements);
   const soundEnabled = useStore(s => s.soundEnabled);
+  const { t } = useI18n();
 
   const unlockedIds = useMemo(
     () => unlockedAchievements.map(a => a.achievementId),
@@ -30,9 +48,9 @@ export default function AchievementsPage() {
 
   return (
     <div className="flex-1 overflow-auto px-6 pt-6 pb-28 md:pb-12 scrollbar-thin">
-      <h1 className="text-2xl font-extrabold text-[var(--text)] mb-6">Achievements</h1>
+      <h1 className="text-2xl font-extrabold text-[var(--text)] mb-6">{t('achievements.title')}</h1>
       <div className="bg-[var(--surface)] rounded-2xl p-6 text-center mb-8 border border-[var(--border)] lg:max-w-2xl">
-        <p className="text-sm text-[var(--text-sec)] mb-4">{total} / {ACHIEVEMENTS.length} unlocked</p>
+        <p className="text-sm text-[var(--text-sec)] mb-4">{t('achievements.unlocked', { done: total, total: ACHIEVEMENTS.length })}</p>
         <div className="w-full h-3 bg-[var(--border)] rounded-full overflow-hidden">
           <div className="h-full rounded-full bg-[var(--primary)] transition-all duration-500"
             style={{ width: `${(total / ACHIEVEMENTS.length) * 100}%` }} />
@@ -59,9 +77,9 @@ export default function AchievementsPage() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className={`font-semibold ${unlocked ? 'text-[var(--text)]' : 'text-[var(--text-sec)]'}`}>
-                  {a.title}
+                  {t(ACH_TITLE_KEY[a.id] || a.title)}
                 </p>
-                <p className="text-xs text-[var(--text-sec)] mt-1">{a.description}</p>
+                <p className="text-xs text-[var(--text-sec)] mt-1">{t(ACH_DESC_KEY[a.id] || a.description)}</p>
                 {!unlocked && (
                   <>
                     <div className="w-full h-2.5 bg-[var(--border)] rounded-full overflow-hidden mt-3">
@@ -85,18 +103,18 @@ export default function AchievementsPage() {
             <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1 }} exit={{ scale: 0.8 }}
               className="bg-[var(--surface)] rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl"
               onClick={e => e.stopPropagation()}>
-              <p className="text-2xl font-bold mb-5">Achievement Unlocked!</p>
+              <p className="text-2xl font-bold mb-5">{t('achievements.unlockedModal')}</p>
               <div className="bg-[var(--primary)]/10 rounded-2xl p-6 mb-6">
                 <span className="text-4xl">{currentAchievement.icon}</span>
-                <p className="text-lg font-bold text-[var(--text)] mt-3">{currentAchievement.title}</p>
-                <p className="text-sm text-[var(--text-sec)] mt-1.5">{currentAchievement.description}</p>
+                <p className="text-lg font-bold text-[var(--text)] mt-3">{t(ACH_TITLE_KEY[currentAchievement.id] || currentAchievement.title)}</p>
+                <p className="text-sm text-[var(--text-sec)] mt-1.5">{t(ACH_DESC_KEY[currentAchievement.id] || currentAchievement.description)}</p>
               </div>
               {newAchievements.length > 1 && (
-                <p className="text-xs text-[var(--text-sec)] mb-4">+{newAchievements.length - 1} more achievements</p>
+                <p className="text-xs text-[var(--text-sec)] mb-4">{t('achievements.more', { count: newAchievements.length - 1 })}</p>
               )}
               <button onClick={clearNewAchievements}
                 className="w-full py-4 rounded-xl bg-[var(--primary)] text-white font-bold active:scale-95 transition">
-                Awesome!
+                {t('achievements.awesome')}
               </button>
             </motion.div>
           </motion.div>

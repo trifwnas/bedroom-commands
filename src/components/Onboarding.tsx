@@ -2,21 +2,19 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, Sparkles } from 'lucide-react';
 import { useStore } from '../store/useStore';
+import { useI18n } from '../i18n';
 
-const STEPS = [
-  { emoji: '💕', title: 'Welcome to Bedroom Commands', desc: 'A fun couples card game with hundreds of commands across 5 categories', color: '#d94059' },
-  { emoji: '🎲', title: 'Draw Cards', desc: 'Tap to draw random commands from Romantic, Playful, Spicy, Adventure, and Relaxing categories', color: '#c49000' },
-  { emoji: '🎡', title: 'Spin the Wheel', desc: 'Use the wheel to randomly select a category, then get a command from it', color: '#cc3a40' },
-  { emoji: '🏆', title: 'Daily Challenges', desc: 'Complete daily challenges to build streaks and earn achievements', color: '#2d8a4e' },
-  { emoji: '⚙️', title: 'Customize', desc: 'Filter by mood, add your own commands, toggle categories, and personalize your experience', color: '#2563c0' },
-];
+const STEP_COLORS = ['#d94059', '#c49000', '#cc3a40', '#2d8a4e', '#2563c0'];
+const STEP_EMOJIS = ['💕', '🎲', '🎡', '🏆', '⚙️'];
 
 export function Onboarding() {
   const [step, setStep] = useState(0);
   const setHasSeenOnboarding = useStore(s => s.setHasSeenOnboarding);
+  const { t } = useI18n();
 
   return (
-    <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm flex items-center justify-center p-6">
+    <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm flex items-center justify-center p-6"
+      role="dialog" aria-modal="true" aria-label={t(`onboarding.${step + 1}.title`)}>
       <AnimatePresence mode="wait">
         <motion.div
           key={step}
@@ -28,43 +26,43 @@ export function Onboarding() {
         >
           <div className="relative inline-block mb-6">
             <div className="absolute inset-0 rounded-full blur-2xl opacity-30"
-              style={{ background: STEPS[step].color }} />
+              style={{ background: STEP_COLORS[step] }} />
             <div className="relative w-24 h-24 rounded-full flex items-center justify-center mx-auto animate-popIn"
-              style={{ background: `${STEPS[step].color}20` }}>
-              <span className="text-5xl">{STEPS[step].emoji}</span>
+              style={{ background: `${STEP_COLORS[step]}20` }}>
+              <span className="text-5xl">{STEP_EMOJIS[step]}</span>
             </div>
           </div>
 
-          <h2 className="text-xl font-bold text-[var(--text)] mb-3">{STEPS[step].title}</h2>
-          <p className="text-sm text-[var(--text-sec)] leading-relaxed mb-6">{STEPS[step].desc}</p>
+          <h2 className="text-xl font-bold text-[var(--text)] mb-3">{t(`onboarding.${step + 1}.title`)}</h2>
+          <p className="text-sm text-[var(--text-sec)] leading-relaxed mb-6">{t(`onboarding.${step + 1}.desc`)}</p>
 
           <div className="flex justify-center gap-2.5 mb-8">
-            {STEPS.map((s, i) => (
+            {STEP_COLORS.map((c, i) => (
               <div key={i}
                 className={`h-1.5 rounded-full transition-all duration-300 ${i === step ? 'w-6' : 'w-1.5'}`}
-                style={{ background: i === step ? STEPS[step].color : 'var(--border)' }}
+                style={{ background: i === step ? STEP_COLORS[step] : 'var(--border)' }}
               />
             ))}
           </div>
 
           <button
             onClick={() => {
-              if (step < STEPS.length - 1) setStep(step + 1);
+              if (step < STEP_COLORS.length - 1) setStep(step + 1);
               else setHasSeenOnboarding(true);
             }}
             className="w-full py-4 rounded-2xl text-white font-bold flex items-center justify-center gap-3 transition active:scale-95"
-            style={{ background: STEPS[step].color }}
+            style={{ background: STEP_COLORS[step] }}
           >
-            {step < STEPS.length - 1 ? (
-              <>Next <ChevronRight size={18} /></>
+            {step < STEP_COLORS.length - 1 ? (
+              <>{t('onboarding.next')} <ChevronRight size={18} /></>
             ) : (
-              <>Get Started <Sparkles size={18} /></>
+              <>{t('onboarding.getStarted')} <Sparkles size={18} /></>
             )}
           </button>
 
           <button onClick={() => setHasSeenOnboarding(true)}
             className="w-full mt-4 py-3 text-sm text-[var(--text-sec)] hover:text-[var(--text)] transition">
-            Skip
+            {t('onboarding.skip')}
           </button>
         </motion.div>
       </AnimatePresence>

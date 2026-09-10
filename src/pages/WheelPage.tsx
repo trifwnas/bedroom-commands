@@ -3,9 +3,12 @@ import { motion } from 'framer-motion';
 import { Heart, Zap } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { useToast } from '../components/Toast';
+import { useI18n } from '../i18n';
 import type { CategoryInfo } from '../types';
 import { CATEGORIES } from '../types';
-import { COMMANDS } from '../data/commands';
+import { COMMANDS, cmdId } from '../data/commands';
+import type { CommandId } from '../data/commands';
+import { getCachedCommands } from '../i18n/commands/loader';
 import { triggerHaptic } from '../utils';
 
 const WHEEL_SIZE = 300;
@@ -33,8 +36,9 @@ export default function WheelPage() {
   const soundEnabled = useStore(s => s.soundEnabled);
   const checkAndUnlockAchievements = useStore(s => s.checkAndUnlockAchievements);
   const { showToast } = useToast();
+  const { t, resolveCommand, lang } = useI18n();
 
-  const [command, setCommand] = useState('');
+  const [command, setCommand] = useState<CommandId>('');
   const [category, setCategory] = useState<CategoryInfo | null>(null);
   const [spinning, setSpinning] = useState(false);
   const [showResult, setShowResult] = useState(false);
@@ -74,8 +78,10 @@ export default function WheelPage() {
 
     if (spinTimerRef.current) clearTimeout(spinTimerRef.current);
     spinTimerRef.current = window.setTimeout(() => {
-      const cmds = COMMANDS[target.id] || [];
-      const cmd = cmds[Math.floor(Math.random() * cmds.length)];
+      const cached = getCachedCommands(lang);
+      const cmds = cached?.[target.id] ?? COMMANDS[target.id] ?? [];
+      const cIdx = Math.floor(Math.random() * cmds.length);
+      const cmd = cmdId(target.id, cIdx);
       setCommand(cmd);
       setCategory(target);
       setShowResult(true);
@@ -85,15 +91,16 @@ export default function WheelPage() {
       setSpinning(false);
       spinTimerRef.current = null;
     }, 4000);
-  }, [spinning, enabled, segments, rotation, soundEnabled, addToHistory, checkAndUnlockAchievements]);
+  }, [spinning, enabled, segments, rotation, soundEnabled, addToHistory, checkAndUnlockAchievements, lang]);
 
   const isFav = command ? favorites.includes(command) : false;
+  const commandText = command ? resolveCommand(command) : '';
 
   return (
     <div className="flex-1 flex flex-col px-6 pt-6 pb-28 md:pb-12 overflow-auto w-full max-w-2xl mx-auto">
       <div className="text-center mb-6">
-        <h1 className="text-2xl font-extrabold text-[var(--text)]">Spin the Wheel</h1>
-        <p className="text-sm text-[var(--text-sec)] mt-1">Spin to discover a new adventure!</p>
+        <h1 className="text-2xl font-extrabold text-[var(--text)]">{t('wheel.title')}</h1>
+        <p className="text-sm text-[var(--text-sec)] mt-1">{t('wheel.subtitle')}</p>
       </div>
 
       <div className="flex justify-center items-center py-6 relative">
@@ -144,7 +151,7 @@ export default function WheelPage() {
                 }}>
                 <div className="flex flex-col items-center" style={{ transform: `rotate(-${a}deg)` }}>
                   <span className="text-lg drop-shadow-sm">{cat.emoji}</span>
-                  <span className="text-[8px] font-bold text-white drop-shadow-sm leading-tight">{cat.name}</span>
+                  <span className="text-[8px] font-bold text-white drop-shadow-sm leading-tight">{t(`cat.${cat.id}`)}</span>
                 </div>
               </div>
             );
@@ -156,15 +163,16 @@ export default function WheelPage() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-4">
           <div className="rounded-3xl p-6 text-center text-white shadow-lg" style={{ background: category.color }}>
             <span className="text-3xl">{category.emoji}</span>
-            <p className="text-xs font-semibold uppercase tracking-widest opacity-80 mt-2">{category.name}</p>
-            <p className="text-lg font-bold mt-3 leading-relaxed">{command}</p>
+            <p className="text-xs font-semibold uppercase tracking-widest opacity-80 mt-2">{t(`cat.${category.id}`)}</p>
+            <p className="text-lg font-bold mt-3 leading-relaxed">{commandText}</p>
             <div className="flex justify-center gap-4 mt-5">
               <button
                 onClick={() => {
                   isFav ? removeFavorite(command) : addFavorite(command);
                   if (soundEnabled) triggerHaptic('light');
-                  showToast(isFav ? 'Removed from favorites' : 'Added to favorites', 'success');
+                  showToast(isFav ? t('cards.toastFavRemoved') : t('cards.toastFavAdded'), 'success');
                 }}
+                aria-label={isFav ? t('a11y.removeFavorite') : t('a11y.addFavorite')}
                 className="p-3.5 rounded-full bg-white/20 hover:bg-white/30 transition active:scale-90">
                 <Heart size={22} fill={isFav ? 'white' : 'none'} className="text-white" />
               </button>
@@ -176,13 +184,13 @@ export default function WheelPage() {
       <div className="mt-2">
         <button onClick={spin} disabled={spinning}
           className="w-full md:w-auto md:mx-auto md:flex md:px-16 py-4 rounded-2xl bg-[var(--primary)] text-white text-lg font-bold flex items-center justify-center gap-3 shadow-lg shadow-[var(--primary)]/30 active:scale-95 transition disabled:opacity-40 touch-target">
-          <Zap size={22} /> {spinning ? 'Spinning...' : 'Spin!'}
+          <Zap size={22} /> {spinning ? t('wheel.spinning') : t('wheel.spin')}
         </button>
       </div>
 
       {!showResult && !spinning && (
         <p className="text-center text-sm text-[var(--text-sec)] italic mt-6">
-          Pick a random category from the wheel
+          {t('wheel.hint')}
         </p>
       )}
     </div>

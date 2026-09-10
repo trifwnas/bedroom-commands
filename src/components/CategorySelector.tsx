@@ -1,6 +1,7 @@
 import type { Category } from '../types';
 import { CATEGORIES } from '../types';
 import { useStore } from '../store/useStore';
+import { useI18n } from '../i18n';
 
 interface Props {
   selected: Category | 'Random';
@@ -9,6 +10,7 @@ interface Props {
 
 export function CategorySelector({ selected, onSelect }: Props) {
   const disabledCategories = useStore(s => s.disabledCategories);
+  const { t } = useI18n();
 
   return (
     <div className="flex gap-3 overflow-x-auto px-6 py-3 scrollbar-none md:flex-wrap md:overflow-visible md:px-0 md:pt-1">
@@ -20,7 +22,7 @@ export function CategorySelector({ selected, onSelect }: Props) {
             : 'bg-[var(--surface)] text-[var(--text)] border border-[var(--border)]'
         }`}
       >
-        🎲 Random
+        🎲 {t('cat.Random')}
       </button>
       {CATEGORIES.map(cat => (
         <button
@@ -34,7 +36,7 @@ export function CategorySelector({ selected, onSelect }: Props) {
           }`}
           style={selected === cat.id ? { background: cat.color, boxShadow: `0 4px 14px ${cat.color}40` } : {}}
         >
-          {cat.emoji} {cat.name}
+          {cat.emoji} {t(`cat.${cat.id}`)}
         </button>
       ))}
     </div>

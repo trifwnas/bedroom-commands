@@ -1,7 +1,10 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Category, ThemeMode, Mood } from '../types';
-import { COMMANDS, COMMAND_TO_CATEGORY, getCommandMood } from '../data/commands';
+import { COMMANDS, cmdId, getCommandCategory, getCommandMoodById, toCommandId } from '../data/commands';
+import type { CommandId } from '../data/commands';
+import { getCachedCommands } from '../i18n/commands/loader';
+import type { Lang } from '../i18n/languages';
 import type { UnlockedAchievement } from '../data/achievements';
 import { checkAchievements } from '../data/achievements';
 
@@ -31,12 +34,16 @@ interface AppState {
   disabledMoods: Mood[];
   themeMode: ThemeMode;
   soundEnabled: boolean;
+  language: Lang;
   statistics: Statistics;
   dailyChallenge: DailyChallenge | null;
   lastDrawnCommand: string | null;
   unlockedAchievements: UnlockedAchievement[];
   newAchievements: UnlockedAchievement[];
   hasSeenOnboarding: boolean;
+  shuffledDeck: string[];
+  deckCursor: number;
+  seenIds: string[];
 
   addFavorite: (command: string) => void;
   removeFavorite: (command: string) => void;
@@ -49,6 +56,7 @@ interface AppState {
   toggleMood: (mood: Mood) => void;
   setThemeMode: (mode: ThemeMode) => void;
   setSoundEnabled: (enabled: boolean) => void;
+  setLanguage: (lang: Lang) => void;
   undoLastDraw: () => void;
   markCompleted: (command: string) => void;
   generateDailyChallenge: () => void;
@@ -60,6 +68,10 @@ interface AppState {
   importData: (data: unknown) => boolean;
   clearAllData: () => void;
   setHasSeenOnboarding: (value: boolean) => void;
+  getShuffledDeck: (pool: string[]) => string[];
+  drawFromDeck: (pool: string[]) => string | null;
+  resetDeck: () => void;
+  undoDeck: (id: string) => void;
 }
 
 interface ExportData {
@@ -73,6 +85,7 @@ interface ExportData {
   statistics: Statistics;
   themeMode: ThemeMode;
   soundEnabled: boolean;
+  language?: Lang;
 }
 
 const getToday = () => new Date().toISOString().split('T')[0];
@@ -102,12 +115,28 @@ export const useStore = create<AppState>()(
       disabledMoods: [],
       themeMode: 'system',
       soundEnabled: true,
+      language: (() => {
+        if (typeof window !== 'undefined') {
+          const q = new URLSearchParams(window.location.search).get('lang');
+          if (q && (['en','es','de','da','el','fr','pt','ja','ko','zh'] as string[]).includes(q)) return q as Lang;
+        }
+        if (typeof navigator !== 'undefined') {
+          for (const nav of navigator.languages) {
+            const code = nav.toLowerCase().replace('_', '-').split('-')[0];
+            if ((['en','es','de','da','el','fr','pt','ja','ko','zh'] as string[]).includes(code)) return code as Lang;
+          }
+        }
+        return 'en';
+      })(),
       statistics: { ...defaultStats },
       dailyChallenge: null,
       lastDrawnCommand: null,
       unlockedAchievements: [],
       newAchievements: [],
       hasSeenOnboarding: false,
+      shuffledDeck: [],
+      deckCursor: 0,
+      seenIds: [],
 
       addFavorite: (command) => {
         const { favorites, statistics } = get();
@@ -143,10 +172,10 @@ export const useStore = create<AppState>()(
 
         const categoryDraws = { ...statistics.categoryDraws };
         const moodDraws = { ...statistics.moodDraws };
-        const cat = COMMAND_TO_CATEGORY.get(command);
+        const cat = getCommandCategory(command);
         if (cat) {
-          categoryDraws[cat.id] = (categoryDraws[cat.id] || 0) + 1;
-          const mood = getCommandMood(command, cat.id);
+          categoryDraws[cat] = (categoryDraws[cat] || 0) + 1;
+          const mood = getCommandMoodById(command);
           moodDraws[mood] = (moodDraws[mood] || 0) + 1;
         }
 
@@ -179,7 +208,10 @@ export const useStore = create<AppState>()(
       },
 
       getAllCommands: (category) => {
-        return [...(COMMANDS[category] || []), ...(get().customCommands[category] || [])];
+        const lang = get().language;
+        const cached = getCachedCommands(lang);
+        const base = cached?.[category] ?? COMMANDS[category] ?? [];
+        return [...base, ...(get().customCommands[category] || [])];
       },
 
       toggleCategory: (category) => {
@@ -202,6 +234,7 @@ export const useStore = create<AppState>()(
 
       setThemeMode: (mode) => set({ themeMode: mode }),
       setSoundEnabled: (enabled) => set({ soundEnabled: enabled }),
+      setLanguage: (lang) => set({ language: lang }),
 
       undoLastDraw: () => {
         const { history, lastDrawnCommand, statistics } = get();
@@ -212,10 +245,10 @@ export const useStore = create<AppState>()(
             newHistory.splice(idx, 1);
             const categoryDraws = { ...statistics.categoryDraws };
             const moodDraws = { ...statistics.moodDraws };
-            const cat = COMMAND_TO_CATEGORY.get(lastDrawnCommand);
+            const cat = getCommandCategory(lastDrawnCommand);
             if (cat) {
-              categoryDraws[cat.id] = Math.max(0, (categoryDraws[cat.id] || 0) - 1);
-              const mood = getCommandMood(lastDrawnCommand, cat.id);
+              categoryDraws[cat] = Math.max(0, (categoryDraws[cat] || 0) - 1);
+              const mood = getCommandMoodById(lastDrawnCommand);
               moodDraws[mood] = Math.max(0, (moodDraws[mood] || 0) - 1);
             }
             set({
@@ -241,14 +274,16 @@ export const useStore = create<AppState>()(
       },
 
       generateDailyChallenge: () => {
-        const { dailyChallenge } = get();
+        const { dailyChallenge, language } = get();
         const today = getToday();
         if (dailyChallenge?.date === today) return;
 
         const cats: Category[] = ['Romantic', 'Playful', 'Spicy', 'Adventure', 'Relaxing'];
         const category = cats[Math.floor(Math.random() * cats.length)];
-        const commands = COMMANDS[category];
-        const command = commands[Math.floor(Math.random() * commands.length)];
+        const cached = getCachedCommands(language);
+        const commands = cached?.[category] ?? COMMANDS[category];
+        const index = Math.floor(Math.random() * commands.length);
+        const command = cmdId(category, index);
 
         set({ dailyChallenge: { command, category, date: today, completed: false } });
       },
@@ -290,7 +325,7 @@ export const useStore = create<AppState>()(
       exportData: () => {
         const s = get();
         return {
-          version: '3.0.0',
+          version: '4.0.0',
           favorites: s.favorites,
           history: s.history,
           completedCommands: s.completedCommands,
@@ -300,22 +335,24 @@ export const useStore = create<AppState>()(
           statistics: s.statistics,
           themeMode: s.themeMode,
           soundEnabled: s.soundEnabled,
+          language: s.language,
         };
       },
 
       importData: (data) => {
         const d = data as Partial<ExportData>;
-        if (d && d.version === '3.0.0') {
+        if (d && (d.version === '3.0.0' || d.version === '4.0.0')) {
           set({
-            favorites: d.favorites || [],
-            history: d.history || [],
-            completedCommands: d.completedCommands || [],
+            favorites: (d.favorites || []).map(toCommandId),
+            history: (d.history || []).map(toCommandId),
+            completedCommands: (d.completedCommands || []).map(toCommandId),
             customCommands: d.customCommands || defaultCustom,
             disabledCategories: d.disabledCategories || [],
             disabledMoods: d.disabledMoods || [],
             themeMode: d.themeMode || 'system',
             soundEnabled: d.soundEnabled ?? true,
             statistics: d.statistics || get().statistics,
+            language: ((d as any).language as Lang) || 'en',
           });
           return true;
         }
@@ -330,10 +367,100 @@ export const useStore = create<AppState>()(
         statistics: { ...defaultStats }, dailyChallenge: null,
         lastDrawnCommand: null, unlockedAchievements: [], newAchievements: [],
         hasSeenOnboarding: false,
+        shuffledDeck: [], deckCursor: 0, seenIds: [],
       }),
 
       setHasSeenOnboarding: (value) => set({ hasSeenOnboarding: value }),
+
+      getShuffledDeck: (pool) => {
+        const { shuffledDeck, deckCursor, seenIds } = get();
+        // If deck is empty or pool size changed or cursor beyond, rebuild
+        const poolSet = new Set(pool);
+        const deckValid = shuffledDeck.length === pool.length && shuffledDeck.every(id => poolSet.has(id));
+        if (!deckValid || shuffledDeck.length === 0) {
+          const shuffled = [...pool];
+          for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+          }
+          // Filter out already seen to enforce never-repeat until all seen
+          const unseen = shuffled.filter(id => !seenIds.includes(id));
+          const finalDeck = unseen.length > 0 ? unseen : shuffled;
+          set({ shuffledDeck: finalDeck, deckCursor: 0 });
+          return finalDeck;
+        }
+        return shuffledDeck.slice(deckCursor);
+      },
+
+      drawFromDeck: (pool) => {
+        const { shuffledDeck, deckCursor, seenIds } = get();
+        let deck = shuffledDeck;
+        let cursor = deckCursor;
+        const poolSet = new Set(pool);
+        const deckValid = deck.length > 0 && deck.length === pool.length && deck.every(id => poolSet.has(id));
+        if (!deckValid) {
+          const shuffled = [...pool];
+          for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+          }
+          const unseen = shuffled.filter(id => !seenIds.includes(id));
+          deck = unseen.length > 0 ? unseen : shuffled;
+          cursor = 0;
+          // If we had to reshuffle full pool because all seen, clear seen
+          if (unseen.length === 0) {
+            set({ seenIds: [] });
+          }
+        }
+        if (cursor >= deck.length) {
+          // Exhausted deck -> reshuffle full pool, clear seen
+          const shuffled = [...pool];
+          for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+          }
+          deck = shuffled;
+          cursor = 0;
+          set({ seenIds: [] });
+        }
+        const id = deck[cursor];
+        set({ shuffledDeck: deck, deckCursor: cursor + 1, seenIds: seenIds.includes(id) ? seenIds : [...seenIds, id] });
+        return id;
+      },
+
+      resetDeck: () => set({ shuffledDeck: [], deckCursor: 0, seenIds: [] }),
+
+      undoDeck: (id: string) => {
+        const { seenIds, shuffledDeck, deckCursor } = get();
+        const idx = seenIds.indexOf(id);
+        if (idx !== -1) {
+          const newSeen = [...seenIds];
+          newSeen.splice(idx, 1);
+          set({ seenIds: newSeen, deckCursor: Math.max(0, deckCursor - 1) });
+        }
+      },
     }),
-    { name: 'bedroom-commands-v3' }
+    {
+      name: 'bedroom-commands-v3',
+      version: 2,
+      migrate: (persistedState, _version) => {
+        const raw = (persistedState || {}) as Record<string, unknown>;
+        const arr = (v: unknown): string[] => (Array.isArray(v) ? v.map(String) : []);
+        return {
+          ...raw,
+          favorites: arr(raw.favorites).map(toCommandId),
+          history: arr(raw.history).map(toCommandId),
+          completedCommands: arr(raw.completedCommands).map(toCommandId),
+          lastDrawnCommand:
+            typeof raw.lastDrawnCommand === 'string' ? toCommandId(raw.lastDrawnCommand) : null,
+          dailyChallenge: raw.dailyChallenge
+            ? { ...(raw.dailyChallenge as Record<string, unknown>), command: toCommandId(String((raw.dailyChallenge as { command: string }).command)) }
+            : null,
+          shuffledDeck: arr((raw as any).shuffledDeck).map(toCommandId),
+          seenIds: arr((raw as any).seenIds).map(toCommandId),
+          deckCursor: typeof (raw as any).deckCursor === 'number' ? (raw as any).deckCursor as number : 0,
+        };
+      },
+    }
   )
 );
